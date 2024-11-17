@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bfsth0dv2adn2"]
-
-[ext_resource type="Script" path="res://scenes/tree/TreeCamera.cs" id="1_0wqnv"]
-
-[node name="Camera3D" type="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 0.979575, 0.201078, 0, -0.201078, 0.979575, 0, 2.13274, 7.15429)
-script = ExtResource("1_0wqnv")
