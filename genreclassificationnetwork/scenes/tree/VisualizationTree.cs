@@ -1,41 +1,24 @@
 using Godot;
 using System;
 
-public partial class VisualizationTree : Node3D
-{
-	
-	[Export]
-	public double rotationSpeed = 1.0;
-
-	private Camera3D camera;
-	
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+namespace MusicGenreTreeView {
+	public partial class VisualizationTree : Node3D
 	{
-		camera = GetNode<Camera3D>("Camera3D");
-	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-		
-		if (Input.IsActionPressed("ui_right"))
+		Node3D genreTreeNodes; 
+		// Called when the node enters the scene tree for the first time.
+		public override void _Ready()
 		{
-			RotateY(-rotationSpeed * delta);
 		}
-		if (Input.IsActionPressed("ui_left"))
-		{
-			RotateY(rotationSpeed * delta);
+
+		// Called every frame. 'delta' is the elapsed time since the previous frame.
+		public override void _Process(double delta)
+		{			
+		}
+
+		public void _OnAddSpherePressed(){
+			GenreTreeNodeCollection nodeCollection = GetNode<GenreTreeNodeCollection>("GenreTreeNodeCollection");
+
+			nodeCollection.AddGenreNode("Metal", Vector3.Zero, 0.5f, Color.FromHtml("#732b87"));
 		}
 	}
-
-    private void RotateY(double v)
-    {
-		camera.RotateY()
-        throw new NotImplementedException();
-    }
-
 }
-
-
-
