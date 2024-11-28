@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bhj2b7daxmh47"]
+[gd_scene load_steps=5 format=3 uid="uid://bhj2b7daxmh47"]
 
 [ext_resource type="Script" path="res://scenes/tree/VisualizationTree.cs" id="1_7s6fo"]
 [ext_resource type="Script" path="res://scenes/tree/GenreTreeNodeCollection.cs" id="2_n3did"]
 [ext_resource type="Script" path="res://scenes/tree/TreeCamera.cs" id="3_048oq"]
+[ext_resource type="PackedScene" uid="uid://bkdm2kv52qg75" path="res://scenes/menu/LogIn.tscn" id="4_4q02q"]
 
 [node name="VisualizationTree" type="Node3D"]
 script = ExtResource("1_7s6fo")
@@ -26,5 +27,7 @@ transform = Transform3D(1, 0, 0, 0, 0.992617, -0.121298, 0, 0.121298, 0.992617, 
 offset_right = 8.0
 offset_bottom = 8.0
 text = "AddSphere"
+
+[node name="LogIn" parent="." instance=ExtResource("4_4q02q")]
 
 [connection signal="pressed" from="CanvasLayer/AddSphere" to="." method="_OnAddSpherePressed"]

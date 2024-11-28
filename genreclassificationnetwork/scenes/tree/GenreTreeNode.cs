@@ -49,7 +49,7 @@ namespace MusicGenreTreeView {
 			size = Mathf.Clamp(size, 0.0f, 1.0f);
 
 			// interpolate radius
-		    float newRadius = Mathf.Lerp(startRadius, endradius, size);
+			float newRadius = Mathf.Lerp(startRadius, endradius, size);
 
 			m_sphere.Radius = newRadius;
 			m_sphere.Height = newRadius * 2;
