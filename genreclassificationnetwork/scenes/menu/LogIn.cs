@@ -21,7 +21,7 @@ namespace GenreTreeMenu {
 			}
 			else
 			{
-				logInButton.Connect("pressed", this, nameof(_OnLogInButtonPressed));
+				logInButton.Connect(Button.SignalName.Pressed, Callable.From(_OnLogInButtonPressed));
 				GD.Print("logInButton verbunden!");
 			}
 		}
