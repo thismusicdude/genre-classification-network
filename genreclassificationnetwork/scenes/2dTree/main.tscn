@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://d2jopynvd1v0c"]
+
+[ext_resource type="Script" path="res://addons/force_directed_graph/force_directed_graph.gd" id="1_5vch7"]
+[ext_resource type="Script" path="res://addons/force_directed_graph/fdg_node.gd" id="2_ybn63"]
+[ext_resource type="Script" path="res://addons/force_directed_graph/fdg_spring.gd" id="3_gsmib"]
+[ext_resource type="Script" path="res://addons/ppc/ppcamera.gd" id="4_qwj5w"]
+
+[node name="Main" type="Node2D"]
+
+[node name="ForceDirectedGraph" type="Node2D" parent="."]
+script = ExtResource("1_5vch7")
+
+[node name="FDGNode" type="Node2D" parent="ForceDirectedGraph"]
+position = Vector2(255.562, 65.941)
+script = ExtResource("2_ybn63")
+draw_point = true
+
+[node name="FDGSpring" type="Line2D" parent="ForceDirectedGraph/FDGNode" node_paths=PackedStringArray("node_start", "node_end")]
+width = 2.0
+script = ExtResource("3_gsmib")
+node_start = NodePath("..")
+node_end = NodePath("../../FDGNode2")
+
+[node name="FDGNode2" type="Node2D" parent="ForceDirectedGraph"]
+position = Vector2(-229.698, -15.9411)
+script = ExtResource("2_ybn63")
+draw_point = true
+
+[node name="PinchPanCamera" type="Marker2D" parent="."]
+script = ExtResource("4_qwj5w")
