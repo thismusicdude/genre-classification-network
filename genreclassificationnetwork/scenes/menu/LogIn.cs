@@ -89,7 +89,7 @@ namespace GenreTreeMenu {
 		string code = await server.WaitForCodeAsync();
 
 		// Debug-Ausgabe des Codes
-		GD.Print($"Empfangener Authentifizierungscode: {code}");
+		//GD.Print($"Empfangener Authentifizierungscode: {code}");
 
 		if (string.IsNullOrEmpty(code))
 		{
@@ -105,7 +105,7 @@ namespace GenreTreeMenu {
 			return;
 		}
 		
-		GD.Print($"Empfangenes Access Token: {accessToken}");
+		// GD.Print($"Empfangenes Access Token: {accessToken}");
 
 		
 		if (SpotifyDataManager.Instance == null)
@@ -123,10 +123,10 @@ namespace GenreTreeMenu {
 		// Benutzerprofil abrufen
 		string profileData = await GetUserProfile(accessToken);
 
-		GD.Print($"Benutzerprofil: {profileData}");
+		//GD.Print($"Benutzerprofil: {profileData}");
 		SpotifyDataManager.Instance.UserProfileData = profileData;
 
-		GD.Print($"Benutzerprofil geladen: {profileData}");
+		//GD.Print($"Benutzerprofil geladen: {profileData}");
 		}
 
 public async Task DisplayTopGenres()
