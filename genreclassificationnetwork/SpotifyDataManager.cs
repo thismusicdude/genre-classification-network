@@ -31,20 +31,16 @@ public partial class SpotifyDataManager : Node
 	{
 		using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
 		{
-			GD.Print("GetTopArtists function");
 			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-			GD.Print("GetTopArtists function2");
-			var response = await client.GetAsync("https://api.spotify.com/v1/me/top/artists?limit=50");
-			GD.Print("GetTopArtists function3");
-			return await response.Content.ReadAsStringAsync();
+			var response = await client.GetAsync("https://api.spotify.com/v1/me/top/artists?limit=50");			return await response.Content.ReadAsStringAsync();
 		}
 	}
 
 	// Genres aus Top-Künstlern extrahieren
-	public async Task<List<string>> GetTopGenres(string accessToken)
+	public async Task<List<(string Genre, int Count)>> GetTopGenres(string accessToken)
 	{
 		string artistData = await GetTopArtists(accessToken);
-		GD.Print($"{artistData}");
+		//GD.Print($"{artistData}");
 
 		var artistResponse = JsonConvert.DeserializeObject<dynamic>(artistData);
 
@@ -62,10 +58,47 @@ public partial class SpotifyDataManager : Node
 		var topGenres = genreList
 			.GroupBy(g => g)
 			.OrderByDescending(g => g.Count())
-			.Select(g => g.Key)
+			.Select(g => (Genre: g.Key, Count: g.Count()))
 			.ToList();
 
+		/*
+		GD.Print("Deine Top-Genres (sortiert nach Häufigkeit):");
+		foreach (var entry in topGenres)
+		{
+			GD.Print($"{entry.Genre}: {entry.Count}");
+		}
+		*/
 		return topGenres;
 	}
-	
+}
+
+// Beispiel für die Verwendung
+public partial class LogIn : Control
+{
+	private async Task DisplayTopGenres()
+	{
+		if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
+		{
+			GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
+			return;
+		}
+
+		var topGenres = await SpotifyDataManager.Instance.GetTopGenres(SpotifyDataManager.Instance.AccessToken);
+
+		GD.Print("Deine Top-Genres:");
+		foreach (var (genre, count) in topGenres)
+		{
+			GD.Print($"{genre}: {count}");
+		}
+	}
+
+	public override void _Ready()
+	{
+		var loadGenresButton = GetNode<Button>("LoadGenresButton");
+		if (loadGenresButton != null)
+		{
+			loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
+			GD.Print("LoadGenresButton verbunden!");
+		}
+	}
 }
