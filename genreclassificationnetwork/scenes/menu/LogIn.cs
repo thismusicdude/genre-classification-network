@@ -25,15 +25,13 @@ namespace GenreTreeMenu {
 				GD.Print("logInButton verbunden!");
 				GD.Print($"LogInButton gefunden: {logInButton.Name}");
 			}
-			
-			/*
+		
 			var loadGenresButton = GetNode<Button>("LoadGenresButton");
 			if (loadGenresButton != null)
 			{
 				loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
 				GD.Print("LoadGenresButton verbunden!");
 			}
-			*/
 		}
 		
 	// Öffnet eine URL im Standardbrowser
@@ -80,7 +78,7 @@ namespace GenreTreeMenu {
 	{
 		GD.Print("LogIn-Button wurde gedrückt!");
 
-		string scope = "user-read-private user-read-email";
+		string scope = "user-read-private user-read-email user-top-read";
 		string authUrl = $"https://accounts.spotify.com/authorize?response_type=code&client_id={clientId}&redirect_uri={Uri.EscapeDataString(redirectUri)}&scope={Uri.EscapeDataString(scope)}";
 
 		// Öffne Spotify-Authentifizierungsseite
@@ -130,7 +128,7 @@ namespace GenreTreeMenu {
 
 		GD.Print($"Benutzerprofil geladen: {profileData}");
 		}
-/*
+
 public async Task DisplayTopGenres()
 {
 	if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
@@ -146,6 +144,6 @@ public async Task DisplayTopGenres()
 	{
 		GD.Print(genre);
 	}
-}*/
+}
 }
 }

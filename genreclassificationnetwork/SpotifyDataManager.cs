@@ -26,14 +26,16 @@ public partial class SpotifyDataManager : Node
 		}
 	}
 
-/*
 	// API-Aufruf: Top-Künstler abrufen
 	public async Task<string> GetTopArtists(string accessToken)
 	{
-		using (HttpClient client = new HttpClient())
+		using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
 		{
+			GD.Print("GetTopArtists function");
 			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+			GD.Print("GetTopArtists function2");
 			var response = await client.GetAsync("https://api.spotify.com/v1/me/top/artists?limit=50");
+			GD.Print("GetTopArtists function3");
 			return await response.Content.ReadAsStringAsync();
 		}
 	}
@@ -42,6 +44,8 @@ public partial class SpotifyDataManager : Node
 	public async Task<List<string>> GetTopGenres(string accessToken)
 	{
 		string artistData = await GetTopArtists(accessToken);
+		GD.Print($"{artistData}");
+
 		var artistResponse = JsonConvert.DeserializeObject<dynamic>(artistData);
 
 		// Genres sammeln
@@ -63,5 +67,5 @@ public partial class SpotifyDataManager : Node
 
 		return topGenres;
 	}
-	*/
+	
 }
