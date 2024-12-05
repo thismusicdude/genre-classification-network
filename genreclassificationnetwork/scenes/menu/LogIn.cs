@@ -23,6 +23,7 @@ namespace GenreTreeMenu {
 			{
 				logInButton.Connect(Button.SignalName.Pressed, Callable.From(_OnLogInButtonPressed));
 				GD.Print("logInButton verbunden!");
+				GD.Print($"LogInButton gefunden: {logInButton.Name}");
 			}
 			
 			/*
@@ -129,9 +130,6 @@ namespace GenreTreeMenu {
 
 		GD.Print($"Benutzerprofil geladen: {profileData}");
 		}
-}
-	
-
 /*
 public async Task DisplayTopGenres()
 {
@@ -148,6 +146,6 @@ public async Task DisplayTopGenres()
 	{
 		GD.Print(genre);
 	}
+}*/
 }
-*/
 }
