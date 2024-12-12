@@ -32,7 +32,8 @@ public partial class SpotifyDataManager : Node
 		using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
 		{
 			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-			var response = await client.GetAsync("https://api.spotify.com/v1/me/top/artists?limit=50");			return await response.Content.ReadAsStringAsync();
+			var response = await client.GetAsync("https://api.spotify.com/v1/me/top/artists?limit=50");
+			return await response.Content.ReadAsStringAsync();
 		}
 	}
 
@@ -40,8 +41,6 @@ public partial class SpotifyDataManager : Node
 	public async Task<List<(string Genre, int Count)>> GetTopGenres(string accessToken)
 	{
 		string artistData = await GetTopArtists(accessToken);
-		//GD.Print($"{artistData}");
-
 		var artistResponse = JsonConvert.DeserializeObject<dynamic>(artistData);
 
 		// Genres sammeln
@@ -61,14 +60,78 @@ public partial class SpotifyDataManager : Node
 			.Select(g => (Genre: g.Key, Count: g.Count()))
 			.ToList();
 
-		/*
-		GD.Print("Deine Top-Genres (sortiert nach Häufigkeit):");
-		foreach (var entry in topGenres)
-		{
-			GD.Print($"{entry.Genre}: {entry.Count}");
-		}
-		*/
 		return topGenres;
+	}
+
+	// Nur Genres ohne Zähler als Liste zurückgeben
+	public async Task<List<string>> GetGenresAsList(string accessToken)
+	{
+		var topGenres = await GetTopGenres(accessToken);
+		return topGenres.Select(g => g.Genre).ToList();
+	}
+
+	public async Task<List<(string Genre, int Count)>> GetTopGenresFromTracks(string accessToken)
+	{
+		string trackData = await GetTopTracks(accessToken);
+		var trackResponse = JsonConvert.DeserializeObject<dynamic>(trackData);
+
+		// Genres sammeln
+		var genreList = new List<string>();
+		foreach (var track in trackResponse.items)
+		{
+			foreach (var artist in track.artists)
+			{
+				var artistId = (string)artist.id;
+
+				using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
+				{
+					client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+					var artistResponse = await client.GetAsync($"https://api.spotify.com/v1/artists/{artistId}");
+					var artistData = await artistResponse.Content.ReadAsStringAsync();
+					var artistDetails = JsonConvert.DeserializeObject<dynamic>(artistData);
+
+					foreach (var genre in artistDetails.genres)
+					{
+						genreList.Add((string)genre);
+					}
+				}
+			}
+		}
+
+		// Doppelte Genres entfernen und nach Häufigkeit sortieren
+		var topGenres = genreList
+			.GroupBy(g => g)
+			.OrderByDescending(g => g.Count())
+			.Select(g => (Genre: g.Key, Count: g.Count()))
+			.ToList();
+
+		return topGenres; // Rückgabe des Wertes
+	}
+	
+	public async Task<List<string>> GetTrackNamesAsList(string accessToken)
+	{
+		string trackData = await GetTopTracks(accessToken);
+		var trackResponse = JsonConvert.DeserializeObject<dynamic>(trackData);
+
+		// Liedernamen sammeln
+		var trackNames = new List<string>();
+		foreach (var track in trackResponse.items)
+		{
+			string trackName = (string)track.name;
+			trackNames.Add(trackName);
+		}
+
+		return trackNames;
+	}
+
+	public async Task<string> GetTopTracks(string accessToken)
+	{
+		using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
+		{
+			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+			var response = await client.GetAsync("https://api.spotify.com/v1/me/top/tracks?limit=50");
+			return await response.Content.ReadAsStringAsync();
+		}
 	}
 }
 
@@ -92,13 +155,21 @@ public partial class LogIn : Control
 		}
 	}
 
+
 	public override void _Ready()
 	{
-		var loadGenresButton = GetNode<Button>("LoadGenresButton");
-		if (loadGenresButton != null)
-		{
-			loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
-			GD.Print("LoadGenresButton verbunden!");
-		}
+		//var loadGenresButton = GetNode<Button>("LoadGenresButton");
+		//if (loadGenresButton != null)
+		//{
+		//loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
+		//GD.Print("LoadGenresButton verbunden!");
+		//}
+		//
+		//var listGenresButton = GetNode<Button>("ListGenresButton");
+		//if (listGenresButton != null)
+		//{
+		//listGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayGenresAsList));
+		//GD.Print("ListGenresButton verbunden!");
+		//}
 	}
 }

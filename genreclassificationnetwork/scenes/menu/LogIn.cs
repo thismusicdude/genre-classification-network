@@ -35,6 +35,20 @@ namespace GenreTreeMenu
 				loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
 				GD.Print("LoadGenresButton verbunden!");
 			}
+
+			var listGenresButton = GetNode<Button>("ListGenresButton");
+			if (listGenresButton != null)
+			{
+				listGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayGenresAsListFromTracks));
+				GD.Print("ListGenresButton verbunden!");
+			}
+			
+			var loadTracksButton = GetNode<Button>("LoadTracksButton");
+			if (loadTracksButton != null)
+			{
+				loadTracksButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTrackNames));
+				GD.Print("LoadTracksButton verbunden!");
+			}
 		}
 
 		// Öffnet eine URL im Standardbrowser
@@ -110,7 +124,6 @@ namespace GenreTreeMenu
 
 			// GD.Print($"Empfangenes Access Token: {accessToken}");
 
-
 			if (SpotifyDataManager.Instance == null)
 			{
 				GD.PrintErr("SpotifyDataManager.Instance ist null!");
@@ -128,8 +141,6 @@ namespace GenreTreeMenu
 
 			//GD.Print($"Benutzerprofil: {profileData}");
 			SpotifyDataManager.Instance.UserProfileData = profileData;
-
-			//GD.Print($"Benutzerprofil geladen: {profileData}");
 		}
 
 		private async Task DisplayTopGenres()
@@ -144,12 +155,13 @@ namespace GenreTreeMenu
 			var topGenres = await SpotifyDataManager.Instance.GetTopGenres(SpotifyDataManager.Instance.AccessToken);
 
 			// Ergebnisse in der Konsole ausgeben
+			GD.Print("");
 			GD.Print("Deine Top-Genres (sortiert nach Häufigkeit):");
 			foreach (var (genre, count) in topGenres)
 			{
 				GD.Print($"{genre}: {count}");
 			}
-			
+
 			/*
 			// Wenn nur die Namen der Genres benötigt werden
 			var genreNames = topGenres.Select(g => g.Genre).ToList();
@@ -159,6 +171,56 @@ namespace GenreTreeMenu
 				GD.Print(genre);
 			}
 			*/
+		}
+		
+		// Beispiel für die Verwendung
+		public async Task DisplayTrackNames()
+		{
+			if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
+			{
+				GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
+				return;
+			}
+
+			var trackNames = await SpotifyDataManager.Instance.GetTrackNamesAsList(SpotifyDataManager.Instance.AccessToken);
+
+			GD.Print("");
+			GD.Print("Deine Top-Lieder:");
+			foreach (var name in trackNames)
+			{
+				GD.Print(name);
+			}
+		}
+
+
+
+		public async Task<string> GetTopTracks(string accessToken)
+		{
+			using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
+			{
+				client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+				var response = await client.GetAsync("https://api.spotify.com/v1/me/top/tracks?limit=50");
+				return await response.Content.ReadAsStringAsync();
+			}
+		}
+
+
+		private async Task DisplayGenresAsListFromTracks()
+		{
+			if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
+			{
+				GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
+				return;
+			}
+
+			var topGenres = await SpotifyDataManager.Instance.GetTopGenresFromTracks(SpotifyDataManager.Instance.AccessToken);
+
+			GD.Print("");
+			GD.Print("Top-Genres basierend auf den meistgehörten Songs:");
+			foreach (var (genre, count) in topGenres)
+			{
+				GD.Print($"{genre}: {count}");
+			}
 		}
 	}
 }

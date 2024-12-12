@@ -60,6 +60,22 @@ offset_right = 76.0
 offset_bottom = 106.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Show Genres"
+text = "Show Genres based on 50 most played artists"
+
+[node name="LoadTracksButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 444.0
+offset_top = 516.0
+offset_right = 718.0
+offset_bottom = 566.0
+text = "Show 50 most played songs"
+
+[node name="ListGenresButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 403.0
+offset_top = 446.0
+offset_right = 757.0
+offset_bottom = 500.0
+text = "Show Genres based on 50 most played songs"
 
 [connection signal="pressed" from="LogInButton" to="." method="_OnLogInButtonPressed"]
