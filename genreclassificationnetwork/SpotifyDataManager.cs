@@ -62,6 +62,30 @@ public partial class SpotifyDataManager : Node
 
 		return topGenres;
 	}
+	
+	public async Task<Dictionary<string, List<string>>> GetGenresWithSubgenres(string accessToken)
+	{
+		var topGenres = await GetTopGenres(accessToken);
+
+		// Dictionary, um Hauptgenres und zugehörige Subgenres zu speichern
+		var genreHierarchy = new Dictionary<string, List<string>>();
+
+		foreach (var (genre, _) in topGenres)
+		{
+			var genreParts = genre.Split(' '); // Zerlege den Genre-String
+			string mainGenre = genreParts.Last(); // Letztes Wort als Hauptgenre annehmen
+
+			if (!genreHierarchy.ContainsKey(mainGenre))
+			{
+				genreHierarchy[mainGenre] = new List<string>();
+			}
+
+			genreHierarchy[mainGenre].Add(genre);
+		}
+
+		return genreHierarchy;
+	}
+
 
 	// Nur Genres ohne Zähler als Liste zurückgeben
 	public async Task<List<string>> GetGenresAsList(string accessToken)

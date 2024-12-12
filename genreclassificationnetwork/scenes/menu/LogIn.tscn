@@ -6,9 +6,11 @@
 
 [node name="LogIn" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_x1m7g")
@@ -20,10 +22,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -75.5
-offset_top = 24.5
-offset_right = 75.5
-offset_bottom = 55.5
+offset_left = -75.0
+offset_top = 25.0
+offset_right = 76.0
+offset_bottom = 56.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Log in with Spotify"
@@ -91,5 +93,21 @@ offset_bottom = 171.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Show Genres based on 50 most played songs"
+
+[node name="ListSubgenresButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -132.0
+offset_top = 240.0
+offset_right = 142.0
+offset_bottom = 290.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Show Subgenres
+"
 
 [connection signal="pressed" from="LogInButton" to="." method="_OnLogInButtonPressed"]

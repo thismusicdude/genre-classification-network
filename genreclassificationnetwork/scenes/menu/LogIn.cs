@@ -49,6 +49,13 @@ namespace GenreTreeMenu
 				loadTracksButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTrackNames));
 				GD.Print("LoadTracksButton verbunden!");
 			}
+			
+			var listSubgenresButton = GetNode<Button>("ListSubgenresButton");
+			if (listSubgenresButton != null)
+			{
+				listSubgenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayGenreHierarchy));
+				GD.Print("ListSubgenresButton verbunden!");
+			}
 		}
 
 		// Öffnet eine URL im Standardbrowser
@@ -192,8 +199,6 @@ namespace GenreTreeMenu
 			}
 		}
 
-
-
 		public async Task<string> GetTopTracks(string accessToken)
 		{
 			using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
@@ -203,7 +208,6 @@ namespace GenreTreeMenu
 				return await response.Content.ReadAsStringAsync();
 			}
 		}
-
 
 		private async Task DisplayGenresAsListFromTracks()
 		{
@@ -220,6 +224,27 @@ namespace GenreTreeMenu
 			foreach (var (genre, count) in topGenres)
 			{
 				GD.Print($"{genre}: {count}");
+			}
+		}
+		
+		private async Task DisplayGenreHierarchy()
+		{
+			if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
+			{
+				GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
+				return;
+			}
+
+			var genreHierarchy = await SpotifyDataManager.Instance.GetGenresWithSubgenres(SpotifyDataManager.Instance.AccessToken);
+
+			GD.Print("Genre-Hierarchie:");
+			foreach (var (mainGenre, subgenres) in genreHierarchy)
+			{
+				GD.Print($"Hauptgenre: {mainGenre}");
+				foreach (var subgenre in subgenres.Distinct())
+				{
+					GD.Print($"  - {subgenre}");
+				}
 			}
 		}
 	}
