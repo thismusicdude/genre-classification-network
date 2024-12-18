@@ -1,0 +1,66 @@
+[gd_scene load_steps=5 format=3 uid="uid://d2jopynvd1v0c"]
+
+[ext_resource type="Script" path="res://helpers/FDG/OwnForceDirectedGraph.cs" id="1_x8ow0"]
+[ext_resource type="Script" path="res://helpers/FDG/OwnFdgNode.cs" id="2_hw4m8"]
+[ext_resource type="Script" path="res://helpers/FDG/OwnFdgSpring.cs" id="3_5a68e"]
+[ext_resource type="Script" path="res://addons/ppc/ppcamera.gd" id="4_fflji"]
+
+[node name="Main" type="Node2D"]
+
+[node name="FDGFactory" type="Node2D" parent="."]
+
+[node name="OwnForceDirectedGraph" type="Node2D" parent="FDGFactory"]
+script = ExtResource("1_x8ow0")
+
+[node name="OwnFdgNode" type="Node2D" parent="FDGFactory/OwnForceDirectedGraph"]
+position = Vector2(98.294, 222.145)
+script = ExtResource("2_hw4m8")
+draw_point = true
+
+[node name="OwnFdgSpring" type="Line2D" parent="FDGFactory/OwnForceDirectedGraph/OwnFdgNode" node_paths=PackedStringArray("node_start", "node_end")]
+width = 2.0
+script = ExtResource("3_5a68e")
+node_start = NodePath("..")
+node_end = NodePath("../../OwnFdgNode2")
+
+[node name="OwnFdgNode2" type="Node2D" parent="FDGFactory/OwnForceDirectedGraph"]
+position = Vector2(399.822, -166.579)
+script = ExtResource("2_hw4m8")
+draw_point = true
+
+[node name="PinchPanCamera" type="Marker2D" parent="."]
+script = ExtResource("4_fflji")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -87.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="UserName" type="Label" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+text = "UserName
+"
+
+[node name="ProfileImage" type="TextureRect" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ArtistAmmount" type="HSlider" parent="CanvasLayer"]
+offset_left = 40.0
+offset_top = 609.0
+offset_right = 431.0
+offset_bottom = 625.0
+min_value = 5.0
+max_value = 600.0
+value = 5.0
+
+[node name="ReOrder" type="Button" parent="CanvasLayer"]
+offset_left = 456.0
+offset_top = 609.0
+offset_right = 464.0
+offset_bottom = 617.0
+text = "Reorder"

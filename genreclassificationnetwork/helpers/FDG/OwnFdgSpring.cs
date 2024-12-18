@@ -3,7 +3,7 @@ using System;
 
 namespace GenreClassificationNetwork
 {
-	[GlobalClass, Icon("res://addons/force_directed_graph/icons/FDGSpring.svg")]
+	[GlobalClass, Icon("res://resources/FDGSpring.svg")]
 	[Tool]
 	public partial class OwnFdgSpring : Line2D
 	{
