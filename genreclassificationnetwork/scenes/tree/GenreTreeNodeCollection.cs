@@ -15,7 +15,7 @@ namespace MusicGenreTreeView {
 			newNode.SetSize(size);
 			newNode.SetSphereColor(color);
 
-    		this.AddChild(newNode);
+			this.AddChild(newNode);
 		}
 	}
 }

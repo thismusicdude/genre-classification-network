@@ -1,13 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://bkdm2kv52qg75"]
+[gd_scene load_steps=4 format=3 uid="uid://bkdm2kv52qg75"]
 
 [ext_resource type="Texture2D" uid="uid://bqgk1y8r5yue" path="res://resources/spotify_icon.svg" id="1_sj2sr"]
 [ext_resource type="Script" path="res://scenes/menu/LogIn.cs" id="1_x1m7g"]
+[ext_resource type="Script" path="res://SpotifyDataManager.cs" id="3_pmhle"]
 
 [node name="LogIn" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_x1m7g")
@@ -19,10 +22,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -75.5
-offset_top = 24.5
-offset_right = 75.5
-offset_bottom = 55.5
+offset_left = -75.0
+offset_top = 25.0
+offset_right = 76.0
+offset_bottom = 56.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Log in with Spotify"
@@ -42,5 +45,69 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_sj2sr")
 expand_mode = 1
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("3_pmhle")
+
+[node name="LoadGenresButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = 75.0
+offset_right = 76.0
+offset_bottom = 106.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Show Genres based on 50 most played artists"
+
+[node name="LoadTracksButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -135.0
+offset_top = 182.0
+offset_right = 139.0
+offset_bottom = 232.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Show 50 most played songs"
+
+[node name="ListGenresButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -175.0
+offset_top = 117.0
+offset_right = 179.0
+offset_bottom = 171.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Show Genres based on 50 most played songs"
+
+[node name="ListSubgenresButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -132.0
+offset_top = 240.0
+offset_right = 142.0
+offset_bottom = 290.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Show Subgenres
+"
 
 [connection signal="pressed" from="LogInButton" to="." method="_OnLogInButtonPressed"]
