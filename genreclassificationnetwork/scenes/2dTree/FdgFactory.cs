@@ -63,6 +63,30 @@ namespace GenreClassificationNetwork
         }
 
 
+        public void AddConnection(string from, string to)
+        {
+            // if genre Map already contain
+            // if genre Map already contains the genre
+            if (!genreMap.ContainsKey(from) && !genreMap.ContainsKey(to))
+            {
+                return;
+            }
+
+            genreMap.TryGetValue(from, out GenreNode fromNode);
+            genreMap.TryGetValue(to, out GenreNode toNode);
+
+            // add connection to root
+            OwnFdgSpring connection = new()
+            {
+                NodeStart = fromNode,
+                NodeEnd = toNode
+            };
+
+            fromNode.AddChild(connection);
+            UpdateGraphSimulation();
+        }
+
+
         public void AddSubGenre(string parent, string name, double weight)
         {
             // if genre Map already contains the genre
