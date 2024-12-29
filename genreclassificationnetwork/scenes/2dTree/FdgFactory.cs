@@ -66,11 +66,7 @@ namespace GenreClassificationNetwork
         public void AddSubGenre(string parent, string name, double weight)
         {
             // if genre Map already contains the genre
-            if (genreMap.ContainsKey(name))
-            {
-
-            }
-            else
+            if (!genreMap.ContainsKey(name))
             {
                 // TODO: change weight
                 AddGenre(parent, 500);
