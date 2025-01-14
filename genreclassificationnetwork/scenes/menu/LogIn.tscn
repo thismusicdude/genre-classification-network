@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bkdm2kv52qg75"]
+[gd_scene load_steps=5 format=3 uid="uid://bkdm2kv52qg75"]
 
 [ext_resource type="Texture2D" uid="uid://bqgk1y8r5yue" path="res://resources/spotify_icon.svg" id="1_sj2sr"]
 [ext_resource type="Script" path="res://scenes/menu/LogIn.cs" id="1_x1m7g"]
 [ext_resource type="Shader" path="res://liquid_ribbon_shader.gdshader" id="2_g7f82"]
-[ext_resource type="Script" path="res://SpotifyDataManager.cs" id="3_pmhle"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eg8yt"]
 shader = ExtResource("2_g7f82")
@@ -64,9 +63,6 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_sj2sr")
 expand_mode = 1
-
-[node name="Node" type="Node" parent="."]
-script = ExtResource("3_pmhle")
 
 [node name="LoadGenresButton" type="Button" parent="."]
 layout_mode = 1
