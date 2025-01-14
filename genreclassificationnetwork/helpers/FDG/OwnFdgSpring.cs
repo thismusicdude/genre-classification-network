@@ -3,99 +3,124 @@ using System;
 
 namespace GenreClassificationNetwork
 {
-	[GlobalClass, Icon("res://resources/FDGSpring.svg")]
-	[Tool]
-	public partial class OwnFdgSpring : Line2D
-	{
-		// Signal-Äquivalent in C#
-		[Signal]
-		public delegate void ConnectionChangedEventHandler();
+    [GlobalClass, Icon("res://resources/FDGSpring.svg")]
+    [Tool]
+    public partial class OwnFdgSpring : Line2D
+    {
+        // Signal-Äquivalent in C#
+        [Signal]
+        public delegate void ConnectionChangedEventHandler();
 
-		// Referenzen für die Knoten, die mit der Feder verbunden sind
-		[Export] public OwnFdgNode node_start;
-		[Export] public OwnFdgNode node_end;
+        private OwnFdgNode _NodeStart = null;
+        // Referenzen für die Knoten, die mit der Feder verbunden sind
+        [Export]
+        public OwnFdgNode NodeStart
+        {
+            get => _NodeStart;
+            set
+            {
+                _NodeStart = value;
+                ConnectNodeStart(value);
+            }
+        }
 
-		// Federlänge und Federkonstante
-		[Export] public float length = 500.0f;
-		[Export] public float K = 0.005f;
+        private OwnFdgNode _NodeEnd = null;
+        [Export]
+        public OwnFdgNode NodeEnd
+        {
+            get => _NodeEnd;
+            set
+            {
+                _NodeEnd = value;
+                ConnectNodeEnd(value);
 
-		// Sichtbarkeit der Linie
-		[Export] public bool draw_line = true;
+            }
+        }
 
-		// Linie zur Darstellung der Feder
-		public Line2D connection;
 
-		public override void _Ready()
-		{
-			base._Ready();
-			Width = 2.0f;
-			connection = new Line2D();  // Initialisiere Line2D für die Darstellung
-			AddChild(connection);        // Füge es als Kind hinzu
-		}
 
-		// Verbindet die zwei Knoten mit der Feder
-		public void ConnectNodes(OwnFdgNode start, OwnFdgNode end)
-		{
-			node_start = start;
-			node_end = end;
-			EmitSignal(nameof(ConnectionChanged));
-		}
+        // Federlänge und Federkonstante
+        [Export]
+        public float length = 500.0f;
+        [Export] public float K = 0.005f;
 
-		// Fügt den verbundenen Knoten eine Kraft hinzu
-		public void MoveNodes()
-		{
-			if (node_start == null || node_end == null)
-				return;
+        // Sichtbarkeit der Linie
+        [Export] public bool draw_line = true;
 
-			Vector2 force = node_end.Position - node_start.Position;
-			float magnitude = K * (force.Length() - length);
+        // Linie zur Darstellung der Feder
+        public Line2D connection;
 
-			force = force.Normalized() * magnitude;
+        public override void _Ready()
+        {
+            base._Ready();
+            Width = 2.0f;
+            connection = new Line2D();  // Initialisiere Line2D für die Darstellung
+            AddChild(connection);        // Füge es als Kind hinzu
+        }
 
-			node_start.Accelerate(force);
-			node_end.Accelerate(-force);
-		}
+        // Verbindet die zwei Knoten mit der Feder
+        public void ConnectNodes(OwnFdgNode start, OwnFdgNode end)
+        {
+            NodeStart = start;
+            NodeEnd = end;
+            EmitSignal(nameof(ConnectionChanged));
+        }
 
-		// Aktualisiert die Position der Federlinie
-		public void UpdateLine()
-		{
-			connection.ClearPoints();
+        // Fügt den verbundenen Knoten eine Kraft hinzu
+        public void MoveNodes()
+        {
+            if (NodeStart == null || NodeEnd == null)
+                return;
 
-			if (!draw_line)
-				return;
+            Vector2 force = NodeEnd.Position - NodeStart.Position;
+            float magnitude = K * (force.Length() - length);
 
-			if (node_start == null || node_end == null)
-				return;
+            force = force.Normalized() * magnitude;
 
-			connection.AddPoint(node_start.Position);
-			connection.AddPoint(node_end.Position);
-		}
+            NodeStart.Accelerate(force);
+            NodeEnd.Accelerate(-force);
+        }
 
-		// Warnungen zur Konfiguration der Feder
-		public string[] GetConfigurationWarnings()
-		{
-			var warnings = new System.Collections.Generic.List<string>();
+        // Aktualisiert die Position der Federlinie
+        public void UpdateLine()
+        {
+            connection.ClearPoints();
 
-			if (!(GetParent() is OwnFdgNode))
-				warnings.Add("The FDGSpring should be a child of a OwnFdgNode");
+            if (!draw_line)
+                return;
 
-			if (node_start == null || node_end == null)
-				warnings.Add("The FDGSpring should have two nodes connected to it");
+            if (NodeStart == null || NodeEnd == null)
+                return;
 
-			return warnings.ToArray();
-		}
+            connection.AddPoint(NodeStart.Position);
+            connection.AddPoint(NodeEnd.Position);
+        }
 
-		// Getter und Setter für node_start und node_end
-		public void _ConnectNodeStart(OwnFdgNode node)
-		{
-			node_start = node;
-			EmitSignal(nameof(ConnectionChanged));
-		}
+        // Warnungen zur Konfiguration der Feder
+        public string[] GetConfigurationWarnings()
+        {
+            var warnings = new System.Collections.Generic.List<string>();
 
-		public void _ConnectNodeEnd(OwnFdgNode node)
-		{
-			node_end = node;
-			EmitSignal(nameof(ConnectionChanged));
-		}
-	}
+            if (!(GetParent() is OwnFdgNode))
+                warnings.Add("The FDGSpring should be a child of a OwnFdgNode");
+
+            if (NodeStart == null || NodeEnd == null)
+                warnings.Add("The FDGSpring should have two nodes connected to it");
+
+            return warnings.ToArray();
+        }
+
+        // Getter und Setter für NodeStart und NodeEnd
+        public void ConnectNodeStart(OwnFdgNode node)
+        {
+           //  NodeStart = node;
+            EmitSignal(nameof(ConnectionChanged));
+        }
+
+        public void ConnectNodeEnd(OwnFdgNode node)
+        {
+           //  NodeEnd = node;
+            EmitSignal(nameof(ConnectionChanged));
+        }
+    }
 }

@@ -9,9 +9,9 @@ namespace GenreClassificationNetwork
     public partial class OwnForceDirectedGraph : Node2D
     {
         // Die OwnFdgNodes im Graph
-        public List<OwnFdgNode> nodes = new List<OwnFdgNode>();
+        public List<OwnFdgNode> nodes = new();
         // Die OwnFdgSprings im Graph
-        public List<OwnFdgSpring> springs = new List<OwnFdgSpring>();
+        public List<OwnFdgSpring> springs = new();
 
         // Wenn aktiviert, wird der Graph aktualisiert (nach Hinzufügen oder Entfernen von Knoten oder Federn)
         private bool _updateGraph;
@@ -121,9 +121,9 @@ namespace GenreClassificationNetwork
                         {
                             // Verbindet das Signal, falls es noch nicht verbunden ist
                             // spring.IsConnected(OwnFdgSpring.SignalName.ConnectionChanged,);
-                            if (this.connectionChangedCallable == null)
+                            if (connectionChangedCallable == null)
                             {
-                                this.connectionChangedCallable = new Callable(this, MethodName.OnConnectionChanged);
+                                connectionChangedCallable = new Callable(this, MethodName.OnConnectionChanged);
                             }
 
                             if (!spring.IsConnected("ConnectionChanged", connectionChangedCallable.Value))
