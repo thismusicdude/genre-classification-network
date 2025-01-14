@@ -144,6 +144,8 @@ namespace GenreTreeMenu
 
 			//GD.Print($"Benutzerprofil: {profileData}");
 			SpotifyDataManager.Instance.UserProfileData = profileData;
+
+			GetTree().ChangeSceneToFile("res://scenes/2dTree/2dtreeScene.tscn");
 		}
 
 		private async Task DisplayTopGenres()
