@@ -1,17 +1,17 @@
 [gd_scene load_steps=4 format=3 uid="uid://d2jopynvd1v0c"]
 
-[ext_resource type="Script" path="res://scenes/2dTree/Testscene.cs" id="1_6bm08"]
-[ext_resource type="Script" path="res://scenes/2dTree/FdgFactory.cs" id="1_34wef"]
-[ext_resource type="Script" path="res://addons/ppc/ppcamera.gd" id="4_fflji"]
+[ext_resource type="Script" path="res://scenes/2dTree/2dtreeScene.cs" id="1_qgovr"]
+[ext_resource type="Script" path="res://scenes/2dTree/FdgFactory.cs" id="2_rxtl8"]
+[ext_resource type="Script" path="res://addons/ppc/ppcamera.gd" id="3_4cprc"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("1_6bm08")
+script = ExtResource("1_qgovr")
 
 [node name="FdgFactory" type="Node2D" parent="."]
-script = ExtResource("1_34wef")
+script = ExtResource("2_rxtl8")
 
 [node name="PinchPanCamera" type="Marker2D" parent="."]
-script = ExtResource("4_fflji")
+script = ExtResource("3_4cprc")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
