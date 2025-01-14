@@ -27,14 +27,12 @@ public partial class SpotifyDataManager : Node
     }
 
     // API-Aufruf: Top-Künstler abrufen
-    public async Task<string> GetTopArtists(string accessToken)
+    public static async Task<string> GetTopArtists(string accessToken)
     {
-        using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-        {
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-            var response = await client.GetAsync("https://api.spotify.com/v1/me/top/artists?limit=50");
-            return await response.Content.ReadAsStringAsync();
-        }
+        using System.Net.Http.HttpClient client = new();
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+        var response = await client.GetAsync("https://api.spotify.com/v1/me/top/artists?limit=50");
+        return await response.Content.ReadAsStringAsync();
     }
 
     // Genres aus Top-Künstlern extrahieren
@@ -107,17 +105,15 @@ public partial class SpotifyDataManager : Node
             {
                 var artistId = (string)artist.id;
 
-                using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-                {
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-                    var artistResponse = await client.GetAsync($"https://api.spotify.com/v1/artists/{artistId}");
-                    var artistData = await artistResponse.Content.ReadAsStringAsync();
-                    var artistDetails = JsonConvert.DeserializeObject<dynamic>(artistData);
+                using System.Net.Http.HttpClient client = new();
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                var artistResponse = await client.GetAsync($"https://api.spotify.com/v1/artists/{artistId}");
+                var artistData = await artistResponse.Content.ReadAsStringAsync();
+                var artistDetails = JsonConvert.DeserializeObject<dynamic>(artistData);
 
-                    foreach (var genre in artistDetails.genres)
-                    {
-                        genreList.Add((string)genre);
-                    }
+                foreach (var genre in artistDetails.genres)
+                {
+                    genreList.Add((string)genre);
                 }
             }
         }
@@ -148,14 +144,12 @@ public partial class SpotifyDataManager : Node
         return trackNames;
     }
 
-    public async Task<string> GetTopTracks(string accessToken)
+    public static async Task<string> GetTopTracks(string accessToken)
     {
-        using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-        {
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-            var response = await client.GetAsync("https://api.spotify.com/v1/me/top/tracks?limit=50");
-            return await response.Content.ReadAsStringAsync();
-        }
+        using System.Net.Http.HttpClient client = new();
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+        var response = await client.GetAsync("https://api.spotify.com/v1/me/top/tracks?limit=50");
+        return await response.Content.ReadAsStringAsync();
     }
 }
 
