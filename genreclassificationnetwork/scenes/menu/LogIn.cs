@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System.Linq;
 
 
-namespace GenreTreeMenu
+namespace GenreClassificationNetwork
 {
 	public partial class LogIn : Control
 	{
@@ -29,10 +29,12 @@ namespace GenreTreeMenu
 				GD.Print($"LogInButton gefunden: {logInButton.Name}");
 			}
 
+			/*
+
 			var loadGenresButton = GetNode<Button>("LoadGenresButton");
 			if (loadGenresButton != null)
 			{
-				loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
+				_ = loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
 				GD.Print("LoadGenresButton verbunden!");
 			}
 
@@ -56,6 +58,7 @@ namespace GenreTreeMenu
 				listSubgenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayGenreHierarchy));
 				GD.Print("ListSubgenresButton verbunden!");
 			}
+			*/
 		}
 
 		// Öffnet eine URL im Standardbrowser
@@ -145,7 +148,7 @@ namespace GenreTreeMenu
 			//GD.Print($"Benutzerprofil: {profileData}");
 			SpotifyDataManager.Instance.UserProfileData = profileData;
 
-			GetTree().ChangeSceneToFile("res://scenes/2dTree/2dtreeScene.tscn");
+			_ = GetTree().ChangeSceneToFile("res://scenes/2dTree/MainTreeScene.tscn");
 		}
 
 		private async Task DisplayTopGenres()
