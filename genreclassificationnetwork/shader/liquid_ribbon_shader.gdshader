@@ -12,7 +12,7 @@ uniform float freq_coeff: hint_range(0.0, 20.0, 0.01) = 1;
 void fragment() {
 	vec2 uv = UV -0.5;
 	float time = TIME * speed * 0.01;
-	
+
 	// fractal brownian motion without fractals
 	float freq = freq_start;
 	for (int i = 0; i < iterations; i++) {
@@ -20,7 +20,7 @@ void fragment() {
 		uv.x += cos(uv.y * 8.0 + time) / freq;
 		freq += freq_coeff;
 	}
-	
+
 	float wave = sin(uv.y * zoom) * 0.5 + 0.5;
 	wave = 1.0 - smoothstep(0.0, 0.5, wave);
 	float hard_limit = step(wave_crop, 1.0 - abs(uv.y));
