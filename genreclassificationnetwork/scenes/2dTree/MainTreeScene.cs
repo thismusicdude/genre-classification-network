@@ -1,6 +1,8 @@
 using Godot;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GenreClassificationNetwork
 {
@@ -82,23 +84,55 @@ namespace GenreClassificationNetwork
             }
         }
 
-        public void OnButtonPressedEvent()
+
+
+        private async void DisplayGenreHierarchy()
         {
             FdgFactory fdgFac = GetNode<FdgFactory>("FdgFactory");
-            TextEdit textEdit = GetNode<TextEdit>("CanvasLayer/GenreNameEdit");
 
-            fdgFac.AddGenre(textEdit.Text, 500);
-        }
+            /*
+                        foreach (Node child in fdgFac.GetChildren())
+                        {
+                            fdgFac.RemoveChild(child);
+                            child.QueueFree();
+                        }
+            */
+            if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
+            {
+                GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
+                return;
+            }
+
+            var genreHierarchy = await SpotifyDataManager.Instance.GetGenresWithSubgenres(SpotifyDataManager.Instance.AccessToken);
+
+            foreach (var (mainGenre, subgenres) in genreHierarchy)
+            {
+                GD.Print($"Hauptgenre: {mainGenre}");
+
+                foreach (var subgenre in subgenres.Distinct())
+                {
+                    GD.Print($"  - {subgenre}");
+                }
+            }
 
 
-        public void OnButtonSubPressedEvent()
-        {
-            FdgFactory fdgFac = GetNode<FdgFactory>("FdgFactory");
-            TextEdit subgenrename = GetNode<TextEdit>("CanvasLayer/SubGenreNameEdit");
+            GD.Print("Genre-Hierarchie:");
+            foreach (var (mainGenre, subgenres) in genreHierarchy)
+            {
+                GD.Print($"Hauptgenre: {mainGenre}");
+                fdgFac.AddGenre(mainGenre, 500);
 
-            TextEdit parentname = GetNode<TextEdit>("CanvasLayer/ParentGenreNameEdit");
-
-            fdgFac.AddSubGenre(parentname.Text, subgenrename.Text, 500);
+                await Task.Delay(500);
+                foreach (var subgenre in subgenres.Distinct())
+                {
+                    if (mainGenre != subgenre)
+                    {
+                        fdgFac.AddSubGenre(mainGenre, subgenre, 500);
+                        GD.Print($"  - {subgenre}");
+                    }
+                    await Task.Delay(500);
+                }
+            }
         }
     }
 
