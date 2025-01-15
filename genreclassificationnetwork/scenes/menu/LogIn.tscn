@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bqgk1y8r5yue" path="res://resources/spotify_icon.svg" id="1_sj2sr"]
 [ext_resource type="Script" path="res://scenes/menu/LogIn.cs" id="1_x1m7g"]
-[ext_resource type="Shader" path="res://liquid_ribbon_shader.gdshader" id="2_g7f82"]
+[ext_resource type="Shader" path="res://shader/liquid_ribbon_shader.gdshader" id="2_g7f82"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eg8yt"]
 shader = ExtResource("2_g7f82")
