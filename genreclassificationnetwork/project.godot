@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="GenreClassificationNetwork"
-run/main_scene="res://scenes/2dTree/testscene.tscn"
+run/main_scene="res://scenes/menu/LogIn.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SpotifyDataManager="*res://SpotifyDataManager.cs"
 
 [display]
 

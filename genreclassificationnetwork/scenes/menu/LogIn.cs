@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System.Linq;
 
 
-namespace GenreTreeMenu
+namespace GenreClassificationNetwork
 {
 	public partial class LogIn : Control
 	{
@@ -29,10 +29,12 @@ namespace GenreTreeMenu
 				GD.Print($"LogInButton gefunden: {logInButton.Name}");
 			}
 
+			/*
+
 			var loadGenresButton = GetNode<Button>("LoadGenresButton");
 			if (loadGenresButton != null)
 			{
-				loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
+				_ = loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
 				GD.Print("LoadGenresButton verbunden!");
 			}
 
@@ -42,20 +44,21 @@ namespace GenreTreeMenu
 				listGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayGenresAsListFromTracks));
 				GD.Print("ListGenresButton verbunden!");
 			}
-			
+
 			var loadTracksButton = GetNode<Button>("LoadTracksButton");
 			if (loadTracksButton != null)
 			{
 				loadTracksButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTrackNames));
 				GD.Print("LoadTracksButton verbunden!");
 			}
-			
+
 			var listSubgenresButton = GetNode<Button>("ListSubgenresButton");
 			if (listSubgenresButton != null)
 			{
 				listSubgenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayGenreHierarchy));
 				GD.Print("ListSubgenresButton verbunden!");
 			}
+			*/
 		}
 
 		// Öffnet eine URL im Standardbrowser
@@ -67,11 +70,10 @@ namespace GenreTreeMenu
 		// Holt das Access Token von Spotify
 		public async Task<string> GetAccessToken(string code)
 		{
-			using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
+			using System.Net.Http.HttpClient client = new();
+			var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
+			request.Content = new FormUrlEncodedContent(new[]
 			{
-				var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
-				request.Content = new FormUrlEncodedContent(new[]
-				{
 				new KeyValuePair<string, string>("grant_type", "authorization_code"),
 				new KeyValuePair<string, string>("code", code),
 				new KeyValuePair<string, string>("redirect_uri", redirectUri),
@@ -79,23 +81,20 @@ namespace GenreTreeMenu
 				new KeyValuePair<string, string>("client_secret", clientSecret),
 			});
 
-				var response = await client.SendAsync(request);
-				var responseString = await response.Content.ReadAsStringAsync();
-				var tokenData = JsonConvert.DeserializeObject<dynamic>(responseString);
+			var response = await client.SendAsync(request);
+			var responseString = await response.Content.ReadAsStringAsync();
+			var tokenData = JsonConvert.DeserializeObject<dynamic>(responseString);
 
-				return tokenData.access_token;
-			}
+			return tokenData.access_token;
 		}
 
 		// Holt das Benutzerprofil von Spotify
 		public async Task<string> GetUserProfile(string accessToken)
 		{
-			using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-			{
-				client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-				var response = await client.GetAsync("https://api.spotify.com/v1/me");
-				return await response.Content.ReadAsStringAsync(); // JSON-Daten des Benutzerprofils
-			}
+			using System.Net.Http.HttpClient client = new();
+			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+			var response = await client.GetAsync("https://api.spotify.com/v1/me");
+			return await response.Content.ReadAsStringAsync(); // JSON-Daten des Benutzerprofils
 		}
 
 		public async Task _OnLogInButtonPressed()
@@ -148,6 +147,8 @@ namespace GenreTreeMenu
 
 			//GD.Print($"Benutzerprofil: {profileData}");
 			SpotifyDataManager.Instance.UserProfileData = profileData;
+
+			_ = GetTree().ChangeSceneToFile("res://scenes/2dTree/MainTreeScene.tscn");
 		}
 
 		private async Task DisplayTopGenres()
@@ -179,7 +180,7 @@ namespace GenreTreeMenu
 			}
 			*/
 		}
-		
+
 		// Beispiel für die Verwendung
 		public async Task DisplayTrackNames()
 		{
@@ -199,14 +200,12 @@ namespace GenreTreeMenu
 			}
 		}
 
-		public async Task<string> GetTopTracks(string accessToken)
+		public static async Task<string> GetTopTracks(string accessToken)
 		{
-			using (System.Net.Http.HttpClient client = new System.Net.Http.HttpClient())
-			{
-				client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-				var response = await client.GetAsync("https://api.spotify.com/v1/me/top/tracks?limit=50");
-				return await response.Content.ReadAsStringAsync();
-			}
+			using System.Net.Http.HttpClient client = new();
+			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+			var response = await client.GetAsync("https://api.spotify.com/v1/me/top/tracks?limit=50");
+			return await response.Content.ReadAsStringAsync();
 		}
 
 		private async Task DisplayGenresAsListFromTracks()
@@ -226,7 +225,7 @@ namespace GenreTreeMenu
 				GD.Print($"{genre}: {count}");
 			}
 		}
-		
+
 		private async Task DisplayGenreHierarchy()
 		{
 			if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))

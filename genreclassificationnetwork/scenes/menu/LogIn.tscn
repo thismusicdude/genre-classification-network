@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bkdm2kv52qg75"]
+[gd_scene load_steps=9 format=3 uid="uid://bkdm2kv52qg75"]
 
 [ext_resource type="Texture2D" uid="uid://bqgk1y8r5yue" path="res://resources/spotify_icon.svg" id="1_sj2sr"]
 [ext_resource type="Script" path="res://scenes/menu/LogIn.cs" id="1_x1m7g"]
-[ext_resource type="Shader" path="res://scenes/menu/liquid_ribbon_shader.gdshader" id="2_g7f82"]
-[ext_resource type="Script" path="res://SpotifyDataManager.cs" id="3_pmhle"]
+[ext_resource type="Shader" path="res://shader/liquid_ribbon_shader.gdshader" id="2_g7f82"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eg8yt"]
 shader = ExtResource("2_g7f82")
@@ -14,6 +13,29 @@ shader_parameter/speed = 10.0
 shader_parameter/iterations = 10
 shader_parameter/freq_start = 20.0
 shader_parameter/freq_coeff = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4afa5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tp7nl"]
+bg_color = Color(0.106237, 0.106237, 0.106237, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gm5k1"]
+bg_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ekag"]
+bg_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [node name="LogIn" type="Control"]
 layout_mode = 3
@@ -41,13 +63,18 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -75.0
-offset_top = 25.0
-offset_right = 76.0
-offset_bottom = 56.0
+offset_left = -172.0
+offset_top = 46.0
+offset_right = 179.0
+offset_bottom = 118.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Log in with Spotify"
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4afa5")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tp7nl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_gm5k1")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5ekag")
+text = "LogIn with Spotify"
 
 [node name="SpotifyLogo" type="TextureRect" parent="."]
 layout_mode = 1
@@ -64,69 +91,5 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_sj2sr")
 expand_mode = 1
-
-[node name="Node" type="Node" parent="."]
-script = ExtResource("3_pmhle")
-
-[node name="LoadGenresButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -75.0
-offset_top = 75.0
-offset_right = 76.0
-offset_bottom = 106.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Show Genres based on 50 most played artists"
-
-[node name="LoadTracksButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -135.0
-offset_top = 182.0
-offset_right = 139.0
-offset_bottom = 232.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Show 50 most played songs"
-
-[node name="ListGenresButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -175.0
-offset_top = 117.0
-offset_right = 179.0
-offset_bottom = 171.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Show Genres based on 50 most played songs"
-
-[node name="ListSubgenresButton" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -132.0
-offset_top = 240.0
-offset_right = 142.0
-offset_bottom = 290.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Show Subgenres
-"
 
 [connection signal="pressed" from="LogInButton" to="." method="_OnLogInButtonPressed"]
