@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://d2jopynvd1v0c"]
+[gd_scene load_steps=11 format=3 uid="uid://d2jopynvd1v0c"]
 
 [ext_resource type="Script" path="res://scenes/2dTree/MainTreeScene.cs" id="1_qgovr"]
 [ext_resource type="Script" path="res://scenes/2dTree/FdgFactory.cs" id="2_rxtl8"]
 [ext_resource type="Script" path="res://addons/ppc/ppcamera.gd" id="3_4cprc"]
+[ext_resource type="Texture2D" uid="uid://cf72t0fnmi1qr" path="res://resources/playlist-minimalistic-3-svgrepo-com (1).svg" id="4_so2sf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yokag"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -14,6 +15,41 @@ corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q1mgk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fk6jg"]
+bg_color = Color(0.140447, 0.140447, 0.140447, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+expand_margin_left = 15.0
+expand_margin_top = 15.0
+expand_margin_right = 15.0
+expand_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_skww3"]
+bg_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6hhfl"]
+bg_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+expand_margin_left = 15.0
+expand_margin_top = 15.0
+expand_margin_right = 15.0
+expand_margin_bottom = 15.0
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_qgovr")
 
@@ -24,42 +60,6 @@ script = ExtResource("2_rxtl8")
 script = ExtResource("3_4cprc")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="ParentGenreNameEdit" type="TextEdit" parent="CanvasLayer"]
-offset_left = 25.0
-offset_top = 169.0
-offset_right = 269.0
-offset_bottom = 206.0
-placeholder_text = "parent name"
-
-[node name="SubGenreNameEdit" type="TextEdit" parent="CanvasLayer"]
-offset_left = 23.0
-offset_top = 214.0
-offset_right = 267.0
-offset_bottom = 251.0
-placeholder_text = "sub genre name"
-
-[node name="GenreNameEdit" type="TextEdit" parent="CanvasLayer"]
-offset_left = 15.0
-offset_top = 31.0
-offset_right = 259.0
-offset_bottom = 68.0
-placeholder_text = "genre name"
-
-[node name="GenreNameAccept" type="Button" parent="CanvasLayer"]
-offset_left = 16.0
-offset_top = 80.0
-offset_right = 106.0
-offset_bottom = 111.0
-text = "Add Genre"
-
-[node name="GenreNameAccept" type="Button" parent="CanvasLayer/GenreNameAccept"]
-layout_mode = 0
-offset_left = 12.0
-offset_top = 193.0
-offset_right = 102.0
-offset_bottom = 224.0
-text = "Add Genre"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
 anchors_preset = 1
@@ -96,21 +96,24 @@ expand_mode = 2
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_yokag")
 
-[node name="ArtistAmmount" type="HSlider" parent="CanvasLayer"]
-offset_left = 40.0
-offset_top = 609.0
-offset_right = 431.0
-offset_bottom = 625.0
-min_value = 5.0
-max_value = 600.0
-value = 5.0
+[node name="LoadAllGenres" type="Button" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -104.0
+offset_top = -104.0
+offset_right = -27.0
+offset_bottom = -28.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_q1mgk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fk6jg")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_skww3")
+theme_override_styles/normal = SubResource("StyleBoxFlat_6hhfl")
+icon = ExtResource("4_so2sf")
+icon_alignment = 1
+expand_icon = true
 
-[node name="ReOrder" type="Button" parent="CanvasLayer"]
-offset_left = 456.0
-offset_top = 609.0
-offset_right = 464.0
-offset_bottom = 617.0
-text = "Reorder"
-
-[connection signal="pressed" from="CanvasLayer/GenreNameAccept" to="." method="OnButtonPressedEvent"]
-[connection signal="pressed" from="CanvasLayer/GenreNameAccept/GenreNameAccept" to="." method="OnButtonSubPressedEvent"]
+[connection signal="pressed" from="CanvasLayer/LoadAllGenres" to="." method="DisplayGenreHierarchy"]

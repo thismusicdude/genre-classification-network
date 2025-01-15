@@ -7,7 +7,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eg8yt"]
 shader = ExtResource("2_g7f82")
 shader_parameter/zoom = 10.0
-shader_parameter/wave_crop = 0.63
+shader_parameter/wave_crop = 0.67
 shader_parameter/brightness = 0.5
 shader_parameter/speed = 10.0
 shader_parameter/iterations = 10

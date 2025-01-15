@@ -46,7 +46,7 @@ namespace GenreClassificationNetwork
             }
 
             RandomNumberGenerator rng = new();
-            GenreNode nodeToAdd = GetGenreNodeInstance(rootNode.Position + new Vector2(rng.Randf(), rng.Randf()));
+            GenreNode nodeToAdd = GetGenreNodeInstance(rootNode.Position + new Vector2(rng.Randfn(), rng.Randfn()));
             nodeToAdd.setGenreTitle(name);
             AddChild(nodeToAdd);
             genreMap.Add(name, nodeToAdd);
