@@ -4,119 +4,178 @@ using System.Collections.Generic;
 
 namespace GenreClassificationNetwork
 {
+	public partial class FdgFactory : OwnForceDirectedGraph
+	{
+		private PackedScene genreNode;
+		private Dictionary<string, GenreNode> genreMap = new();
+		private GenreNode rootNode;
+		private int mainGenreCount = 0; // Zählt die Hauptgenres
+
+		public override void _Ready()
+		{			
+			//base._Ready();
+//
+			//genreNode = GD.Load<PackedScene>("res://scenes/2dTree/genreNode.tscn");
+			//rootNode = CreateGenreNode(new Vector2(100, 100), 1.5f); // Root-Node mit Skalierung 2.0
+			//rootNode.setGenreTitle("Root");
+			//AddChild(rootNode);
+			
+				base._Ready();
+
+			// Root-Node erstellen
+			Vector2 viewportCenter = GetViewportRect().Size / 2;
+			genreNode = GD.Load<PackedScene>("res://scenes/2dTree/genreNode.tscn");
+			rootNode = CreateGenreNode(viewportCenter, 1.5f);
+			rootNode.setGenreTitle("Root Genre");
+			AddChild(rootNode);
+
+			// Kamera initialisieren
+			Camera2D camera = GetNodeOrNull<Camera2D>("Camera2D");
+			if (camera != null)
+			{
+				UpdateCamera(camera); // Kamera direkt anpassen
+			}
+		}
+		
+		public void _Process(float delta)
+		{
+			Camera2D camera = GetNodeOrNull<Camera2D>("Camera2D");
+			if (camera != null)
+			{
+				UpdateCamera(camera); // Kamera bei jeder Änderung aktualisieren
+			}
+		}
+
+		
+		private void UpdateCamera(Camera2D camera)
+		{
+			if (camera == null || rootNode == null) return;
+
+			// Kamera auf den Root-Node zentrieren
+			camera.Position = rootNode.Position;
+
+			// Berechne den maximalen Abstand vom Root-Node zu allen anderen Knoten
+			float maxDistance = 0f;
+			foreach (var node in genreMap.Values)
+			{
+				float distance = rootNode.Position.DistanceTo(node.Position);
+				maxDistance = Mathf.Max(maxDistance, distance);
+			}
+
+			// Passe den Zoom der Kamera an, um alle Knoten sichtbar zu machen
+			float viewportSize = Mathf.Min(GetViewportRect().Size.X, GetViewportRect().Size.Y);
+			float zoomFactor = (maxDistance * 2) / viewportSize; // Faktor für den sichtbaren Bereich
+			camera.Zoom = new Vector2(Mathf.Max(zoomFactor, 1f), Mathf.Max(zoomFactor, 1f));
+		}
 
 
-    public partial class FdgFactory : OwnForceDirectedGraph
-    {
+		private GenreNode CreateGenreNode(Vector2 position, float scale)
+		{
+			GenreNode node = genreNode.Instantiate<GenreNode>();
+			node.Position = position;
+			node.SetNodeSize(scale); // Größe setzen
+			return node;
+		}
 
-        private PackedScene genreNode;
+		public void AddGenre(string name, double weight)
+		{
+			if (genreMap.ContainsKey(name))
+				return;
 
-        private Dictionary<string, GenreNode> genreMap = new();
-        // private OwnForceDirectedGraph fdg;
-        private GenreNode rootNode;
+			// Berechne dynamischen Abstand basierend auf der Anzahl der Hauptgenres
+			float radius = 700f + mainGenreCount * 50f; // Dynamischer Abstand vom Root-Node
+			Vector2 position = CalculateMainGenrePosition(radius);
 
-        private GenreNode GetGenreNodeInstance(Vector2 position)
-        {
-            GenreNode result = genreNode.Instantiate() as GenreNode;
-            result.Position = position;
-            return result;
-        }
+			GenreNode nodeToAdd = CreateGenreNode(position, 1.25f); // Hauptgenre mit Skalierung 1.5
+			nodeToAdd.setGenreTitle(name);
+			AddChild(nodeToAdd);
+			genreMap.Add(name, nodeToAdd);
 
-        public override void _Ready()
-        {
-            base._Ready();
+			CreateConnection(rootNode, nodeToAdd);
+		}
 
-            genreNode = GD.Load<PackedScene>("res://scenes/2dTree/genreNode.tscn");
-            rootNode = GetGenreNodeInstance(new Vector2(250, 250));
-            AddChild(rootNode);
-        }
+		public void AddSubGenre(string parent, string name, double weight)
+		{
+			if (!genreMap.ContainsKey(parent) || genreMap.ContainsKey(name))
+				return;
 
-        // Called every frame. 'delta' is the elapsed time since the previous frame.
-        public override void _Process(double delta)
-        {
-            base._Process(delta);
-        }
+			GenreNode parentNode = genreMap[parent];
 
-        public void AddGenre(string name, double weight)
-        {
-            // if genre Map already contains the genre
-            if (genreMap.ContainsKey(name))
-            {
-                return;
-            }
+			// Berechne Subgenre-Position mit gleichmäßiger Verteilung um das Hauptgenre
+			int subGenreCount = CountSubGenres(parent);
+			Vector2 position = CalculateSubGenrePosition(parentNode, subGenreCount);
 
-            RandomNumberGenerator rng = new();
-            GenreNode nodeToAdd = GetGenreNodeInstance(rootNode.Position + new Vector2(rng.Randfn(), rng.Randfn()));
-            nodeToAdd.setGenreTitle(name);
-            AddChild(nodeToAdd);
-            genreMap.Add(name, nodeToAdd);
+			GenreNode nodeToAdd = CreateGenreNode(position, 1.0f); // Subgenre mit Skalierung 1.0
+			nodeToAdd.setGenreTitle(name);
+			AddChild(nodeToAdd);
+			genreMap.Add(name, nodeToAdd);
 
-            // add connection to root
-            OwnFdgSpring connectionToRoot = new()
-            {
-                NodeStart = rootNode,
-                NodeEnd = nodeToAdd
-            };
+			CreateConnection(parentNode, nodeToAdd);
+		}
 
-            rootNode.AddChild(connectionToRoot);
-            UpdateGraphSimulation();
-        }
+		private void CreateConnection(GenreNode startNode, GenreNode endNode)
+		{
+			OwnFdgSpring connection = new()
+			{
+				NodeStart = startNode,
+				NodeEnd = endNode
+			};
 
+			// Verbindungseinstellungen
+			if (startNode == rootNode) // Root → Hauptgenre
+			{
+				connection.K = 0.002f;      // Schwächere Federkraft
+				connection.length = 800f; // Dynamischer Zielabstand
+			}
+			else // Hauptgenre → Subgenre
+			{
+				connection.K = 0.01f;      // Stärkere Federkraft
+				connection.length = 400f; // Größerer Zielabstand
+			}
 
-        public void AddConnection(string from, string to)
-        {
-            // if genre Map already contain
-            // if genre Map already contains the genre
-            if (!genreMap.ContainsKey(from) && !genreMap.ContainsKey(to))
-            {
-                return;
-            }
+			startNode.AddChild(connection);
+			UpdateGraphSimulation();
+		}
 
-            genreMap.TryGetValue(from, out GenreNode fromNode);
-            genreMap.TryGetValue(to, out GenreNode toNode);
+		private Vector2 CalculateMainGenrePosition(float radius)
+		{
+			const int maxMainGenres = 12; // Maximale Hauptgenres für gleichmäßige Verteilung
+			float angleStep = 2 * Mathf.Pi / maxMainGenres; // Gleichmäßiger Winkel
 
-            // add connection to root
-            OwnFdgSpring connection = new()
-            {
-                NodeStart = fromNode,
-                NodeEnd = toNode
-            };
+			float angle = mainGenreCount * angleStep;
+			mainGenreCount++; // Für das nächste Hauptgenre
 
-            fromNode.AddChild(connection);
-            UpdateGraphSimulation();
-        }
+			return rootNode.Position + new Vector2(
+				Mathf.Cos(angle) * radius,
+				Mathf.Sin(angle) * radius
+			);
+		}
 
+		private Vector2 CalculateSubGenrePosition(GenreNode parent, int subGenreCount)
+		{
+			const float baseDistance = 300f; // Mindestabstand zum Hauptgenre
+			float radius = baseDistance + subGenreCount * 50f; // Dynamische Entfernung
 
-        public void AddSubGenre(string parent, string name, double weight)
-        {
-            // if genre Map already contains the genre
-            if (!genreMap.ContainsKey(name))
-            {
-                // TODO: change weight
-                AddGenre(parent, 500);
-            }
+			float angleStep = Mathf.Pi / 6; // Gleichmäßiger Winkel für Subgenres
+			float angle = subGenreCount * angleStep; // Winkel basierend auf der Anzahl der Subgenres
 
-            GenreNode parentNode = genreMap.GetValueOrDefault(parent);
+			Vector2 direction = (parent.Position - rootNode.Position).Normalized();
 
-            // add new node
-            RandomNumberGenerator rng = new();
+			// Position weiter außen entlang des Vektors vom Hauptgenre
+			return parent.Position + direction.Rotated(angle) * radius;
+		}
 
-
-            GenreNode nodeToAdd = GetGenreNodeInstance(parentNode.Position + new Vector2(rng.Randf(), rng.Randf()));
-            nodeToAdd.setGenreTitle(name);
-            AddChild(nodeToAdd);
-
-            genreMap.Add(name, nodeToAdd);
-
-            // add connection to parent
-            OwnFdgSpring connectionToRoot = new()
-            {
-                NodeStart = parentNode,
-                NodeEnd = nodeToAdd
-            };
-
-            parentNode.AddChild(connectionToRoot);
-            UpdateGraphSimulation();
-        }
-    }
+		private int CountSubGenres(string parent)
+		{
+			int count = 0;
+			foreach (var connection in genreMap)
+			{
+				if (connection.Value != null && connection.Key.StartsWith(parent))
+				{
+					count++;
+				}
+			}
+			return count;
+		}
+	}
 }
