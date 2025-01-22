@@ -24,50 +24,56 @@ namespace GenreClassificationNetwork
 
 			// Root-Node erstellen
 			Vector2 viewportCenter = GetViewportRect().Size / 2;
+			//Vector2 viewportCenter = GetViewportRect().Size;
+
+			//GD.Print("");
+			//GD.Print($"GetViewportRect().Size: {GetViewportRect().Size}");
+			//GD.Print($"viewportCenter: {viewportCenter}");
+			
+			
 			genreNode = GD.Load<PackedScene>("res://scenes/2dTree/genreNode.tscn");
-			rootNode = CreateGenreNode(viewportCenter, 1.5f);
-			rootNode.setGenreTitle("Root Genre");
+			rootNode = CreateGenreNode(viewportCenter, 1f);
+			rootNode.setGenreTitle("Root");
 			AddChild(rootNode);
-
-			// Kamera initialisieren
-			Camera2D camera = GetNodeOrNull<Camera2D>("Camera2D");
-			if (camera != null)
+			
+			var pinchPanCamera = GetNodeOrNull<Marker2D>("/root/Main/PinchPanCamera");
+			
+			if (pinchPanCamera != null)
 			{
-				UpdateCamera(camera); // Kamera direkt anpassen
+				//pinchPanCamera.Set("zoom", new Vector2(1.5f, 1.5f)); // Zoomfaktor ändern
+				//pinchPanCamera.Call("set_zoom", 1.5f); // Zoomfaktor setzen
+				//pinchPanCamera.Scale = new Vector2(10f, 10f); // Weiter herauszoomen
+				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition; // Kamera auf Root-Node zentrieren
+
+
+				//pinchPanCamera.Set("zoom", new Vector2(1.5f, 1.5f)); // Zoomfaktor ändern
+				
+				//GD.Print($"PinchPanCamera positioniert auf: {pinchPanCamera.GlobalPosition}");			}
 			}
+			else
+			{
+				GD.PrintErr("Keine PinchPanCamera gefunden!");
+			}
+			
+			GD.Print($"Root-Node Position: {rootNode.GlobalPosition}");
+			//GD.Print($"PinchPanCamera Position: {pinchPanCamera?.GlobalPosition}");
 		}
 		
-		public void _Process(float delta)
-		{
-			Camera2D camera = GetNodeOrNull<Camera2D>("Camera2D");
-			if (camera != null)
-			{
-				UpdateCamera(camera); // Kamera bei jeder Änderung aktualisieren
-			}
-		}
-
-		
-		private void UpdateCamera(Camera2D camera)
-		{
-			if (camera == null || rootNode == null) return;
-
-			// Kamera auf den Root-Node zentrieren
-			camera.Position = rootNode.Position;
-
-			// Berechne den maximalen Abstand vom Root-Node zu allen anderen Knoten
-			float maxDistance = 0f;
-			foreach (var node in genreMap.Values)
-			{
-				float distance = rootNode.Position.DistanceTo(node.Position);
-				maxDistance = Mathf.Max(maxDistance, distance);
-			}
-
-			// Passe den Zoom der Kamera an, um alle Knoten sichtbar zu machen
-			float viewportSize = Mathf.Min(GetViewportRect().Size.X, GetViewportRect().Size.Y);
-			float zoomFactor = (maxDistance * 2) / viewportSize; // Faktor für den sichtbaren Bereich
-			camera.Zoom = new Vector2(Mathf.Max(zoomFactor, 1f), Mathf.Max(zoomFactor, 1f));
-		}
-
+		//public override void _Process(double delta){
+//
+				////Position = Vector2.Zero; // Oder eine feste Position, z. B. (100, 100)
+//
+			//if (rootNode != null)
+			//{
+				//rootNode.Position = new Vector2(960, 540); // Feste Position für den Root-Node
+				////Vector2 viewportCenter = GetViewportRect().Size / 2;
+				////rootNode = CreateGenreNode(viewportCenter, 1f);
+			//}
+			////else
+			////{
+				////base._Process(delta); // Andere Nodes können sich weiterhin bewegen
+			////}
+		//}
 
 		private GenreNode CreateGenreNode(Vector2 position, float scale)
 		{
@@ -86,7 +92,7 @@ namespace GenreClassificationNetwork
 			float radius = 700f + mainGenreCount * 50f; // Dynamischer Abstand vom Root-Node
 			Vector2 position = CalculateMainGenrePosition(radius);
 
-			GenreNode nodeToAdd = CreateGenreNode(position, 1.25f); // Hauptgenre mit Skalierung 1.5
+			GenreNode nodeToAdd = CreateGenreNode(position, 0.75f); // Hauptgenre mit Skalierung 1.5
 			nodeToAdd.setGenreTitle(name);
 			AddChild(nodeToAdd);
 			genreMap.Add(name, nodeToAdd);
@@ -105,7 +111,7 @@ namespace GenreClassificationNetwork
 			int subGenreCount = CountSubGenres(parent);
 			Vector2 position = CalculateSubGenrePosition(parentNode, subGenreCount);
 
-			GenreNode nodeToAdd = CreateGenreNode(position, 1.0f); // Subgenre mit Skalierung 1.0
+			GenreNode nodeToAdd = CreateGenreNode(position, 0.55f); // Subgenre mit Skalierung 1.0
 			nodeToAdd.setGenreTitle(name);
 			AddChild(nodeToAdd);
 			genreMap.Add(name, nodeToAdd);
@@ -125,7 +131,7 @@ namespace GenreClassificationNetwork
 			if (startNode == rootNode) // Root → Hauptgenre
 			{
 				connection.K = 0.002f;      // Schwächere Federkraft
-				connection.length = 800f; // Dynamischer Zielabstand
+				connection.length = 450f; // Dynamischer Zielabstand
 			}
 			else // Hauptgenre → Subgenre
 			{
@@ -153,8 +159,8 @@ namespace GenreClassificationNetwork
 
 		private Vector2 CalculateSubGenrePosition(GenreNode parent, int subGenreCount)
 		{
-			const float baseDistance = 300f; // Mindestabstand zum Hauptgenre
-			float radius = baseDistance + subGenreCount * 50f; // Dynamische Entfernung
+			const float baseDistance = 150; // Mindestabstand zum Hauptgenre
+			float radius = baseDistance + subGenreCount * 100f; // Dynamische Entfernung
 
 			float angleStep = Mathf.Pi / 6; // Gleichmäßiger Winkel für Subgenres
 			float angle = subGenreCount * angleStep; // Winkel basierend auf der Anzahl der Subgenres

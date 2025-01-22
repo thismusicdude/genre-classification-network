@@ -20,6 +20,10 @@ namespace GenreClassificationNetwork
 		{
 			Label genreTitle = GetNode<Label>("Sprite2D/Label");
 			genreTitle.Text = title;
+			
+			// Text zentrieren
+			genreTitle.HorizontalAlignment = HorizontalAlignment.Center;
+			genreTitle.VerticalAlignment = VerticalAlignment.Center;
 		}
 
 		// Methode, um die Größe des Knotens zu ändern
@@ -29,7 +33,8 @@ namespace GenreClassificationNetwork
 			sprite.Scale = new Vector2(scale, scale);
 
 			Label genreTitle = GetNode<Label>("Sprite2D/Label");
-			genreTitle.Scale = new Vector2(scale, scale); // Skalierung des Labels entsprechend anpassen
+			//genreTitle.Scale = new Vector2(scale, scale); // Skalierung des Labels entsprechend anpassen
+			genreTitle.Scale = Vector2.One; // Skalierung des Textes bleibt konstant
 		}
 	}
 }

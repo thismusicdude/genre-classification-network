@@ -67,6 +67,8 @@ func _enter_tree() -> void:
 	min_zoom = Vector2(min_zoom_factor, min_zoom_factor)
 	max_zoom = Vector2(max_zoom_factor, max_zoom_factor)
 	
+	#scale = Vector2(5, 5)
+	
 	var touch_camera := TouchZoomCamera2D.new()
 	touch_camera.name = "TouchZoomCamera2D"
 	add_child(touch_camera)
