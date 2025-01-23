@@ -9,18 +9,13 @@ namespace GenreClassificationNetwork
 		private PackedScene genreNode;
 		private Dictionary<string, GenreNode> genreMap = new();
 		private GenreNode rootNode;
-		private int mainGenreCount = 0; // Zählt die Hauptgenres
+		private int mainGenreCount = 0;
+		Marker2D pinchPanCamera;
+		Camera2D TouchZoomCamera;
 
 		public override void _Ready()
 		{			
-			//base._Ready();
-//
-			//genreNode = GD.Load<PackedScene>("res://scenes/2dTree/genreNode.tscn");
-			//rootNode = CreateGenreNode(new Vector2(100, 100), 1.5f); // Root-Node mit Skalierung 2.0
-			//rootNode.setGenreTitle("Root");
-			//AddChild(rootNode);
-			
-				base._Ready();
+			base._Ready();
 
 			// Root-Node erstellen
 			Vector2 viewportCenter = GetViewportRect().Size / 2;
@@ -36,19 +31,16 @@ namespace GenreClassificationNetwork
 			rootNode.setGenreTitle("Root");
 			AddChild(rootNode);
 			
-			var pinchPanCamera = GetNodeOrNull<Marker2D>("/root/Main/PinchPanCamera");
+			pinchPanCamera = GetNodeOrNull<Marker2D>("/root/Main/PinchPanCamera");
+			TouchZoomCamera = GetNodeOrNull<Camera2D>("/root/Main/PinchPanCamera/TouchZoomCamera2D");
+		
+			//private Camera2D TouchZoomCamera;
 			
-			if (pinchPanCamera != null)
-			{
-				//pinchPanCamera.Set("zoom", new Vector2(1.5f, 1.5f)); // Zoomfaktor ändern
-				//pinchPanCamera.Call("set_zoom", 1.5f); // Zoomfaktor setzen
-				//pinchPanCamera.Scale = new Vector2(10f, 10f); // Weiter herauszoomen
+			if (pinchPanCamera != null && TouchZoomCamera != null)
+			{				
 				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition; // Kamera auf Root-Node zentrieren
-
-
-				//pinchPanCamera.Set("zoom", new Vector2(1.5f, 1.5f)); // Zoomfaktor ändern
 				
-				//GD.Print($"PinchPanCamera positioniert auf: {pinchPanCamera.GlobalPosition}");			}
+				TouchZoomCamera.Zoom = new Vector2(0.8f, 0.8f);
 			}
 			else
 			{
@@ -59,21 +51,18 @@ namespace GenreClassificationNetwork
 			//GD.Print($"PinchPanCamera Position: {pinchPanCamera?.GlobalPosition}");
 		}
 		
-		//public override void _Process(double delta){
-//
-				////Position = Vector2.Zero; // Oder eine feste Position, z. B. (100, 100)
-//
-			//if (rootNode != null)
-			//{
-				//rootNode.Position = new Vector2(960, 540); // Feste Position für den Root-Node
-				////Vector2 viewportCenter = GetViewportRect().Size / 2;
-				////rootNode = CreateGenreNode(viewportCenter, 1f);
-			//}
-			////else
-			////{
-				////base._Process(delta); // Andere Nodes können sich weiterhin bewegen
-			////}
-		//}
+		public override void _Process(double delta){
+			base._Process(delta); // Andere Nodes können sich weiterhin bewegen
+
+			if (pinchPanCamera != null)
+			{
+				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
+			}
+			else 
+			{
+				
+			}
+		}
 
 		private GenreNode CreateGenreNode(Vector2 position, float scale)
 		{
