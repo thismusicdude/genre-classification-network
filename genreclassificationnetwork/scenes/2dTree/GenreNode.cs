@@ -5,10 +5,51 @@ namespace GenreClassificationNetwork
 {
 	public partial class GenreNode : OwnFdgNode
 	{
+        private bool _isDragging = false;
+        private Vector2 _offset = Vector2.Zero;
+        private Marker2D _pinchPan;
+
 		public override void _Ready()
 		{
 			base._Ready();
 		}
+
+
+        public override void _Input(InputEvent @event)
+        {
+            _pinchPan = GetNode<Marker2D>("/root/Main/PinchPanCamera");
+
+            if (@event is InputEventMouseButton mouseButtonEvent)
+            {
+                if (mouseButtonEvent.Pressed)
+                {
+                    if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
+                    {
+                        // Prüfen, ob die Maus auf das Node zeigt
+                        if (GetGlobalRect().HasPoint(GetGlobalMousePosition()))
+                        {
+                            _isDragging = true;
+                            _offset = GetGlobalMousePosition() - GlobalPosition;
+                            _pinchPan.Set("enable_drag", !_isDragging);
+
+                            GD.Print("Name: ", this.Name);
+                            GD.Print("enable_drag before: ", _pinchPan.Get("enable_drag"));
+                            GD.Print("enable_drag after: ", _pinchPan.Get("enable_drag"));
+                        }
+                    }
+                }
+                else
+                {
+                    // Maustaste loslassen beendet Drag
+                    if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
+                    {
+                        _isDragging = false;
+                        _pinchPan.Set("enable_drag", !_isDragging);
+
+                    }
+                }
+            }
+        }
 
 		public override void _Process(double delta)
 		{
@@ -33,8 +74,18 @@ namespace GenreClassificationNetwork
 			sprite.Scale = new Vector2(scale, scale);
 
 			Label genreTitle = GetNode<Label>("Sprite2D/Label");
-			//genreTitle.Scale = new Vector2(scale, scale); // Skalierung des Labels entsprechend anpassen
 			genreTitle.Scale = Vector2.One; // Skalierung des Textes bleibt konstant
 		}
+
+
+        private Rect2 GetGlobalRect()
+        {
+            if (GetNodeOrNull<Sprite2D>("Sprite2D") is Sprite2D sprite)
+            {
+                Vector2 size = sprite.Texture.GetSize() * sprite.Scale;
+                return new Rect2(GlobalPosition - size / 2, size);
+            }
+            return new Rect2();
+        }
 	}
 }

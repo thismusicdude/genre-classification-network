@@ -11,6 +11,7 @@ var current_dist: float = 0
 var zoom_rate : float = 0.1
 var zoom_started: bool = false
 var drag_started: bool = false
+var enable_drag: bool = true
 var input_count: int = 0
 
 var invert_zoom: bool = false
@@ -23,9 +24,9 @@ func _ready() -> void:
 	on_zoom.connect(zoom_this)
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventScreenDrag:
+	if event is InputEventScreenDrag and enable_drag:
 		points[event.index].pos = event.position
-	if event is InputEventScreenTouch:
+	if event is InputEventScreenTouch and enable_drag:
 		
 		points[event.index].state = event.pressed
 		points[event.index].pos = event.position

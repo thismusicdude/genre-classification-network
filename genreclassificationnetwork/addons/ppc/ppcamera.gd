@@ -29,6 +29,8 @@ class_name PinchPanCamera extends Marker2D
 
 
 @export var enable_pinch_pan: bool = true
+@export var enable_drag: bool = true
+
 @export_enum("Normal", "Horizontal", "Vertical") var slide_mode: int
 @export var enabled: bool = true
 @export var natural_slide: bool = true
@@ -89,14 +91,19 @@ func _enter_tree() -> void:
 		add_child(di.instantiate())
 
 func _process(_delta: float) -> void:
+	camera.enable_drag = self.enable_drag
+	if !self.enable_drag:
+		return
 	
 	if camera.drag_left_margin != drag_deadzone.x \
-	and camera.drag_right_margin != drag_deadzone.x:
+	and camera.drag_right_margin != drag_deadzone.x \
+	and enable_drag:
 		camera.drag_left_margin = drag_deadzone.x
 		camera.drag_right_margin = drag_deadzone.x
 	
 	if camera.drag_top_margin != drag_deadzone.y \
-	and camera.drag_bottom_margin != drag_deadzone.y:
+	and camera.drag_bottom_margin != drag_deadzone.y \
+	and enable_drag	:
 		camera.drag_top_margin = drag_deadzone.y
 		camera.drag_bottom_margin = drag_deadzone.y
 	
@@ -125,6 +132,8 @@ func _process(_delta: float) -> void:
 		camera.invert_zoom = invert_touch_zoom
 
 func _input(event: InputEvent) -> void:
+	if !enable_drag:
+		return
 	if !enable_pinch_pan:
 		return
 
@@ -150,7 +159,7 @@ func _input(event: InputEvent) -> void:
 				camera.zoom -= Vector2(0.1, 0.1)
 
 	## Handle Touch
-	if event is InputEventScreenTouch:
+	if event is InputEventScreenTouch and enable_drag:
 		if event.is_pressed() and !already_pressed:
 			just_pressed.emit()
 			start_position = get_norm_coordinate() * naturalizer
@@ -159,7 +168,7 @@ func _input(event: InputEvent) -> void:
 			already_pressed = false
 
 	## Handles ScreenDragging
-	if event is InputEventScreenDrag:
+	if event is InputEventScreenDrag and enable_drag:
 		if camera.input_count == 1:
 			dragging.emit()
 			if natural_slide:
@@ -172,6 +181,7 @@ func _input(event: InputEvent) -> void:
 	## Handles releasing
 	if camera.input_count == 0:
 		position = camera.get_camera_center()
+		enable_drag = true
 
 
 ## calculates a vector for camera movement
