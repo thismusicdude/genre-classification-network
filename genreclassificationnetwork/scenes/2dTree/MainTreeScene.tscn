@@ -57,6 +57,7 @@ script = ExtResource("1_qgovr")
 script = ExtResource("2_rxtl8")
 
 [node name="PinchPanCamera" type="Marker2D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("3_4cprc")
 min_zoom_factor = 0.05
 max_zoom_factor = 5.0

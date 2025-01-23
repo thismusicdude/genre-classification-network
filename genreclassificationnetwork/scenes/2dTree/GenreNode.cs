@@ -3,16 +3,16 @@ using System;
 
 namespace GenreClassificationNetwork
 {
-	public partial class GenreNode : OwnFdgNode
-	{
+    public partial class GenreNode : OwnFdgNode
+    {
         private bool _isDragging = false;
         private Vector2 _offset = Vector2.Zero;
         private Marker2D _pinchPan;
 
-		public override void _Ready()
-		{
-			base._Ready();
-		}
+        public override void _Ready()
+        {
+            base._Ready();
+        }
 
 
         public override void _Input(InputEvent @event)
@@ -51,31 +51,35 @@ namespace GenreClassificationNetwork
             }
         }
 
-		public override void _Process(double delta)
-		{
-			base._Process(delta);
-		}
+        public override void _Process(double delta)
+        {
+            base._Process(delta);
+            if (_isDragging)
+            {
+                GlobalPosition = GetGlobalMousePosition() - _offset;
+            }
+        }
 
-		// Methode, um den Titel des Genres zu setzen
-		public void setGenreTitle(String title)
-		{
-			Label genreTitle = GetNode<Label>("Sprite2D/Label");
-			genreTitle.Text = title;
-			
-			// Text zentrieren
-			genreTitle.HorizontalAlignment = HorizontalAlignment.Center;
-			genreTitle.VerticalAlignment = VerticalAlignment.Center;
-		}
+        // Methode, um den Titel des Genres zu setzen
+        public void setGenreTitle(String title)
+        {
+            Label genreTitle = GetNode<Label>("Sprite2D/Label");
+            genreTitle.Text = title;
 
-		// Methode, um die Größe des Knotens zu ändern
-		public void SetNodeSize(float scale)
-		{
-			Sprite2D sprite = GetNode<Sprite2D>("Sprite2D");
-			sprite.Scale = new Vector2(scale, scale);
+            // Text zentrieren
+            genreTitle.HorizontalAlignment = HorizontalAlignment.Center;
+            genreTitle.VerticalAlignment = VerticalAlignment.Center;
+        }
 
-			Label genreTitle = GetNode<Label>("Sprite2D/Label");
-			genreTitle.Scale = Vector2.One; // Skalierung des Textes bleibt konstant
-		}
+        // Methode, um die Größe des Knotens zu ändern
+        public void SetNodeSize(float scale)
+        {
+            Sprite2D sprite = GetNode<Sprite2D>("Sprite2D");
+            sprite.Scale = new Vector2(scale, scale);
+
+            Label genreTitle = GetNode<Label>("Sprite2D/Label");
+            genreTitle.Scale = Vector2.One; // Skalierung des Textes bleibt konstant
+        }
 
 
         private Rect2 GetGlobalRect()
@@ -87,5 +91,5 @@ namespace GenreClassificationNetwork
             }
             return new Rect2();
         }
-	}
+    }
 }
