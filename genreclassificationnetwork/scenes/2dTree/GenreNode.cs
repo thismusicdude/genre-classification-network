@@ -112,9 +112,9 @@ namespace GenreClassificationNetwork
 
         public void SetNodeStyle(Color color_start, Color color_end)
         {
-            ColorStyle = new(color_start, color_end);
-            Random random = new Random(42); // Verwende hier eine feste Zahl als Seed
-            int randomInt = random.Next(1, 666);
+            ColorStyle = new(color_start, color_end); 
+            Random random = new(42); // Verwende hier eine feste Zahl als Seed
+            int randomInt = random.Next(1, 1000);
 
             ShaderMaterial shaderMaterial = (ShaderMaterial)GetNode<Sprite2D>("Sprite2D").Material;
             shaderMaterial.Set("shader_parameter/color_start", color_start);
