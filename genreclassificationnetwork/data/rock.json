@@ -1,0 +1,18 @@
+{
+    "Rock": {
+      "Classic Rock": ["hard rock", "progressive rock", "blues rock"],
+      "Alternative Rock": ["grunge", "indie rock", "post-punk", "garage rock"],
+      "Punk Rock": ["hardcore punk", "pop punk", "ska punk", "punk revival"],
+      "Indie Rock": ["indie pop", "shoegaze", "dream pop", "lo-fi"],
+      "Heavy Rock": ["stoner rock", "doom rock", "sludge metal"],
+      "Folk Rock": ["americana", "singer-songwriter", "roots rock"],
+      "Psychedelic Rock": ["space rock", "krautrock", "acid rock", "neo-psychedelia"],
+      "Progressive Rock": ["symphonic prog", "experimental rock", "prog metal"],
+      "Post-Rock": ["math rock", "ambient rock", "instrumental rock"],
+      "Garage Rock": ["raw rock", "punk rock", "lo-fi"],
+      "Southern Rock": ["country rock", "blues rock", "swamp rock", "rockabilly"],
+      "Hard Rock": ["arena rock", "glam rock", "classic hard rock"],
+      "Pop Rock": ["power pop", "soft rock", "synth-pop", "folk-pop"]
+    }
+  }
+  

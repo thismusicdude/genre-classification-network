@@ -1,0 +1,13 @@
+{
+    "Electronic": {
+      "House": ["deep house", "progressive house", "tech house", "electro house", "future house"],
+      "Techno": ["minimal techno", "acid techno", "hard techno", "detroit techno", "industrial techno"],
+      "Trance": ["progressive trance", "goa trance", "uplifting trance", "psytrance", "hard trance"],
+      "Drum & Bass": ["liquid funk", "neurofunk", "jump-up", "jungle", "darkstep"],
+      "Dubstep": ["brostep", "riddim", "melodic dubstep", "deep dubstep", "future bass"],
+      "Ambient": ["dark ambient", "space ambient", "drone", "chillwave", "new age"],
+      "Electro": ["electroclash", "synthwave", "darkwave", "retro electro", "italo disco"],
+      "IDM": ["glitch", "breakcore", "braindance", "experimental electronic", "ambient techno"]
+    }
+  }
+  

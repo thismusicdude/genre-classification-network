@@ -1,0 +1,21 @@
+{
+    "Pop": {
+      "Classic Pop": ["disco", "bubblegum pop", "synthpop", "soft rock"],
+      "Indie Pop": ["dream pop", "indie synthpop", "chillwave", "lo-fi pop"],
+      "Electropop": ["future pop", "synthwave", "dance-pop", "synth-funk"],
+      "Pop-Rock": ["power pop", "folk-pop", "jangle pop", "arena pop"],
+      "R&B Pop": ["neo-soul", "contemporary R&B", "pop-soul"],
+      "K-Pop": ["K-pop ballad", "K-pop dance", "K-pop hip-hop", "K-pop rock"],
+      "Latin Pop": ["reggaeton", "tropical pop", "salsa pop", "cumbia pop"],
+      "Pop Punk": ["pop punk revival", "emo pop", "punk-pop"],
+      "Teen Pop": ["boy bands", "girl groups", "teen idols"],
+      "Dance Pop": ["house pop", "techno-pop", "disco-house"],
+      "Alternative Pop": ["avant-garde pop", "experimental pop", "indie electro-pop"],
+      "Baroque Pop": ["chamber pop", "orchestral pop", "classical pop"],
+      "Art Pop": ["art rock", "electronic art pop", "experimental pop"],
+      "French Pop": ["chanson", "French electropop", "yé-yé", "nouvelle chanson"],
+      "German Pop": ["Neue Deutsche Welle", "Deutschpop", "Schlagerpop", "German electropop"],
+      "Bedroom Pop": ["indie bedroom pop", "lo-fi bedroom pop", "DIY pop", "chill pop"]
+    }
+  }
+  

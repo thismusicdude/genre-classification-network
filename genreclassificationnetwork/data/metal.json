@@ -1,0 +1,18 @@
+{
+    "Metal": {
+      "Classic Metal": ["heavy metal", "power metal", "speed metal"],
+      "Thrash Metal": ["thrash", "crossover thrash", "blackened thrash"],
+      "Death Metal": ["deathcore", "technical death metal", "brutal death metal"],
+      "Black Metal": ["symphonic black metal", "ambient black metal", "raw black metal"],
+      "Doom Metal": ["sludge metal", "funeral doom", "stoner doom"],
+      "Progressive Metal": ["progressive death metal", "symphonic metal", "djent"],
+      "Alternative Metal": ["nu-metal", "industrial metal", "grunge metal"],
+      "Folk Metal": ["pagan metal", "viking metal", "celtic metal"],
+      "Gothic Metal": ["symphonic gothic metal", "doom gothic metal", "black gothic metal"],
+      "Post-Metal": ["atmospheric sludge", "post-hardcore", "ambient post-metal"],
+      "Metalcore": ["melodic metalcore", "death metalcore", "hardcore metal"],
+      "Power Metal": ["epic metal", "neoclassical metal", "melodic power metal"],
+      "Industrial Metal": ["industrial death metal", "electronic metal", "techno metal"]
+    }
+  }
+  

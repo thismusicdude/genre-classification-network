@@ -1,0 +1,17 @@
+{
+    "Classical": {
+      "Baroque": ["early music", "baroque orchestra", "concerto grosso", "opera"],
+      "Classical Period": ["symphony", "chamber music", "sonata", "string quartet"],
+      "Romantic": ["romantic symphony", "piano solo", "opera", "art song"],
+      "Modern Classical": ["minimalism", "avant-garde classical", "neoclassical", "serialism"],
+      "Impressionism": ["impressionist piano", "orchestral impressionism", "French impressionism"],
+      "Renaissance": ["early music", "sacred music", "madrigal", "motet"],
+      "Opera": ["bel canto", "wagnerian opera", "verismo", "opera buffa"],
+      "Contemporary Classical": ["film score", "electronic classical", "contemporary opera"],
+      "Folk Classical": ["folk music", "ethnic classical", "world fusion"],
+      "Chamber Music": ["string quartet", "piano trio", "duo", "wind quintet"],
+      "Crossover Classical": ["popera", "rock classical", "classical crossover", "new age"],
+      "Choral": ["sacred choral", "secular choral", "a cappella", "choral symphony"]
+    }
+  }
+  
