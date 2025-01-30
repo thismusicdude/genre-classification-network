@@ -6,11 +6,16 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rlgev"]
 shader = ExtResource("2_k2eky")
-shader_parameter/time = 0.0
-shader_parameter/noise_scale = 1.182
-shader_parameter/shape_density = 0.568
-shader_parameter/base_color = Color(0.1, 0.2, 0.3, 1)
-shader_parameter/accent_color = Color(1, 0.5, 0.2, 1)
+shader_parameter/zoom = 1.0
+shader_parameter/wave_crop = 0.09
+shader_parameter/brightness = 0.5
+shader_parameter/speed = 1.0
+shader_parameter/iterations = 5
+shader_parameter/freq_start = 20.0
+shader_parameter/freq_coeff = 1.0
+shader_parameter/color_start = Color(0.964505, 4.31252e-05, 0.697701, 1)
+shader_parameter/color_end = Color(0, 0.331629, 0.654471, 1)
+shader_parameter/time_step = 666.0
 
 [node name="GenreNode" type="Node2D"]
 script = ExtResource("4_3s80r")
