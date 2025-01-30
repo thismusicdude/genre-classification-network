@@ -1,0 +1,15 @@
+{
+    "Hip-Hop": {
+      "Old School": ["boom bap", "golden age hip-hop", "electro hip-hop"],
+      "Mainstream": ["trap", "gangsta rap", "west coast rap", "east coast rap"],
+      "Alternative": ["conscious hip-hop", "jazz rap", "experimental hip-hop"],
+      "Southern": ["dirty south", "crunk", "southern hip-hop"],
+      "Latin Hip-Hop": ["reggaeton", "latin trap", "chicano rap"],
+      "UK Hip-Hop": ["grime", "UK drill", "british boom bap"],
+      "Underground": ["abstract hip-hop", "horrorcore", "lo-fi hip-hop", "backpack rap"],
+      "Trap Subgenres": ["future bass", "melodic trap", "cloud rap", "drill"],
+      "Jazz Influences": ["acid rap", "neo-soul", "hip-hop jazz fusion"],
+      "Electro Hip-Hop": ["electro rap", "glitch hop", "bass music"]
+    }
+  }
+  
