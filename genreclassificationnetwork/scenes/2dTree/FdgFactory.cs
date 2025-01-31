@@ -11,8 +11,15 @@ namespace GenreClassificationNetwork
 		private readonly Dictionary<string, GenreNode> genreMap = new();
 		private GenreNode rootNode;
 		private int mainGenreCount;
+		private int MaxMainGenres = 10;		// TODO: change to dynamic
 		private Marker2D pinchPanCamera;
 		private Camera2D touchZoomCamera;
+		private List<GenreNode> mainGenres = new(); 
+		
+		private const float TargetConnectionLength = 400f; // Einheitliche Länge
+		private const float AdjustmentSpeed = 2.5f; // Geschwindigkeit der Anpassung
+		private float elapsedTime = 0f;
+		private const float TimeBeforeEqualizing = 5f; // Wartezeit in Sekunden
 
 		public override void _Ready()
 		{
@@ -32,73 +39,107 @@ namespace GenreClassificationNetwork
 			}
 
 			pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
-			touchZoomCamera.Zoom = new Vector2(0.8f, 0.8f);
+			touchZoomCamera.Zoom = new Vector2(0.7f, 0.7f);
 		}
 
 		public override void _Process(double delta)
 		{
 			base._Process(delta);
+			elapsedTime += (float)delta;
+			
+			if (elapsedTime > TimeBeforeEqualizing)
+			{
+				EqualizeConnectionLengths(delta);
+			}
 
 			if (pinchPanCamera != null)
-			{
 				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
-			}
+				
 			else
-			{
 				GD.PrintErr("Keine PinchPanCamera gefunden!");
-			}
 
 			UpdateGraphSimulation(delta);
 			ApplyRepulsionForces(delta);
 		}
-
-		private void ApplyRepulsionForces(double delta)
+		
+private void EqualizeConnectionLengths(double delta)
+{
+	foreach (var node in genreMap.Values)
+	{
+		foreach (var connection in node.GetChildren().OfType<OwnFdgSpring>())
 		{
-			const float RepulsionStrength = 20000f;
-			const float AttractionStrength = 0.1f;
-			
-			foreach (var nodeA in genreMap.Values)
+			if (connection.NodeEnd is GenreNode connectedNode)
 			{
-				Vector2 totalForce = Vector2.Zero;
+				Vector2 direction = connectedNode.Position - node.Position;
+				float currentLength = direction.Length();
 
-				// Abstoßungskraft berechnen
-				foreach (var nodeB in genreMap.Values.Where(nodeB => nodeA != nodeB))
-				{
-					Vector2 direction = nodeA.Position - nodeB.Position;
-					float distanceSquared = direction.LengthSquared(); // Vermeidet unnötige Wurzelberechnung
-					
-					if (distanceSquared > 0)
-					{
-					totalForce += direction.Normalized() * (RepulsionStrength / distanceSquared);
-					}
-				}
-
-				// Anziehungskraft berechnen
-				foreach (var child in nodeA.GetChildren())
-				{
-					if (child is OwnFdgSpring spring)
-					{
-						if (spring.NodeEnd is GenreNode connectedNode)
-						{
-							Vector2 direction = connectedNode.Position - nodeA.Position;
-							double distance = direction.Length();
-							Vector2 attractionForce = direction.Normalized() * (float)(distance - spring.length) * (float)AttractionStrength;
-							totalForce += attractionForce;
-						}
-					}
-				}
-				nodeA.Position += totalForce * (float)delta;
+				// **Sanft zur Ziel-Länge angleichen**
+				float adjustment = (TargetConnectionLength - currentLength) * (float)delta * AdjustmentSpeed;
+				connectedNode.Position += direction.Normalized() * adjustment;
 			}
 		}
+	}
+}
+
+
+private void ApplyRepulsionForces(double delta)
+{
+	const float RepulsionStrength = 50000f; // Höhere Abstoßung für gleichmäßige Verteilung
+	const float AttractionStrength = 0.3f; // Stärkere Anziehungskraft
+	const float MaxRepulsionDistance = 800f; // Keine extreme Abstoßung über große Distanzen hinaus
+	const float MovementLimit = 50f; // Begrenze Bewegung pro Frame
+
+	foreach (var nodeA in genreMap.Values)
+	{
+		Vector2 totalForce = Vector2.Zero;
+
+		// Abstoßungskraft berechnen
+		foreach (var nodeB in genreMap.Values.Where(nodeB => nodeA != nodeB))
+		{
+			Vector2 direction = nodeA.Position - nodeB.Position;
+			float distanceSquared = direction.LengthSquared();
+			
+			if (distanceSquared > 0 && distanceSquared < MaxRepulsionDistance * MaxRepulsionDistance) // Begrenzte Abstoßung
+			{
+				float forceFactor = RepulsionStrength / Mathf.Pow(Mathf.Sqrt(distanceSquared), 1.5f); // Sanftere Abstoßung
+				Vector2 repulsionForce = direction.Normalized() * forceFactor;
+				totalForce += repulsionForce;
+			}
+		}
+
+		// Anziehungskraft berechnen
+		foreach (var child in nodeA.GetChildren().OfType<OwnFdgSpring>())
+		{
+			if (child.NodeEnd is GenreNode connectedNode)
+			{
+				Vector2 direction = connectedNode.Position - nodeA.Position;
+				float distance = direction.Length();
+				Vector2 attractionForce = direction.Normalized() * ((distance - child.length) * AttractionStrength);
+				totalForce += attractionForce;
+			}
+		}
+
+		// **Begrenzung der Bewegung**
+		if (totalForce.Length() > MovementLimit)
+		{
+			totalForce = totalForce.Normalized() * MovementLimit;
+		}
+
+		// Bewegung anwenden
+		nodeA.Position += totalForce * (float)delta;
+	}
+}
+
+
 
 		private static Color GetRandomColor()
 		{
 			Random random = new();
-			float r = (float)random.NextDouble(); // Zufallszahl zwischen 0.0 und 1.0
+			float r = (float)random.NextDouble();
 			float g = (float)random.NextDouble();
 			float b = (float)random.NextDouble();
 
-			return new Color(r, g, b, 1.0f); // RGBA: Alpha hier 1.0 (voll sichtbar)
+			return new Color(r, g, b, 1.0f);
 		}
 
 		private Rect2 GetNodesBoundingBox()
@@ -169,7 +210,6 @@ namespace GenreClassificationNetwork
 					}
 				}
 
-				// Position des Nodes aktualisieren
 				Vector2 newPosition = nodeA.Position + totalForce * (float)delta;
 				nodeA.Position = newPosition;
 			}
@@ -182,12 +222,12 @@ namespace GenreClassificationNetwork
 			node.SetNodeSize(scale);
 			return node;
 		}
-
+		
 		public void AddGenre(string name, double weight)
 		{
 			if (genreMap.ContainsKey(name)) return;
 
-			var position = CalculateMainGenrePosition(700f + mainGenreCount++ * 50f);
+			var position = CalculateMainGenrePosition(700f + mainGenres.Count * 50f);
 			var nodeToAdd = CreateGenreNode(position, 0.75f);
 
 			nodeToAdd.setGenreTitle(name);
@@ -195,8 +235,17 @@ namespace GenreClassificationNetwork
 
 			AddChild(nodeToAdd);
 			genreMap[name] = nodeToAdd;
+			mainGenres.Add(nodeToAdd);
 
 			CreateConnection(rootNode, nodeToAdd);
+
+			int count = mainGenres.Count;
+
+			if (count > 1)
+				CreateConnection(mainGenres[count - 2], nodeToAdd);
+
+			if (count > 2 && count == MaxMainGenres) 
+				CreateConnection(mainGenres[0], nodeToAdd);
 		}
 
 		public void AddSubGenre(string parent, string name, double weight)
@@ -233,7 +282,6 @@ namespace GenreClassificationNetwork
 
 		private Vector2 CalculateMainGenrePosition(float radius)
 		{
-			const int MaxMainGenres = 24;
 			float angle = mainGenreCount++ * (2 * Mathf.Pi / MaxMainGenres); 
 
 			return rootNode.Position + new Vector2(
