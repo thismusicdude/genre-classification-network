@@ -1,355 +1,510 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace GenreClassificationNetwork
 {
-    public partial class FdgFactory : OwnForceDirectedGraph
-    {
-        private PackedScene genreNode;
-        private Dictionary<string, GenreNode> genreMap = new();
-        private GenreNode rootNode;
-        private int mainGenreCount = 0;
-
-        public bool isLoadingGenre = false;
-
-        public ImageTexture RootNodeTexture;
-
-        Marker2D pinchPanCamera;
-        Camera2D TouchZoomCamera;
-
-        public override void _Ready()
-        {
-            base._Ready();
-
-            Vector2 viewportCenter = GetViewportRect().Size / 2;
-
-            genreNode = GD.Load<PackedScene>("res://scenes/2dTree/genreNode.tscn");
-            rootNode = CreateGenreNode(viewportCenter, 1f);
-            rootNode.setGenreTitle("Root");
-
-            AddChild(rootNode);
-
-            pinchPanCamera = GetNodeOrNull<Marker2D>("../PinchPanCamera");
-            TouchZoomCamera = GetNodeOrNull<Camera2D>("../PinchPanCamera/TouchZoomCamera2D");
-
-            if (pinchPanCamera != null && TouchZoomCamera != null)
-            {
-                pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
-                TouchZoomCamera.Zoom = new Vector2(0.8f, 0.8f);
-            }
-            else
-            {
-                GD.PrintErr("Couldnt Load Pinch Pan Camera!");
-            }
-        }
-
-        private Texture2D loadJpgTexture(byte[] data)
-        {
-            Image image = new();
-            Error err = image.LoadJpgFromBuffer(data);
-
-            if (err != Error.Ok)
-            {
-                GD.PrintErr("Error while loading JPG: ", err);
-                return null;
-            }
-
-            ImageTexture texture = ImageTexture.CreateFromImage(image);
-            return texture;
-        }
-
-        public void setProfileImg(byte[] body)
-        {
-
-            Texture2D texture = loadJpgTexture(body);
-            if (texture != null)
-            {
-                var sprite = this.GetNode<Sprite2D>("GenreNode/Sprite2D");
-                if (sprite == null)
-                {
-                    GD.PrintErr("No Sprite called `GenreNode/Sprite2D` found");
-                }
-                Shader shader = GD.Load<Shader>("res://shader/round.gdshader");
-
-                // create ShaderMaterial
-                ShaderMaterial shaderMaterial = new()
-                {
-                    Shader = shader
-                };
-                sprite.Material = shaderMaterial;
-                sprite.Texture = texture;
-
-                var label = this.GetNode<Label>("GenreNode/Sprite2D/Label");
-                label.Text = "";
-
-            }
-        }
-
-        public override void _Process(double delta)
-        {
-            base._Process(delta); // Other nodes can continue to move
-
-            if (pinchPanCamera != null && isLoadingGenre)
-            {
-                pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
-            }
-
-            UpdateGraphSimulation(delta);
-
-            ApplyRepulsionForces(delta);
-        }
-
-        private void ApplyRepulsionForces(double delta)
-        {
-            const double repulsionStrength = 20000f;
-            const double attractionStrength = 0.1f;
-
-            foreach (var nodeA in genreMap.Values)
-            {
-                Vector2 totalForce = Vector2.Zero;
-
-                foreach (var nodeB in genreMap.Values)
-                {
-                    if (nodeA == nodeB) continue;
-
-                    Vector2 direction = nodeA.Position - nodeB.Position;
-                    double distance = direction.Length();
-                    if (distance > 0)
-                    {
-                        Vector2 repulsionForce = direction.Normalized() * (float)(repulsionStrength / (distance * distance));
-                        totalForce += repulsionForce;
-                    }
-                }
-
-                foreach (var child in nodeA.GetChildren())
-                {
-                    if (child is OwnFdgSpring spring)
-                    {
-                        if (spring.NodeEnd is GenreNode connectedNode)
-                        {
-                            Vector2 direction = connectedNode.Position - nodeA.Position;
-                            double distance = direction.Length();
-                            Vector2 attractionForce = direction.Normalized() * (float)(distance - spring.length) * (float)attractionStrength;
-                            totalForce += attractionForce;
-                        }
-                    }
-                }
-
-                nodeA.Position += totalForce * (float)delta;
-            }
-        }
-
-
-        private static Color GetRandomColor()
-        {
-            Random random = new();
-            float r = (float)random.NextDouble(); // Random number between 0.0 and 1.0
-            float g = (float)random.NextDouble();
-            float b = (float)random.NextDouble();
-
-            return new Color(r, g, b, 1.0f); // RGBA: Alpha here 1.0 (fully visible)
-        }
-
-        private Rect2 GetNodesBoundingBox()
-        {
-            if (genreMap.Count == 0)
-                return new Rect2(rootNode.Position, Vector2.Zero);
-
-            Vector2 min = rootNode.Position;
-            Vector2 max = rootNode.Position;
-
-            foreach (var node in genreMap.Values)
-            {
-                Vector2 pos = node.Position;
-                min = new Vector2(Mathf.Min(min.X, pos.X), Mathf.Min(min.Y, pos.Y));
-                max = new Vector2(Mathf.Max(max.X, pos.X), Mathf.Max(max.Y, pos.Y));
-            }
-
-            return new Rect2(min, max - min); // Bounding box as rectangle
-        }
-
-        private void AdjustCameraZoom()
-        {
-            if (TouchZoomCamera == null)
-                return;
-
-            // Calculate the bounding box of the nodes
-            Rect2 boundingBox = GetNodesBoundingBox();
-
-            // Determine viewport size
-            Vector2 viewportSize = GetViewportRect().Size;
-
-            // Calculate the required zoom
-            float zoomX = boundingBox.Size.X / viewportSize.X;
-            float zoomY = boundingBox.Size.Y / viewportSize.Y;
-
-            // Select the larger zoom to ensure that everything is visible
-            float zoomFactor = Mathf.Max(zoomX, zoomY);
-
-            // Limit the zoom to a reasonable range
-            zoomFactor = Mathf.Clamp(zoomFactor, 0.5f, 2f); // Example area
-
-            // Set the zoom of the camera
-            TouchZoomCamera.Zoom = new Vector2(zoomFactor, zoomFactor);
-        }
-
-
-        private void UpdateGraphSimulation(double delta)
-        {
-            // TODO: Connection between genres for repulsion
-            const float repulsionStrength = 20000f; // Strength of the repulsive force
-            const float attractionStrength = 0.1f; // Strength of the attractive force
-
-            foreach (var nodeA in genreMap.Values)
-            {
-                Vector2 totalForce = Vector2.Zero;
-
-                // Calculate repulsive forces between all nodes
-                foreach (var nodeB in genreMap.Values)
-                {
-                    if (nodeA == nodeB) continue; // No power to yourself
-
-                    Vector2 direction = nodeA.Position - nodeB.Position;
-                    float distance = direction.Length();
-                    if (distance > 0)
-                    {
-                        // Abstoßungskraft proportional zur Entfernung
-                        Vector2 repulsionForce = direction.Normalized() * (repulsionStrength / (distance * distance));
-                        totalForce += repulsionForce;
-                    }
-                }
-
-                // Calculate attractive forces along the connections
-                foreach (Node connection in nodeA.GetChildren())
-                {
-                    if (connection is OwnFdgSpring spring && spring.NodeEnd is GenreNode connectedNode)
-                    {
-                        Vector2 direction = connectedNode.Position - nodeA.Position;
-                        float distance = direction.Length();
-                        Vector2 attractionForce = direction.Normalized() * (distance - spring.length) * attractionStrength;
-                        totalForce += attractionForce;
-                    }
-                }
-
-                // Update the position of the node
-                Vector2 newPosition = nodeA.Position + totalForce * (float)delta;
-                nodeA.Position = newPosition;
-            }
-        }
-
-        private GenreNode CreateGenreNode(Vector2 position, float scale)
-        {
-            GenreNode node = genreNode.Instantiate<GenreNode>();
-            node.Position = position;
-            node.SetNodeSize(scale); // Set size
-            return node;
-        }
-
-        public void AddGenre(string name, double weight)
-        {
-            if (genreMap.ContainsKey(name))
-                return;
-
-            // Calculate dynamic distance based on the number of main genres
-            float radius = 700f + mainGenreCount * 50f; // Dynamic distance from the root node
-            Vector2 position = CalculateMainGenrePosition(radius);
-
-            GenreNode nodeToAdd = CreateGenreNode(position, 0.75f); // Main genre with scaling 1.5
-            nodeToAdd.setGenreTitle(name);
-            AddChild(nodeToAdd);
-            genreMap.Add(name, nodeToAdd);
-            nodeToAdd.SetNodeStyle(GetRandomColor(), GetRandomColor());
-
-            CreateConnection(rootNode, nodeToAdd);
-        }
-
-
-        public void AddSubGenre(string parent, string name, double weight)
-        {
-            if (!genreMap.ContainsKey(parent) || genreMap.ContainsKey(name))
-                return;
-
-            GenreNode parentNode = genreMap[parent];
-
-            // Calculate subgenre position with even distribution around the main genre
-            int subGenreCount = CountSubGenres(parent);
-            Vector2 position = CalculateSubGenrePosition(parentNode, subGenreCount);
-
-            GenreNode nodeToAdd = CreateGenreNode(position, 0.55f); // Subgenre with scaling 1.0
-            nodeToAdd.setGenreTitle(name);
-            nodeToAdd.SetNodeStyle(parentNode.ColorStyle);
-
-            AddChild(nodeToAdd);
-            genreMap.Add(name, nodeToAdd);
-
-            CreateConnection(parentNode, nodeToAdd);
-        }
-
-
-        private void CreateConnection(GenreNode startNode, GenreNode endNode)
-        {
-            OwnFdgSpring connection = new()
-            {
-                NodeStart = startNode,
-                NodeEnd = endNode
-            };
-
-            // Connection settings
-            if (startNode == rootNode) // Root → Main genre
-            {
-                connection.K = 0.002f;      // Weaker spring force
-                connection.length = 450f; // Dynamic target distance
-            }
-            else // Main genre → Subgenre
-            {
-                connection.K = 0.01f;      // Stronger spring force
-                connection.length = 400f; // Larger target distance
-            }
-
-            startNode.AddChild(connection);
-            UpdateGraphSimulation();
-        }
-
-        private Vector2 CalculateMainGenrePosition(float radius)
-        {
-            const int maxMainGenres = 12; // Maximum main genres for even distribution
-            float angleStep = 2 * Mathf.Pi / maxMainGenres; // Uniform angle
-
-            float angle = mainGenreCount * angleStep;
-            mainGenreCount++; // For the next main genre
-
-            return rootNode.Position + new Vector2(
-                Mathf.Cos(angle) * radius,
-                Mathf.Sin(angle) * radius
-            );
-        }
-
-        private Vector2 CalculateSubGenrePosition(GenreNode parent, int subGenreCount)
-        {
-            const float baseDistance = 150; // Minimum distance to the main genre
-            float radius = baseDistance + subGenreCount * 100f; // Dynamic removal
-
-            float angleStep = Mathf.Pi / 6; // Uniform angle for subgenres
-            float angle = subGenreCount * angleStep; // Angle based on the number of subgenres
-
-            Vector2 direction = (parent.Position - rootNode.Position).Normalized();
-
-            // Position further out along the vector from the main genre
-            return parent.Position + direction.Rotated(angle) * radius;
-        }
-
-        private int CountSubGenres(string parent)
-        {
-            int count = 0;
-            foreach (var connection in genreMap)
-            {
-                if (connection.Value != null && connection.Key.StartsWith(parent))
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-    }
+	public partial class FdgFactory : OwnForceDirectedGraph
+	{
+		private readonly PackedScene genreNode = GD.Load<PackedScene>("res://scenes/2dTree/genreNode.tscn");
+		private readonly Dictionary<string, GenreNode> genreMap = new();
+		//private Dictionary<string, GenreNode> genreMap = new();
+		private GenreNode rootNode;
+		private int mainGenreCount;
+		//private int mainGenreCount = 0;
+		
+		private Marker2D pinchPanCamera;
+		private Camera2D touchZoomCamera;
+		
+		private int MaxMainGenres = 10;
+		private List<GenreNode> mainGenres = new(); 
+		private const float TargetConnectionLength = 400f; // Einheitliche Länge
+		private const float AdjustmentSpeed = 0.0025f; // Geschwindigkeit der Anpassung
+		//private const float AdjustmentSpeed = 2.5f; // Geschwindigkeit der Anpassung
+		private float elapsedTime = 0f;
+		private const float TimeBeforeEqualizing = 5f; // Wartezeit in Sekunden
+		
+		
+		public bool isLoadingGenre = false;
+		public ImageTexture RootNodeTexture;
+		
+
+		public override void _Ready()
+		{
+			base._Ready();
+
+			rootNode = CreateGenreNode(GetViewportRect().Size / 2, 1f);
+			rootNode.setGenreTitle("Root");
+			AddChild(rootNode);
+
+			pinchPanCamera = GetNodeOrNull<Marker2D>("../PinchPanCamera");
+			touchZoomCamera = GetNodeOrNull<Camera2D>("../PinchPanCamera/TouchZoomCamera2D");
+			//pinchPanCamera = GetNodeOrNull<Marker2D>("/root/Main/PinchPanCamera");
+			//touchZoomCamera = GetNodeOrNull<Camera2D>("/root/Main/PinchPanCamera/TouchZoomCamera2D");
+			
+			if (pinchPanCamera != null && touchZoomCamera != null)
+			{
+				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
+				touchZoomCamera.Zoom = new Vector2(0.65f, 0.65f);
+			}
+			else
+			{
+				GD.PrintErr("Couldnt Load Pinch Pan Camera!");
+			}
+		}
+
+		private Texture2D loadJpgTexture(byte[] data)
+		{
+			Image image = new();
+			Error err = image.LoadJpgFromBuffer(data);
+
+			if (err != Error.Ok)
+			{
+				GD.PrintErr("Error while loading JPG: ", err);
+				return null;
+			}
+			
+			// Bild wird quadratisch, falls es noch nicht der Fall ist
+			if (image.GetWidth() != image.GetHeight())
+			{
+				int newSize = Mathf.Min(image.GetWidth(), image.GetHeight());
+				image.Resize(newSize, newSize, Image.Interpolation.Lanczos);
+			}
+
+			ImageTexture texture = ImageTexture.CreateFromImage(image);
+			return texture;
+		}
+
+		public void setProfileImg(byte[] body)
+		{
+
+			Texture2D texture = loadJpgTexture(body);
+			if (texture != null)
+			{
+				var sprite = this.GetNode<Sprite2D>("GenreNode/Sprite2D");
+				if (sprite == null)
+				{
+					GD.PrintErr("No Sprite called `GenreNode/Sprite2D` found");
+					return;
+				}
+				
+				// Lade den runden Shader
+				Shader shader = GD.Load<Shader>("res://shader/round.gdshader");
+
+				// Erstelle das ShaderMaterial und setze es auf das Sprite
+				ShaderMaterial shaderMaterial = new()
+				{
+					Shader = shader
+				};
+				sprite.Material = shaderMaterial;
+				sprite.Texture = texture;
+
+				var label = this.GetNode<Label>("GenreNode/Sprite2D/Label");
+				label.Text = "";
+
+			}
+		}
+
+		public override void _Process(double delta)
+		{
+			base._Process(delta);
+			
+			// neu
+			elapsedTime += (float)delta;
+			if (elapsedTime > TimeBeforeEqualizing)
+				EqualizeConnectionLengths(delta);
+			//
+
+			if (pinchPanCamera != null)
+				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
+				
+			else
+				GD.PrintErr("Keine PinchPanCamera gefunden!");
+
+			UpdateGraphSimulation(delta);
+			ApplyRepulsionForces(delta);
+		}
+		
+		private void EqualizeConnectionLengths(double delta)
+		{
+			foreach (var node in genreMap.Values)
+			{
+				foreach (var connection in node.GetChildren().OfType<OwnFdgSpring>())
+				{
+					if (connection.NodeEnd is GenreNode connectedNode)
+					{
+						Vector2 direction = connectedNode.Position - node.Position;
+						float currentLength = direction.Length();
+
+						float adjustment = (TargetConnectionLength - currentLength) * (float)delta * AdjustmentSpeed;
+						connectedNode.Position += direction.Normalized() * adjustment;
+					}
+				}
+			}
+		}
+		
+		private bool IsSubGenre(GenreNode node)
+		{
+			//return node.GetParent() is GenreNode && node.GetParent() != rootNode;
+			Node parent = node.GetParent();
+
+			//if (parent == null)
+			//{
+				//GD.PrintErr($"❌ FEHLER: {node.getGenreTitle()} hat KEIN Parent!");
+				//return false;
+			//}
+//
+			//if (parent == rootNode)
+			//{
+				//GD.Print($"⚠️ WARNUNG: {node.getGenreTitle()} ist direkt mit Root verbunden.");
+				//return false;
+			//}
+//
+			//if (parent is not GenreNode)
+			//{
+				//GD.PrintErr($"❌ FEHLER: {node.getGenreTitle()} hat einen falschen Parent-Typ: {parent.GetType()}");
+				//return false;
+			//}
+//
+			//GD.Print($"✅ {node.getGenreTitle()} ist ein Subgenre von {((GenreNode)parent).getGenreTitle()}");
+			return true;
+		}
+
+		//private void ApplyRepulsionForces(double delta)
+		//{
+			//const float RepulsionStrength = 20000f;
+			//const float AttractionStrength = 0.1f;
+			//
+			//foreach (var nodeA in genreMap.Values)
+			//{
+				//Vector2 totalForce = Vector2.Zero;
+//
+				//// Abstoßungskraft berechnen
+				//foreach (var nodeB in genreMap.Values.Where(nodeB => nodeA != nodeB))
+				//{
+					//Vector2 direction = nodeA.Position - nodeB.Position;
+					//float distanceSquared = direction.LengthSquared(); // Vermeidet unnötige Wurzelberechnung
+					//
+					//if (distanceSquared > 0)
+					//{
+					//totalForce += direction.Normalized() * (RepulsionStrength / distanceSquared);
+					//}
+				//}
+//
+				//// Anziehungskraft berechnen
+				//foreach (var child in nodeA.GetChildren())
+				//{
+					//if (child is OwnFdgSpring spring)
+					//{
+						//if (spring.NodeEnd is GenreNode connectedNode)
+						//{
+							//Vector2 direction = connectedNode.Position - nodeA.Position;
+							//double distance = direction.Length();
+							//Vector2 attractionForce = direction.Normalized() * (float)(distance - spring.length) * (float)AttractionStrength;
+							//totalForce += attractionForce;
+						//}
+					//}
+				//}
+				//nodeA.Position += totalForce * (float)delta;
+			//}
+		//}
+		
+		private void ApplyRepulsionForces(double delta)
+		{
+			const float RepulsionStrength = 80000f; // Höhere Abstoßung für gleichmäßige Verteilung
+			const float MainGenreRepulsion = 120000f; // Hauptgenres stoßen sich noch stärker ab
+			const float SubgenreRepulsionFactor = 0.1f; // Subgenres haben reduzierte Abstoßungskraft
+			const float AttractionStrength = 0.3f; // Stärkere Anziehungskraft
+			const float MaxRepulsionDistance = 1200f; // Keine extreme Abstoßung über große Distanzen hinaus
+			const float MovementLimit = 70f; // Begrenze Bewegung pro Frame
+			const float MinDistanceFromRoot = 800f; // Mindestabstand zur Root Node
+			const float SubgenrePushFactor = 0.5f; // Extra-Push nach außen für Subgenres
+
+			foreach (var nodeA in genreMap.Values)
+			{
+				Vector2 totalForce = Vector2.Zero;
+
+				// Abstoßungskraft berechnen
+				foreach (var nodeB in genreMap.Values.Where(nodeB => nodeA != nodeB))
+				{
+					Vector2 direction = nodeA.Position - nodeB.Position;
+					float distanceSquared = direction.LengthSquared();
+
+					if (distanceSquared > 0 && distanceSquared < MaxRepulsionDistance * MaxRepulsionDistance) 
+					{
+						float forceFactor = RepulsionStrength / Mathf.Pow(Mathf.Sqrt(distanceSquared), 1.5f);
+
+						// Reduzierte Abstoßung zwischen Subgenres
+						if (IsSubGenre(nodeA) && IsSubGenre(nodeB))
+						{
+							forceFactor *= SubgenreRepulsionFactor;
+						}
+						totalForce += direction.Normalized() * forceFactor;
+					}
+				}
+
+				// Extra-Abstoßung zwischen Hauptgenres
+				if (mainGenres.Contains(nodeA))
+				{
+					foreach (var otherMainGenre in mainGenres.Where(g => g != nodeA))
+					{
+						Vector2 direction = nodeA.Position - otherMainGenre.Position;
+						float distanceSquared = direction.LengthSquared();
+
+						if (distanceSquared > 0 && distanceSquared < MaxRepulsionDistance * MaxRepulsionDistance)
+						{
+							float extraRepulsion = MainGenreRepulsion / Mathf.Pow(Mathf.Sqrt(distanceSquared), 1.5f);
+							totalForce += direction.Normalized() * extraRepulsion;
+						}
+					}
+				}
+
+				// Abstand zur Root-Node erzwingen
+				if (mainGenres.Contains(nodeA))
+				{
+					Vector2 rootDirection = rootNode.Position - nodeA.Position;
+					float rootDistance = rootDirection.Length();
+
+					if (rootDistance < MinDistanceFromRoot)
+					{
+						Vector2 pushAway = -rootDirection.Normalized() * (MinDistanceFromRoot - rootDistance) * 0.2f;
+						totalForce += pushAway;
+					}
+				}
+				
+				//// Subgenres nach außen schieben
+				//if (IsSubGenre(nodeA))
+				//{
+					//GenreNode parentNode = (GenreNode)nodeA.GetParent();
+//
+					//if (parentNode != null)
+					//{
+						//Vector2 parentDirection = nodeA.Position - parentNode.Position;
+						//Vector2 rootDirection = parentNode.Position - rootNode.Position;
+//
+						//// Falls Subgenre auf der falschen Seite ist (zwischen Root und Hauptgenre)
+						//if (parentDirection.Dot(rootDirection) < 0)
+						//{
+							//totalForce += parentDirection.Normalized() * SubgenrePushFactor;
+						//}
+					//}
+				//}
+
+				// Bewegung begrenzen
+				if (totalForce.Length() > MovementLimit)
+				{
+					totalForce = totalForce.Normalized() * MovementLimit;
+				}
+
+				nodeA.Position += totalForce * (float)delta;
+			}
+		}
+
+		private static Color GetRandomColor()
+		{
+			Random random = new();
+			float r = (float)random.NextDouble(); // Zufallszahl zwischen 0.0 und 1.0
+			float g = (float)random.NextDouble();
+			float b = (float)random.NextDouble();
+
+			return new Color(r, g, b, 1.0f); // RGBA: Alpha hier 1.0 (voll sichtbar)
+		}
+
+		private Rect2 GetNodesBoundingBox()
+		{
+			if (!genreMap.Any()) return new Rect2(rootNode.Position, Vector2.Zero);
+
+			Vector2 min = rootNode.Position;
+			Vector2 max = rootNode.Position;
+
+			foreach (var pos in genreMap.Values.Select(node => node.Position))
+			{
+				min = new Vector2(Mathf.Min(min.X, pos.X), Mathf.Min(min.Y, pos.Y));
+				max = new Vector2(Mathf.Max(max.X, pos.X), Mathf.Max(max.Y, pos.Y));
+			}
+
+			return new Rect2(min, max - min);
+		}
+
+		private void AdjustCameraZoom()
+		{
+			if (touchZoomCamera == null) return;
+
+			Rect2 boundingBox = GetNodesBoundingBox();
+			Vector2 viewportSize = GetViewportRect().Size;
+
+			// Berechnung des Zoom-Faktors unter Berücksichtigung beider Achsen
+			float zoomFactor = Mathf.Clamp(
+				Mathf.Max(boundingBox.Size.X / viewportSize.X, boundingBox.Size.Y / viewportSize.Y),
+				0.5f, 2f
+			);
+
+			touchZoomCamera.Zoom = new Vector2(zoomFactor, zoomFactor);
+		}
+
+		private void UpdateGraphSimulation(double delta)
+		{
+			const float repulsionStrength = 20000f; 
+			const float attractionStrength = 0.1f;
+
+			foreach (var nodeA in genreMap.Values)
+			{
+				Vector2 totalForce = Vector2.Zero;
+
+				// Abstoßende Kräfte zwischen allen Nodes berechnen
+				foreach (var nodeB in genreMap.Values)
+				{
+					if (nodeA == nodeB) continue;
+
+					Vector2 direction = nodeA.Position - nodeB.Position;
+					float distance = direction.Length();
+					if (distance > 0)
+					{
+						// Abstoßungskraft proportional zur Entfernung
+						Vector2 repulsionForce = direction.Normalized() * (repulsionStrength / (distance * distance));
+						totalForce += repulsionForce;
+					}
+				}
+
+				// Anziehende Kräfte entlang der Verbindungen berechnen
+				foreach (Node connection in nodeA.GetChildren())
+				{
+					if (connection is OwnFdgSpring spring && spring.NodeEnd is GenreNode connectedNode)
+					{
+						Vector2 direction = connectedNode.Position - nodeA.Position;
+						float distance = direction.Length();
+						Vector2 attractionForce = direction.Normalized() * (distance - spring.length) * attractionStrength;
+						totalForce += attractionForce;
+					}
+				}
+
+				// Position des Nodes aktualisieren
+				Vector2 newPosition = nodeA.Position + totalForce * (float)delta;
+				nodeA.Position = newPosition;
+			}
+		}
+
+		private GenreNode CreateGenreNode(Vector2 position, float scale)
+		{
+			GenreNode node = genreNode.Instantiate<GenreNode>();
+			node.Position = position;
+			node.SetNodeSize(scale);
+			return node;
+		}
+
+		public void AddGenre(string name, double weight)
+		{
+			if (genreMap.ContainsKey(name)) return;
+			
+			GD.Print($"Adding genre {name}. Current count before: {mainGenres.Count}/{MaxMainGenres}");
+
+			//var position = CalculateMainGenrePosition(700f + mainGenreCount++ * 50f);
+			var position = CalculateMainGenrePosition(700f + mainGenres.Count * 50f);
+			var nodeToAdd = CreateGenreNode(position, 0.75f);
+
+			nodeToAdd.setGenreTitle(name);
+			nodeToAdd.SetNodeStyle(GetRandomColor(), GetRandomColor());
+
+			AddChild(nodeToAdd);
+			genreMap[name] = nodeToAdd;
+			mainGenres.Add(nodeToAdd);
+
+			CreateConnection(rootNode, nodeToAdd);
+			
+			int count = mainGenres.Count;
+
+			if (count > 1)
+				CreateConnection(mainGenres[count - 2], nodeToAdd);
+
+			if (count > 2 && count == MaxMainGenres) 
+				CreateConnection(mainGenres[0], nodeToAdd);
+		}
+
+		public void AddSubGenre(string parent, string name, double weight)
+		{
+			if (genreMap.TryGetValue(parent, out GenreNode parentNode) && !genreMap.ContainsKey(name))
+			{
+				GenreNode nodeToAdd = CreateGenreNode(CalculateSubGenrePosition(parentNode, CountSubGenres(parent)), 0.55f);
+				nodeToAdd.setGenreTitle(name);
+				nodeToAdd.SetNodeStyle(parentNode.ColorStyle);
+
+				AddChild(nodeToAdd);
+				genreMap[name] = nodeToAdd;
+
+				CreateConnection(parentNode, nodeToAdd);
+			}
+		}
+
+		private void CreateConnection(GenreNode startNode, GenreNode endNode)
+		{
+			float k = (startNode == rootNode) ? 0.002f : 0.01f;
+			float length = (startNode == rootNode) ? 450f : 400f;
+			
+			Color connectionColor = new Color(1, 1, 1, 1); // Standardfarbe (weiß)
+			
+			if (mainGenres.Contains(startNode) && mainGenres.Contains(endNode))
+			{
+				GD.Print("Ändere Farbe der Hauptgenre-Verbindung");
+				connectionColor = new Color(0.7f, 0.7f, 0.7f, 0.6f);
+			}
+
+			OwnFdgSpring connection = new()
+			{
+				NodeStart = startNode,
+				NodeEnd = endNode,
+				K = k,
+				length = length
+			};
+
+			startNode.AddChild(connection);
+			UpdateGraphSimulation();
+		}
+
+		private Vector2 CalculateMainGenrePosition(float radius)
+		{
+			//const int MaxMainGenres = 24;
+			//float angle = mainGenreCount++ * (2 * Mathf.Pi / MaxMainGenres); 
+			
+			// neu
+			float angle = mainGenreCount * (2 * Mathf.Pi / MaxMainGenres);
+			mainGenreCount++;
+
+			return rootNode.Position + new Vector2(
+				Mathf.Cos(angle) * radius,
+				Mathf.Sin(angle) * radius
+			);
+		}
+
+		//private Vector2 CalculateSubGenrePosition(GenreNode parent, int subGenreCount)
+		//{
+			//const float BaseDistance = 150f; 
+			//float radius = BaseDistance + subGenreCount * 100f;
+			//float angle = subGenreCount * (Mathf.Pi / 6); // Winkel berechnen
+			//Vector2 direction = (parent.Position - rootNode.Position).Normalized();
+//
+			//return parent.Position + direction.Rotated(angle) * radius;
+		//}
+		
+		private Vector2 CalculateSubGenrePosition(GenreNode parent, int subGenreCount)
+		{
+			const float BaseDistance = 200f; // Mindestabstand vom Hauptgenre
+			float radius = BaseDistance + subGenreCount * 80f; // Dynamischer Abstand, wächst mit Anzahl
+
+			float maxAngleOffset = Mathf.Pi / 4; // ⬅️ Begrenzung auf 45° nach links/rechts vom Hauptgenre
+			float angleStep = maxAngleOffset / Mathf.Max(1, subGenreCount - 1); // Gleichmäßige Verteilung
+			float angle = -maxAngleOffset / 2 + subGenreCount * angleStep; // Start mittig und dann verteilen
+
+			Vector2 directionToRoot = (rootNode.Position - parent.Position).Normalized();
+			Vector2 perpendicular = new Vector2(-directionToRoot.Y, directionToRoot.X); // 90° versetzt
+
+			// Verteile Subgenres entlang eines Kreisbogens um das Hauptgenre (NICHT zwischen Root)
+			return parent.Position + (directionToRoot.Rotated(Mathf.Pi) + perpendicular.Rotated(angle)) * radius;
+		}
+
+		private int CountSubGenres(string parent)
+		{
+			return genreMap.Count(connection => connection.Value != null && connection.Key.StartsWith(parent));
+		}
+	}
 }
