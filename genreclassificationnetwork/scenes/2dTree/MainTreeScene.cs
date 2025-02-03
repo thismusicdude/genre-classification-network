@@ -31,11 +31,9 @@ namespace GenreClassificationNetwork
 
 
                 var usernameLabel = GetNode<Label>("CanvasLayer/HBoxContainer/UserName");
-                GD.Print(profileData.Display_Name);
                 usernameLabel.Text = profileData.Display_Name;
-                GD.Print("Name erfolgreich geladen!");
 
-                // Bild Laden
+                // Image Loading
                 HttpRequest _httpRequest;
                 _httpRequest = new HttpRequest();
                 AddChild(_httpRequest);
@@ -43,18 +41,16 @@ namespace GenreClassificationNetwork
                 _httpRequest.RequestCompleted += OnRequestCompleted;
 
                 string imageUrl = profileData.Images[0].Url;
-                GD.Print(imageUrl);
-
                 var result = _httpRequest.Request(imageUrl);
 
                 if (result != Error.Ok)
                 {
-                    GD.PrintErr($"Fehler beim Starten der HTTP-Anfrage: {result}");
+                    GD.PrintErr($"Error while retrieving Http Request: {result}");
                 }
             }
             catch (Exception e)
             {
-                GD.PrintErr($"Fehler beim Abrufen der Spotify-Daten: {e.Message}");
+                GD.PrintErr($"Error while retrieving Spotify Data: {e.Message}");
             }
         }
 
@@ -66,7 +62,7 @@ namespace GenreClassificationNetwork
                 var error = image.LoadJpgFromBuffer(body);
                 if (error != Error.Ok)
                 {
-                    GD.PrintErr("Fehler beim Laden des Bildes.");
+                    GD.PrintErr("Error while loading image.");
                     return;
                 }
 
@@ -81,7 +77,7 @@ namespace GenreClassificationNetwork
             }
             else
             {
-                GD.PrintErr($"Fehler beim Laden des Bildes. HTTP-Statuscode: {responseCode}");
+                GD.PrintErr($"Error while retrieving HTTP Request for Profileimage. HTTP-Statuscode: {responseCode}");
             }
         }
 
@@ -98,14 +94,9 @@ namespace GenreClassificationNetwork
             {
                 string subsubgenreName = normalizeGenre(subsubgenre);
                 string genreStrName = normalizeGenre(genreStr);
-                if (genreStrName == "mathrock")
-                {
-                    GD.Print($"{subsubgenreName} :: {genreStrName}");
-                }
 
                 if (subsubgenreName == genreStrName)
                 {
-                    // GD.Print("WHEEEE BIATCH");
                     fdgFac.AddGenre(parentGenre.Name, 500);
                     fdgFac.AddSubGenre(parentGenre.Name, subgenre.Name, 500);
                     fdgFac.AddSubGenre(subgenre.Name, subsubgenre, 500);
@@ -122,10 +113,6 @@ namespace GenreClassificationNetwork
             {
                 string subgenreName = normalizeGenre(subGenre.Name);
                 string genreStrName = normalizeGenre(genreStr);
-                if (genreStrName == "mathrock")
-                {
-                    GD.Print($"{subgenreName} :: {genreStrName}");
-                }
 
                 if (subgenreName == genreStrName)
                 {
@@ -152,10 +139,8 @@ namespace GenreClassificationNetwork
             {
                 string genreName = normalizeGenre(genre.Name);
                 string genreStrName = normalizeGenre(genreStr);
-                if (genreStrName == "mathrock")
-                {
-                    GD.Print($"{genreName} :: {genreStrName}");
-                }
+
+
                 if (genreName == genreStrName)
                 {
                     fdgFac.AddGenre(genre.Name, 500);
@@ -183,15 +168,9 @@ namespace GenreClassificationNetwork
             // deactivate pinchpan camera
             fdgFac.isLoadingGenre = true;
 
-
-            if (SpotifyDataManager.Instance == null)
+            if (!SpotifyDataManager.Instance.isInitialized())
             {
-                throw new Exception("SpotifyDataManager is not initialized oder kein AccessToken vorhanden.");
-            }
-
-            if (string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
-            {
-                throw new Exception("there is no Spotify Access Token avaiable");
+                return;
             }
 
             List<(string Genre, int Count)> topGenres = await SpotifyDataManager.Instance.GetTopGenres(SpotifyDataManager.Instance.AccessToken);
@@ -272,15 +251,6 @@ namespace GenreClassificationNetwork
                     throw new Exception($"JSON-File is empty or couldn't be loaded {jsonFilePath}");
                 }
 
-                foreach (Genre g in genrefile.Genrelist)
-                {
-                    GD.Print(g.Name);
-
-                    foreach (SubGenre sg in g.SubgenreList)
-                    {
-                        GD.Print($"---{sg.Name}");
-                    }
-                }
                 return genrefile;
             }
             catch (Exception ex)

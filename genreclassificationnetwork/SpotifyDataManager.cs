@@ -30,6 +30,22 @@ namespace GenreClassificationNetwork
         }
 
 
+        public bool isInitialized()
+        {
+            if (Instance == null)
+            {
+                GD.PrintErr("SpotifyDataManager is not initialized");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(Instance.AccessToken))
+            {
+                GD.PrintErr("SpotifyDataManager has no AccessToken.");
+                return false;
+            }
+			return true;
+        }
+
         // API-Aufruf: Profile Data
         public static async Task<string> GetProfileData(string accessToken)
         {
@@ -166,45 +182,4 @@ namespace GenreClassificationNetwork
             return await response.Content.ReadAsStringAsync();
         }
     }
-
-    /*
-		// Beispiel für die Verwendung
-		public partial class LogIn : Control
-		{
-			private async Task DisplayTopGenres()
-			{
-				if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
-				{
-					GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
-					return;
-				}
-
-				var topGenres = await SpotifyDataManager.Instance.GetTopGenres(SpotifyDataManager.Instance.AccessToken);
-
-				GD.Print("Deine Top-Genres:");
-				foreach (var (genre, count) in topGenres)
-				{
-					GD.Print($"{genre}: {count}");
-				}
-			}
-
-
-			public override void _Ready()
-			{
-				//var loadGenresButton = GetNode<Button>("LoadGenresButton");
-				//if (loadGenresButton != null)
-				//{
-				//loadGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayTopGenres));
-				//GD.Print("LoadGenresButton verbunden!");
-				//}
-				//
-				//var listGenresButton = GetNode<Button>("ListGenresButton");
-				//if (listGenresButton != null)
-				//{
-				//listGenresButton.Connect(Button.SignalName.Pressed, Callable.From(DisplayGenresAsList));
-				//GD.Print("ListGenresButton verbunden!");
-				//}
-			}
-		}
-		*/
 }
