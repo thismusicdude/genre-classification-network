@@ -3,17 +3,11 @@
 [ext_resource type="Script" path="res://scenes/2dTree/MainTreeScene.cs" id="1_qgovr"]
 [ext_resource type="Script" path="res://scenes/2dTree/FdgFactory.cs" id="2_rxtl8"]
 [ext_resource type="Script" path="res://addons/ppc/ppcamera.gd" id="3_4cprc"]
+[ext_resource type="PackedScene" uid="uid://b48olrcr17xkb" path="res://scenes/2dTree/ProfileImageContainer.tscn" id="4_p283l"]
 [ext_resource type="Texture2D" uid="uid://cf72t0fnmi1qr" path="res://resources/playlist-minimalistic-3-svgrepo-com (1).svg" id="4_so2sf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yokag"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8q1be"]
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 50
-corner_radius_top_right = 50
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q1mgk"]
 
@@ -82,18 +76,8 @@ text = "UserName sdfs
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxFlat_yokag")
 
-[node name="ProfileImageContainer" type="PanelContainer" parent="CanvasLayer/HBoxContainer"]
-clip_children = 2
-clip_contents = true
-custom_minimum_size = Vector2(70, 70)
+[node name="ProfileImageContainer" parent="CanvasLayer/HBoxContainer" instance=ExtResource("4_p283l")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8q1be")
-
-[node name="ProfileImage" type="TextureRect" parent="CanvasLayer/HBoxContainer/ProfileImageContainer"]
-clip_contents = true
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-expand_mode = 2
 
 [node name="VSeparator2" type="VSeparator" parent="CanvasLayer/HBoxContainer"]
 layout_mode = 2

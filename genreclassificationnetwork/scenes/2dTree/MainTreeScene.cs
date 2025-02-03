@@ -3,9 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.Json;
 using System.Collections.Generic;
-using System.IO;
 
 namespace GenreClassificationNetwork
 {
@@ -20,6 +18,7 @@ namespace GenreClassificationNetwork
             base._Ready();
             _imageDisplay = GetNode<TextureRect>("CanvasLayer/HBoxContainer/ProfileImageContainer/ProfileImage");
             FetchSpotifyProfileAsync();
+
         }
 
 
@@ -71,15 +70,14 @@ namespace GenreClassificationNetwork
                     return;
                 }
 
-                // Textur aus dem Bild erstellen
+                // Profile Image setting
                 ImageTexture texture = new();
                 texture.SetImage(image);
-
-                // Textur in das TextureRect einfügen
                 _imageDisplay.Texture = texture;
 
-                GD.Print("Bild erfolgreich geladen!");
-
+                // RootNode Set Profile Image
+                FdgFactory fdgFac = GetNode<FdgFactory>("FdgFactory");
+                fdgFac.setProfileImg(body);
             }
             else
             {
@@ -110,7 +108,7 @@ namespace GenreClassificationNetwork
 
             foreach (var (mainGenre, subgenres) in genreHierarchy)
             {
-                
+
                 // Normalisierung: Entferne Leerzeichen, konvertiere zu Kleinbuchstaben
                 string normalizedMainGenre = mainGenre.Trim().ToLowerInvariant();
 
