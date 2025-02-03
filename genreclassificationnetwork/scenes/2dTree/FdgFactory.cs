@@ -257,6 +257,8 @@ private void EqualizeConnectionLengths(double delta)
 		public void AddGenre(string name, double weight)
 		{
 			if (genreMap.ContainsKey(name)) return;
+			
+			GD.Print($"Adding genre {name}. Current count before: {mainGenres.Count}/{MaxMainGenres}");
 
 			var position = CalculateMainGenrePosition(700f + mainGenres.Count * 50f);
 			var nodeToAdd = CreateGenreNode(position, 0.75f);
@@ -313,7 +315,8 @@ private void EqualizeConnectionLengths(double delta)
 
 		private Vector2 CalculateMainGenrePosition(float radius)
 		{
-			float angle = mainGenreCount++ * (2 * Mathf.Pi / MaxMainGenres); 
+			float angle = mainGenreCount * (2 * Mathf.Pi / MaxMainGenres);
+			mainGenreCount++;
 
 			return rootNode.Position + new Vector2(
 				Mathf.Cos(angle) * radius,

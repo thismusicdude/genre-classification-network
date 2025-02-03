@@ -206,7 +206,9 @@ namespace GenreClassificationNetwork
 				var genreCorrectionMap = new Dictionary<string, string>
 				{
 					{ "hop", "hip hop" },
-					//{ "house music", "house" }
+					{ "roll", "rock and roll" },
+					{ "drill", "drill" },
+					{ "urbaine", "urban" }
 				};
 
 				if (genreCorrectionMap.ContainsKey(normalizedMainGenre))
