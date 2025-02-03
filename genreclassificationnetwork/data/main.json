@@ -248,6 +248,14 @@
                     ]
                 },
                 {
+                    "Name": "German Hip-Hop",
+                    "Subsubgenres": [
+                        "Deutschrap",
+                        "Traprap",
+                        "Boom Bap Deutsch"
+                    ]
+                },
+                {
                     "Name": "Underground",
                     "Subsubgenres": [
                         "abstract hip-hop",
@@ -727,6 +735,22 @@
                         "jazz standards",
                         "vocal improvisation",
                         "scat singing"
+                    ]
+                },
+                {
+                    "Name": "Swing Jazz",
+                    "Subsubgenres": [
+                        "big band",
+                        "count basie style",
+                        "benny goodman style"
+                    ]
+                },
+                {
+                    "Name": "Big Band",
+                    "Subsubgenres": [
+                        "swing era",
+                        "jazz orchestra",
+                        "modern big band"
                     ]
                 }
             ]
