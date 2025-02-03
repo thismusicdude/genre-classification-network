@@ -1,734 +1,732 @@
 {
-    "Genres": [
-        {
-            "Name": "Classical",
-            "Subgenres": [
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Classical Period",
-                    "Subsubgenres": [
-                        "symphony",
-                        "chamber music",
-                        "sonata",
-                        "string quartet"
-                    ]
-                },
-                {
-                    "Name": "Romantic",
-                    "Subsubgenres": [
-                        "romantic symphony",
-                        "piano solo",
-                        "opera",
-                        "art song"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Baroque",
-                    "Subsubgenres": [
-                        "early music",
-                        "baroque orchestra",
-                        "concerto grosso",
-                        "opera"
-                    ]
-                },
-                {
-                    "Name": "Modern Classical",
-                    "Subsubgenres": [
-                        "minimalism",
-                        "avant-garde classical",
-                        "neoclassical",
-                        "serialism"
-                    ]
-                },
-                {
-                    "Name": "Impressionism",
-                    "Subsubgenres": [
-                        "impressionist piano",
-                        "orchestral impressionism",
-                        "French impressionism"
-                    ]
-                },
-                {
-                    "Name": "Renaissance",
-                    "Subsubgenres": [
-                        "early music",
-                        "sacred music",
-                        "madrigal",
-                        "motet"
-                    ]
-                },
-                {
-                    "Name": "Opera",
-                    "Subsubgenres": [
-                        "bel canto",
-                        "wagnerian opera",
-                        "verismo",
-                        "opera buffa"
-                    ]
-                },
-                {
-                    "Name": "Contemporary Classical",
-                    "Subsubgenres": [
-                        "film score",
-                        "electronic classical",
-                        "contemporary opera"
-                    ]
-                },
-                {
-                    "Name": "Folk Classical",
-                    "Subsubgenres": [
-                        "folk music",
-                        "ethnic classical",
-                        "world fusion"
-                    ]
-                },
-                {
-                    "Name": "Chamber Music",
-                    "Subsubgenres": [
-                        "string quartet",
-                        "piano trio",
-                        "duo",
-                        "wind quintet"
-                    ]
-                },
-                {
-                    "Name": "Crossover Classical",
-                    "Subsubgenres": [
-                        "popera",
-                        "rock classical",
-                        "classical crossover",
-                        "new age"
-                    ]
-                },
-                {
-                    "Name": "Choral",
-                    "Subsubgenres": [
-                        "sacred choral",
-                        "secular choral",
-                        "a cappella",
-                        "choral symphony"
-                    ]
-                }
-            ]
-        },
-        {
-            "Name": "Electronic",
-            "Subgenres": [
-                {
-                    "Name": "House",
-                    "Subsubgenres": [
-                        "deep house",
-                        "progressive house",
-                        "tech house",
-                        "electro house",
-                        "future house"
-                    ]
-                },
-                {
-                    "Name": "Techno",
-                    "Subsubgenres": [
-                        "minimal techno",
-                        "acid techno",
-                        "hard techno",
-                        "detroit techno",
-                        "industrial techno"
-                    ]
-                },
-                {
-                    "Name": "Trance",
-                    "Subsubgenres": [
-                        "progressive trance",
-                        "goa trance",
-                        "uplifting trance",
-                        "psytrance",
-                        "hard trance"
-                    ]
-                },
-                {
-                    "Name": "Drum & Bass",
-                    "Subsubgenres": [
-                        "liquid funk",
-                        "neurofunk",
-                        "jump-up",
-                        "jungle",
-                        "darkstep"
-                    ]
-                },
-                {
-                    "Name": "Dubstep",
-                    "Subsubgenres": [
-                        "brostep",
-                        "riddim",
-                        "melodic dubstep",
-                        "deep dubstep",
-                        "future bass"
-                    ]
-                },
-                {
-                    "Name": "Ambient",
-                    "Subsubgenres": [
-                        "dark ambient",
-                        "space ambient",
-                        "drone",
-                        "chillwave",
-                        "new age"
-                    ]
-                },
-                {
-                    "Name": "Electro",
-                    "Subsubgenres": [
-                        "electroclash",
-                        "synthwave",
-                        "darkwave",
-                        "retro electro",
-                        "italo disco"
-                    ]
-                },
-                {
-                    "Name": "IDM",
-                    "Subsubgenres": [
-                        "glitch",
-                        "breakcore",
-                        "braindance",
-                        "experimental electronic",
-                        "ambient techno"
-                    ]
-                }
-            ]
-        },
-        {
-            "Name": "Hip-Hop",
-            "Subgenres": [
-                {
-                    "Name": "Old School",
-                    "Subsubgenres": [
-                        "boom bap",
-                        "golden age hip-hop",
-                        "electro hip-hop"
-                    ]
-                },
-                {
-                    "Name": "Mainstream",
-                    "Subsubgenres": [
-                        "trap",
-                        "gangsta rap",
-                        "west coast rap",
-                        "east coast rap"
-                    ]
-                },
-                {
-                    "Name": "Alternative",
-                    "Subsubgenres": [
-                        "conscious hip-hop",
-                        "jazz rap",
-                        "experimental hip-hop"
-                    ]
-                },
-                {
-                    "Name": "Southern",
-                    "Subsubgenres": [
-                        "dirty south",
-                        "crunk",
-                        "southern hip-hop"
-                    ]
-                },
-                {
-                    "Name": "Latin Hip-Hop",
-                    "Subsubgenres": [
-                        "reggaeton",
-                        "latin trap",
-                        "chicano rap"
-                    ]
-                },
-                {
-                    "Name": "UK Hip-Hop",
-                    "Subsubgenres": [
-                        "grime",
-                        "UK drill",
-                        "british boom bap"
-                    ]
-                },
-                {
-                    "Name": "Underground",
-                    "Subsubgenres": [
-                        "abstract hip-hop",
-                        "horrorcore",
-                        "lo-fi hip-hop",
-                        "backpack rap"
-                    ]
-                },
-                {
-                    "Name": "Trap Subgenres",
-                    "Subsubgenres": [
-                        "future bass",
-                        "melodic trap",
-                        "cloud rap",
-                        "drill"
-                    ]
-                },
-                {
-                    "Name": "Jazz Influences",
-                    "Subsubgenres": [
-                        "acid rap",
-                        "neo-soul",
-                        "hip-hop jazz fusion"
-                    ]
-                },
-                {
-                    "Name": "Electro Hip-Hop",
-                    "Subsubgenres": [
-                        "electro rap",
-                        "glitch hop",
-                        "bass music"
-                    ]
-                }
-            ]
-        },
-        {
-            "Name": "Metal",
-            "Subgenres": [
-                {
-                    "Name": "Classic Metal",
-                    "Subsubgenres": [
-                        "heavy metal",
-                        "power metal",
-                        "speed metal"
-                    ]
-                },
-                {
-                    "Name": "Thrash Metal",
-                    "Subsubgenres": [
-                        "thrash",
-                        "crossover thrash",
-                        "blackened thrash"
-                    ]
-                },
-                {
-                    "Name": "Death Metal",
-                    "Subsubgenres": [
-                        "deathcore",
-                        "technical death metal",
-                        "brutal death metal"
-                    ]
-                },
-                {
-                    "Name": "Black Metal",
-                    "Subsubgenres": [
-                        "symphonic black metal",
-                        "ambient black metal",
-                        "raw black metal"
-                    ]
-                },
-                {
-                    "Name": "Doom Metal",
-                    "Subsubgenres": [
-                        "sludge metal",
-                        "funeral doom",
-                        "stoner doom"
-                    ]
-                },
-                {
-                    "Name": "Progressive Metal",
-                    "Subsubgenres": [
-                        "progressive death metal",
-                        "symphonic metal",
-                        "djent"
-                    ]
-                },
-                {
-                    "Name": "Alternative Metal",
-                    "Subsubgenres": [
-                        "nu-metal",
-                        "industrial metal",
-                        "grunge metal"
-                    ]
-                },
-                {
-                    "Name": "Folk Metal",
-                    "Subsubgenres": [
-                        "pagan metal",
-                        "viking metal",
-                        "celtic metal"
-                    ]
-                },
-                {
-                    "Name": "Gothic Metal",
-                    "Subsubgenres": [
-                        "symphonic gothic metal",
-                        "doom gothic metal",
-                        "black gothic metal"
-                    ]
-                },
-                {
-                    "Name": "Post-Metal",
-                    "Subsubgenres": [
-                        "atmospheric sludge",
-                        "post-hardcore",
-                        "ambient post-metal"
-                    ]
-                },
-                {
-                    "Name": "Metalcore",
-                    "Subsubgenres": [
-                        "melodic metalcore",
-                        "death metalcore",
-                        "hardcore metal"
-                    ]
-                },
-                {
-                    "Name": "Power Metal",
-                    "Subsubgenres": [
-                        "epic metal",
-                        "neoclassical metal",
-                        "melodic power metal"
-                    ]
-                },
-                {
-                    "Name": "Industrial Metal",
-                    "Subsubgenres": [
-                        "industrial death metal",
-                        "electronic metal",
-                        "techno metal"
-                    ]
-                }
-            ]
-        },
-        {
-            "Name": "Pop",
-            "Subgenres": [
-                {
-                    "Name": "Classic Pop",
-                    "Subsubgenres": [
-                        "disco",
-                        "bubblegum pop",
-                        "synthpop",
-                        "soft rock"
-                    ]
-                },
-                {
-                    "Name": "Indie Pop",
-                    "Subsubgenres": [
-                        "dream pop",
-                        "indie synthpop",
-                        "chillwave",
-                        "lo-fi pop"
-                    ]
-                },
-                {
-                    "Name": "Electropop",
-                    "Subsubgenres": [
-                        "future pop",
-                        "synthwave",
-                        "dance-pop",
-                        "synth-funk"
-                    ]
-                },
-                {
-                    "Name": "Pop-Rock",
-                    "Subsubgenres": [
-                        "power pop",
-                        "folk-pop",
-                        "jangle pop",
-                        "arena pop"
-                    ]
-                },
-                {
-                    "Name": "R&B Pop",
-                    "Subsubgenres": [
-                        "neo-soul",
-                        "contemporary R&B",
-                        "pop-soul"
-                    ]
-                },
-                {
-                    "Name": "K-Pop",
-                    "Subsubgenres": [
-                        "K-pop ballad",
-                        "K-pop dance",
-                        "K-pop hip-hop",
-                        "K-pop rock"
-                    ]
-                },
-                {
-                    "Name": "Latin Pop",
-                    "Subsubgenres": [
-                        "reggaeton",
-                        "tropical pop",
-                        "salsa pop",
-                        "cumbia pop"
-                    ]
-                },
-                {
-                    "Name": "Pop Punk",
-                    "Subsubgenres": [
-                        "pop punk revival",
-                        "emo pop",
-                        "punk-pop"
-                    ]
-                },
-                {
-                    "Name": "Teen Pop",
-                    "Subsubgenres": [
-                        "boy bands",
-                        "girl groups",
-                        "teen idols"
-                    ]
-                },
-                {
-                    "Name": "Dance Pop",
-                    "Subsubgenres": [
-                        "house pop",
-                        "techno-pop",
-                        "disco-house"
-                    ]
-                },
-                {
-                    "Name": "Alternative Pop",
-                    "Subsubgenres": [
-                        "avant-garde pop",
-                        "experimental pop",
-                        "indie electro-pop"
-                    ]
-                },
-                {
-                    "Name": "Baroque Pop",
-                    "Subsubgenres": [
-                        "chamber pop",
-                        "orchestral pop",
-                        "classical pop"
-                    ]
-                },
-                {
-                    "Name": "Art Pop",
-                    "Subsubgenres": [
-                        "art rock",
-                        "electronic art pop",
-                        "experimental pop"
-                    ]
-                },
-                {
-                    "Name": "French Pop",
-                    "Subsubgenres": [
-                        "chanson",
-                        "French electropop",
-                        "yé-yé",
-                        "nouvelle chanson"
-                    ]
-                },
-                {
-                    "Name": "German Pop",
-                    "Subsubgenres": [
-                        "Neue Deutsche Welle",
-                        "Deutschpop",
-                        "Schlagerpop",
-                        "German electropop"
-                    ]
-                },
-                {
-                    "Name": "Bedroom Pop",
-                    "Subsubgenres": [
-                        "indie bedroom pop",
-                        "lo-fi bedroom pop",
-                        "DIY pop",
-                        "chill pop"
-                    ]
-                }
-            ]
-        },
-        {
-            "Name": "Rock",
-            "Subgenres": [
-                {
-                    "Name": "Classic Rock",
-                    "Subsubgenres": [
-                        "hard rock",
-                        "progressive rock",
-                        "blues rock"
-                    ]
-                },
-                {
-                    "Name": "Alternative Rock",
-                    "Subsubgenres": [
-                        "grunge",
-                        "indie rock",
-                        "post-punk",
-                        "garage rock"
-                    ]
-                },
-                {
-                    "Name": "Punk Rock",
-                    "Subsubgenres": [
-                        "hardcore punk",
-                        "pop punk",
-                        "ska punk",
-                        "punk revival"
-                    ]
-                },
-                {
-                    "Name": "Indie Rock",
-                    "Subsubgenres": [
-                        "indie pop",
-                        "shoegaze",
-                        "dream pop",
-                        "lo-fi"
-                    ]
-                },
-                {
-                    "Name": "Heavy Rock",
-                    "Subsubgenres": [
-                        "stoner rock",
-                        "doom rock",
-                        "sludge metal"
-                    ]
-                },
-                {
-                    "Name": "Folk Rock",
-                    "Subsubgenres": [
-                        "americana",
-                        "singer-songwriter",
-                        "roots rock"
-                    ]
-                },
-                {
-                    "Name": "Psychedelic Rock",
-                    "Subsubgenres": [
-                        "space rock",
-                        "krautrock",
-                        "acid rock",
-                        "neo-psychedelia"
-                    ]
-                },
-                {
-                    "Name": "Progressive Rock",
-                    "Subsubgenres": [
-                        "symphonic prog",
-                        "experimental rock",
-                        "prog metal"
-                    ]
-                },
-                {
-                    "Name": "Post-Rock",
-                    "Subsubgenres": [
-                        "math rock",
-                        "ambient rock",
-                        "instrumental rock"
-                    ]
-                },
-                {
-                    "Name": "Garage Rock",
-                    "Subsubgenres": [
-                        "raw rock",
-                        "punk rock",
-                        "lo-fi"
-                    ]
-                },
-                {
-                    "Name": "Southern Rock",
-                    "Subsubgenres": [
-                        "country rock",
-                        "blues rock",
-                        "swamp rock",
-                        "rockabilly"
-                    ]
-                },
-                {
-                    "Name": "Hard Rock",
-                    "Subsubgenres": [
-                        "arena rock",
-                        "glam rock",
-                        "classic hard rock"
-                    ]
-                },
-                {
-                    "Name": "Pop Rock",
-                    "Subsubgenres": [
-                        "power pop",
-                        "soft rock",
-                        "synth-pop",
-                        "folk-pop"
-                    ]
-                }
-            ]
-        }
-    ]
+    {
+        "Name": "Classical",
+        "Subgenres": [
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Classical Period",
+                "Subsubgenres": [
+                    "symphony",
+                    "chamber music",
+                    "sonata",
+                    "string quartet"
+                ]
+            },
+            {
+                "Name": "Romantic",
+                "Subsubgenres": [
+                    "romantic symphony",
+                    "piano solo",
+                    "opera",
+                    "art song"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Baroque",
+                "Subsubgenres": [
+                    "early music",
+                    "baroque orchestra",
+                    "concerto grosso",
+                    "opera"
+                ]
+            },
+            {
+                "Name": "Modern Classical",
+                "Subsubgenres": [
+                    "minimalism",
+                    "avant-garde classical",
+                    "neoclassical",
+                    "serialism"
+                ]
+            },
+            {
+                "Name": "Impressionism",
+                "Subsubgenres": [
+                    "impressionist piano",
+                    "orchestral impressionism",
+                    "French impressionism"
+                ]
+            },
+            {
+                "Name": "Renaissance",
+                "Subsubgenres": [
+                    "early music",
+                    "sacred music",
+                    "madrigal",
+                    "motet"
+                ]
+            },
+            {
+                "Name": "Opera",
+                "Subsubgenres": [
+                    "bel canto",
+                    "wagnerian opera",
+                    "verismo",
+                    "opera buffa"
+                ]
+            },
+            {
+                "Name": "Contemporary Classical",
+                "Subsubgenres": [
+                    "film score",
+                    "electronic classical",
+                    "contemporary opera"
+                ]
+            },
+            {
+                "Name": "Folk Classical",
+                "Subsubgenres": [
+                    "folk music",
+                    "ethnic classical",
+                    "world fusion"
+                ]
+            },
+            {
+                "Name": "Chamber Music",
+                "Subsubgenres": [
+                    "string quartet",
+                    "piano trio",
+                    "duo",
+                    "wind quintet"
+                ]
+            },
+            {
+                "Name": "Crossover Classical",
+                "Subsubgenres": [
+                    "popera",
+                    "rock classical",
+                    "classical crossover",
+                    "new age"
+                ]
+            },
+            {
+                "Name": "Choral",
+                "Subsubgenres": [
+                    "sacred choral",
+                    "secular choral",
+                    "a cappella",
+                    "choral symphony"
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "Electronic",
+        "Subgenres": [
+            {
+                "Name": "House",
+                "Subsubgenres": [
+                    "deep house",
+                    "progressive house",
+                    "tech house",
+                    "electro house",
+                    "future house"
+                ]
+            },
+            {
+                "Name": "Techno",
+                "Subsubgenres": [
+                    "minimal techno",
+                    "acid techno",
+                    "hard techno",
+                    "detroit techno",
+                    "industrial techno"
+                ]
+            },
+            {
+                "Name": "Trance",
+                "Subsubgenres": [
+                    "progressive trance",
+                    "goa trance",
+                    "uplifting trance",
+                    "psytrance",
+                    "hard trance"
+                ]
+            },
+            {
+                "Name": "Drum & Bass",
+                "Subsubgenres": [
+                    "liquid funk",
+                    "neurofunk",
+                    "jump-up",
+                    "jungle",
+                    "darkstep"
+                ]
+            },
+            {
+                "Name": "Dubstep",
+                "Subsubgenres": [
+                    "brostep",
+                    "riddim",
+                    "melodic dubstep",
+                    "deep dubstep",
+                    "future bass"
+                ]
+            },
+            {
+                "Name": "Ambient",
+                "Subsubgenres": [
+                    "dark ambient",
+                    "space ambient",
+                    "drone",
+                    "chillwave",
+                    "new age"
+                ]
+            },
+            {
+                "Name": "Electro",
+                "Subsubgenres": [
+                    "electroclash",
+                    "synthwave",
+                    "darkwave",
+                    "retro electro",
+                    "italo disco"
+                ]
+            },
+            {
+                "Name": "IDM",
+                "Subsubgenres": [
+                    "glitch",
+                    "breakcore",
+                    "braindance",
+                    "experimental electronic",
+                    "ambient techno"
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "Hip-Hop",
+        "Subgenres": [
+            {
+                "Name": "Old School",
+                "Subsubgenres": [
+                    "boom bap",
+                    "golden age hip-hop",
+                    "electro hip-hop"
+                ]
+            },
+            {
+                "Name": "Mainstream",
+                "Subsubgenres": [
+                    "trap",
+                    "gangsta rap",
+                    "west coast rap",
+                    "east coast rap"
+                ]
+            },
+            {
+                "Name": "Alternative",
+                "Subsubgenres": [
+                    "conscious hip-hop",
+                    "jazz rap",
+                    "experimental hip-hop"
+                ]
+            },
+            {
+                "Name": "Southern",
+                "Subsubgenres": [
+                    "dirty south",
+                    "crunk",
+                    "southern hip-hop"
+                ]
+            },
+            {
+                "Name": "Latin Hip-Hop",
+                "Subsubgenres": [
+                    "reggaeton",
+                    "latin trap",
+                    "chicano rap"
+                ]
+            },
+            {
+                "Name": "UK Hip-Hop",
+                "Subsubgenres": [
+                    "grime",
+                    "UK drill",
+                    "british boom bap"
+                ]
+            },
+            {
+                "Name": "Underground",
+                "Subsubgenres": [
+                    "abstract hip-hop",
+                    "horrorcore",
+                    "lo-fi hip-hop",
+                    "backpack rap"
+                ]
+            },
+            {
+                "Name": "Trap Subgenres",
+                "Subsubgenres": [
+                    "future bass",
+                    "melodic trap",
+                    "cloud rap",
+                    "drill"
+                ]
+            },
+            {
+                "Name": "Jazz Influences",
+                "Subsubgenres": [
+                    "acid rap",
+                    "neo-soul",
+                    "hip-hop jazz fusion"
+                ]
+            },
+            {
+                "Name": "Electro Hip-Hop",
+                "Subsubgenres": [
+                    "electro rap",
+                    "glitch hop",
+                    "bass music"
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "Metal",
+        "Subgenres": [
+            {
+                "Name": "Classic Metal",
+                "Subsubgenres": [
+                    "heavy metal",
+                    "power metal",
+                    "speed metal"
+                ]
+            },
+            {
+                "Name": "Thrash Metal",
+                "Subsubgenres": [
+                    "thrash",
+                    "crossover thrash",
+                    "blackened thrash"
+                ]
+            },
+            {
+                "Name": "Death Metal",
+                "Subsubgenres": [
+                    "deathcore",
+                    "technical death metal",
+                    "brutal death metal"
+                ]
+            },
+            {
+                "Name": "Black Metal",
+                "Subsubgenres": [
+                    "symphonic black metal",
+                    "ambient black metal",
+                    "raw black metal"
+                ]
+            },
+            {
+                "Name": "Doom Metal",
+                "Subsubgenres": [
+                    "sludge metal",
+                    "funeral doom",
+                    "stoner doom"
+                ]
+            },
+            {
+                "Name": "Progressive Metal",
+                "Subsubgenres": [
+                    "progressive death metal",
+                    "symphonic metal",
+                    "djent"
+                ]
+            },
+            {
+                "Name": "Alternative Metal",
+                "Subsubgenres": [
+                    "nu-metal",
+                    "industrial metal",
+                    "grunge metal"
+                ]
+            },
+            {
+                "Name": "Folk Metal",
+                "Subsubgenres": [
+                    "pagan metal",
+                    "viking metal",
+                    "celtic metal"
+                ]
+            },
+            {
+                "Name": "Gothic Metal",
+                "Subsubgenres": [
+                    "symphonic gothic metal",
+                    "doom gothic metal",
+                    "black gothic metal"
+                ]
+            },
+            {
+                "Name": "Post-Metal",
+                "Subsubgenres": [
+                    "atmospheric sludge",
+                    "post-hardcore",
+                    "ambient post-metal"
+                ]
+            },
+            {
+                "Name": "Metalcore",
+                "Subsubgenres": [
+                    "melodic metalcore",
+                    "death metalcore",
+                    "hardcore metal"
+                ]
+            },
+            {
+                "Name": "Power Metal",
+                "Subsubgenres": [
+                    "epic metal",
+                    "neoclassical metal",
+                    "melodic power metal"
+                ]
+            },
+            {
+                "Name": "Industrial Metal",
+                "Subsubgenres": [
+                    "industrial death metal",
+                    "electronic metal",
+                    "techno metal"
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "Pop",
+        "Subgenres": [
+            {
+                "Name": "Classic Pop",
+                "Subsubgenres": [
+                    "disco",
+                    "bubblegum pop",
+                    "synthpop",
+                    "soft rock"
+                ]
+            },
+            {
+                "Name": "Indie Pop",
+                "Subsubgenres": [
+                    "dream pop",
+                    "indie synthpop",
+                    "chillwave",
+                    "lo-fi pop"
+                ]
+            },
+            {
+                "Name": "Electropop",
+                "Subsubgenres": [
+                    "future pop",
+                    "synthwave",
+                    "dance-pop",
+                    "synth-funk"
+                ]
+            },
+            {
+                "Name": "Pop-Rock",
+                "Subsubgenres": [
+                    "power pop",
+                    "folk-pop",
+                    "jangle pop",
+                    "arena pop"
+                ]
+            },
+            {
+                "Name": "R&B Pop",
+                "Subsubgenres": [
+                    "neo-soul",
+                    "contemporary R&B",
+                    "pop-soul"
+                ]
+            },
+            {
+                "Name": "K-Pop",
+                "Subsubgenres": [
+                    "K-pop ballad",
+                    "K-pop dance",
+                    "K-pop hip-hop",
+                    "K-pop rock"
+                ]
+            },
+            {
+                "Name": "Latin Pop",
+                "Subsubgenres": [
+                    "reggaeton",
+                    "tropical pop",
+                    "salsa pop",
+                    "cumbia pop"
+                ]
+            },
+            {
+                "Name": "Pop Punk",
+                "Subsubgenres": [
+                    "pop punk revival",
+                    "emo pop",
+                    "punk-pop"
+                ]
+            },
+            {
+                "Name": "Teen Pop",
+                "Subsubgenres": [
+                    "boy bands",
+                    "girl groups",
+                    "teen idols"
+                ]
+            },
+            {
+                "Name": "Dance Pop",
+                "Subsubgenres": [
+                    "house pop",
+                    "techno-pop",
+                    "disco-house"
+                ]
+            },
+            {
+                "Name": "Alternative Pop",
+                "Subsubgenres": [
+                    "avant-garde pop",
+                    "experimental pop",
+                    "indie electro-pop"
+                ]
+            },
+            {
+                "Name": "Baroque Pop",
+                "Subsubgenres": [
+                    "chamber pop",
+                    "orchestral pop",
+                    "classical pop"
+                ]
+            },
+            {
+                "Name": "Art Pop",
+                "Subsubgenres": [
+                    "art rock",
+                    "electronic art pop",
+                    "experimental pop"
+                ]
+            },
+            {
+                "Name": "French Pop",
+                "Subsubgenres": [
+                    "chanson",
+                    "French electropop",
+                    "yé-yé",
+                    "nouvelle chanson"
+                ]
+            },
+            {
+                "Name": "German Pop",
+                "Subsubgenres": [
+                    "Neue Deutsche Welle",
+                    "Deutschpop",
+                    "Schlagerpop",
+                    "German electropop"
+                ]
+            },
+            {
+                "Name": "Bedroom Pop",
+                "Subsubgenres": [
+                    "indie bedroom pop",
+                    "lo-fi bedroom pop",
+                    "DIY pop",
+                    "chill pop"
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "Rock",
+        "Subgenres": [
+            {
+                "Name": "Classic Rock",
+                "Subsubgenres": [
+                    "hard rock",
+                    "progressive rock",
+                    "blues rock"
+                ]
+            },
+            {
+                "Name": "Alternative Rock",
+                "Subsubgenres": [
+                    "grunge",
+                    "indie rock",
+                    "post-punk",
+                    "garage rock"
+                ]
+            },
+            {
+                "Name": "Punk Rock",
+                "Subsubgenres": [
+                    "hardcore punk",
+                    "pop punk",
+                    "ska punk",
+                    "punk revival"
+                ]
+            },
+            {
+                "Name": "Indie Rock",
+                "Subsubgenres": [
+                    "indie pop",
+                    "shoegaze",
+                    "dream pop",
+                    "lo-fi"
+                ]
+            },
+            {
+                "Name": "Heavy Rock",
+                "Subsubgenres": [
+                    "stoner rock",
+                    "doom rock",
+                    "sludge metal"
+                ]
+            },
+            {
+                "Name": "Folk Rock",
+                "Subsubgenres": [
+                    "americana",
+                    "singer-songwriter",
+                    "roots rock"
+                ]
+            },
+            {
+                "Name": "Psychedelic Rock",
+                "Subsubgenres": [
+                    "space rock",
+                    "krautrock",
+                    "acid rock",
+                    "neo-psychedelia"
+                ]
+            },
+            {
+                "Name": "Progressive Rock",
+                "Subsubgenres": [
+                    "symphonic prog",
+                    "experimental rock",
+                    "prog metal"
+                ]
+            },
+            {
+                "Name": "Post-Rock",
+                "Subsubgenres": [
+                    "math rock",
+                    "ambient rock",
+                    "instrumental rock"
+                ]
+            },
+            {
+                "Name": "Garage Rock",
+                "Subsubgenres": [
+                    "raw rock",
+                    "punk rock",
+                    "lo-fi"
+                ]
+            },
+            {
+                "Name": "Southern Rock",
+                "Subsubgenres": [
+                    "country rock",
+                    "blues rock",
+                    "swamp rock",
+                    "rockabilly"
+                ]
+            },
+            {
+                "Name": "Hard Rock",
+                "Subsubgenres": [
+                    "arena rock",
+                    "glam rock",
+                    "classic hard rock"
+                ]
+            },
+            {
+                "Name": "Pop Rock",
+                "Subsubgenres": [
+                    "power pop",
+                    "soft rock",
+                    "synth-pop",
+                    "folk-pop"
+                ]
+            }
+        ]
+    }
 }
