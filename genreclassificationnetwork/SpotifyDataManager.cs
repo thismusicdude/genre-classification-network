@@ -21,7 +21,7 @@ namespace GenreClassificationNetwork
             if (Instance == null)
             {
                 Instance = this;
-                SetProcess(false); // Node bleibt erhalten
+                SetProcess(false); // Node remains intact
             }
             else
             {
@@ -46,7 +46,7 @@ namespace GenreClassificationNetwork
 			return true;
         }
 
-        // API-Aufruf: Profile Data
+        // API-request: Profile Data
         public static async Task<string> GetProfileData(string accessToken)
         {
             using System.Net.Http.HttpClient client = new();
@@ -56,7 +56,7 @@ namespace GenreClassificationNetwork
         }
 
 
-        // API-Aufruf: Top-Künstler abrufen
+        // API-request: retrieve top artists
         public static async Task<string> GetTopArtists(string accessToken)
         {
             using System.Net.Http.HttpClient client = new();
@@ -65,13 +65,13 @@ namespace GenreClassificationNetwork
             return await response.Content.ReadAsStringAsync();
         }
 
-        // Genres aus Top-Künstlern extrahieren
+        // API-request: Extracting genres from top artists
         public async Task<List<(string Genre, int Count)>> GetTopGenres(string accessToken)
         {
             string artistData = await GetTopArtists(accessToken);
             var artistResponse = JsonConvert.DeserializeObject<dynamic>(artistData);
 
-            // Genres sammeln
+            // Collect genres
             var genreList = new List<string>();
             foreach (var artist in artistResponse.items)
             {
@@ -81,7 +81,7 @@ namespace GenreClassificationNetwork
                 }
             }
 
-            // Doppelte Genres entfernen und nach Häufigkeit sortieren
+            // Remove duplicate genres and sort by frequency
             var topGenres = genreList
                 .GroupBy(g => g)
                 .OrderByDescending(g => g.Count())
@@ -95,13 +95,13 @@ namespace GenreClassificationNetwork
         {
             var topGenres = await GetTopGenres(accessToken);
 
-            // Dictionary, um Hauptgenres und zugehörige Subgenres zu speichern
+            // Dictionary to save main genres and associated subgenres
             var genreHierarchy = new Dictionary<string, List<string>>();
 
             foreach (var (genre, _) in topGenres)
             {
-                var genreParts = genre.Split(' '); // Zerlege den Genre-String
-                string mainGenre = genreParts.Last(); // Letztes Wort als Hauptgenre annehmen
+                var genreParts = genre.Split(' '); // Break down the genre string
+                string mainGenre = genreParts.Last(); // Adopt last word as main genre
 
                 if (!genreHierarchy.ContainsKey(mainGenre))
                 {
@@ -115,7 +115,7 @@ namespace GenreClassificationNetwork
         }
 
 
-        // Nur Genres ohne Zähler als Liste zurückgeben
+        // Only return genres without a counter as a list
         public async Task<List<string>> GetGenresAsList(string accessToken)
         {
             var topGenres = await GetTopGenres(accessToken);
@@ -127,7 +127,7 @@ namespace GenreClassificationNetwork
             string trackData = await GetTopTracks(accessToken);
             var trackResponse = JsonConvert.DeserializeObject<dynamic>(trackData);
 
-            // Genres sammeln
+            // Collect sammeln
             var genreList = new List<string>();
             foreach (var track in trackResponse.items)
             {
@@ -148,14 +148,14 @@ namespace GenreClassificationNetwork
                 }
             }
 
-            // Doppelte Genres entfernen und nach Häufigkeit sortieren
+            // Remove duplicate genres and sort by frequency
             var topGenres = genreList
                 .GroupBy(g => g)
                 .OrderByDescending(g => g.Count())
                 .Select(g => (Genre: g.Key, Count: g.Count()))
                 .ToList();
 
-            return topGenres; // Rückgabe des Wertes
+            return topGenres; // Return of the value
         }
 
         public async Task<List<string>> GetTrackNamesAsList(string accessToken)
@@ -163,7 +163,7 @@ namespace GenreClassificationNetwork
             string trackData = await GetTopTracks(accessToken);
             var trackResponse = JsonConvert.DeserializeObject<dynamic>(trackData);
 
-            // Liedernamen sammeln
+            // collect songtitles
             var trackNames = new List<string>();
             foreach (var track in trackResponse.items)
             {

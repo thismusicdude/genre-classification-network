@@ -9,11 +9,11 @@ namespace GenreClassificationNetwork
     [Tool]
     public partial class OwnFdgNode : Node2D
     {
-        // Eigenschaften der Node
+        // Properties of the node
         public Vector2 velocity = new Vector2(0, 0);
         public Vector2 acceleration = new Vector2(0, 0);
 
-        // Variablen für Physik und Knoten-Verhalten
+        // Variables for physics and node behavior
         [Export] public bool PinnedDown = false;
         [Export] public float Radius = 50.0f;
         [Export] public float Mass = 1.0f;
@@ -25,7 +25,7 @@ namespace GenreClassificationNetwork
 
         private bool _DrawPoint = false;
 
-        // Visuelle Einstellungen
+        // Visual settings
         [ExportCategory("Visuals")]
         [Export]
         public bool DrawPoint
@@ -52,7 +52,7 @@ namespace GenreClassificationNetwork
             }
         }
 
-        private Color _PointColor = new Color(1, 1, 1);  // Weiß
+        private Color _PointColor = new(1, 1, 1);  // White
 
         [Export]
         public Color PointColor
@@ -77,16 +77,9 @@ namespace GenreClassificationNetwork
                     GD.Print("Skipping _SetPointColor, not ready");
                 }
             }
-        } /* {
-			get => _print_color;
-			set
-			{
-				_print_color = value;
-				_SetPointColor(value);
-			}
-		} */
+        }
 
-        // Wird aufgerufen, wenn die Node bereit ist
+        // Called when the node is ready
 
         private void OwnRedrawQueue()
         {
@@ -104,7 +97,7 @@ namespace GenreClassificationNetwork
             this.ChildEnteredTree += OnChildEnteredTree;
         }
 
-        // Zeichnet die Node als Punkt, wenn gewünscht
+        // Draws the node as a point, if desired
         public override void _Draw()
         {
             if (DrawPoint)
@@ -113,59 +106,59 @@ namespace GenreClassificationNetwork
             }
         }
 
-        // Beschleunigt die Node mit einer gegebenen Kraft
+        // Accelerates the node with a given force
         public void Accelerate(Vector2 force)
         {
-            // Berechnet die Beschleunigung (F = m*a)
+            // Calculates the acceleration (F = m*a)
             acceleration += force / Mass;
         }
 
-        // Weist die Node an, sich von einem anderen Knoten abzuweisen
+        // Instructs the node to reject itself from another node
         public void Repulse(Node2D otherNode)
         {
             if (Position.DistanceTo(otherNode.Position) > Radius + MinDistance)
                 return;
 
-            // Berechnet die Abstoßkraft
+            // Calculates the repulsive force
             Vector2 force = Position.DirectionTo(otherNode.Position) * repulsion;
 
-            // Wendet die Abstoßkraft an
+            // Applies the repulsive force
             Accelerate(-force);
         }
 
-        // Aktualisiert die Position der Node basierend auf ihrer Geschwindigkeit und Beschleunigung
+        // Updates the position of the node based on its speed and acceleration
         public void UpdatePosition()
         {
-            // Stoppt, wenn die Node fixiert ist
+            // Stops when the node is fixed
             if (PinnedDown)
                 return;
 
-            // Aktualisiert die Geschwindigkeit
+            // Updates the speed
             velocity += acceleration;
 
-            // Reduziert die Geschwindigkeit durch Luftwiderstand
+            // Reduces speed through air resistance
             velocity *= DRAG;
 
-            // Begrenzung der Geschwindigkeit auf die maximal erlaubte Geschwindigkeit
+            // Limiting the speed to the maximum permitted speed
             if (velocity.Length() > MAX_SPEED)
             {
                 velocity = velocity.Normalized() * MAX_SPEED;
             }
 
-            // Stoppt, wenn die Geschwindigkeit zu niedrig ist
+            // Stops if the speed is too low
             if (velocity.Length() < MIN_SPEED)
             {
                 velocity = Vector2.Zero;
             }
 
-            // Aktualisiert die Position
+            // Updates the position
             Position += velocity;
 
-            // Setzt die Beschleunigung zurück
+            // Resets the acceleration
             acceleration = Vector2.Zero;
         }
 
-        // Wird aufgerufen, wenn ein Kind die Baumstruktur verlässt
+        // Called when a child leaves the tree structure
         public void OnChildExitingTree(Node child)
         {
             var parent = GetParent();
@@ -175,7 +168,7 @@ namespace GenreClassificationNetwork
             }
         }
 
-        // Wird aufgerufen, wenn ein Kind in die Baumstruktur eintritt
+        // Called when a child enters the tree structure
         public void OnChildEnteredTree(Node child)
         {
             var parent = GetParent();
@@ -185,7 +178,7 @@ namespace GenreClassificationNetwork
             }
         }
 
-        // Überprüft, ob es Warnungen zur Konfiguration gibt
+        // Checks whether there are warnings about the configuration
         public string[] GetConfigurationWarnings()
         {
             var warnings = new System.Collections.Generic.List<string>();
@@ -198,14 +191,14 @@ namespace GenreClassificationNetwork
             return warnings.ToArray();
         }
 
-        // Setzt den Wert für `DrawPoint` und löst eine Neuzeichnung aus
+        // Sets the value for 'DrawPoint' and triggers a redraw
         private void _SetDrawPoint(bool value)
         {
             DrawPoint = value;
             OwnRedrawQueue();
         }
 
-        // Setzt die Farbe des Punkts und löst eine Neuzeichnung aus
+        // Sets the color of the dot and triggers a redraw
         private void _SetPointColor(Color value)
         {
             PointColor = value;

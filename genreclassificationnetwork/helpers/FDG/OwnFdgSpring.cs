@@ -3,124 +3,123 @@ using System;
 
 namespace GenreClassificationNetwork
 {
-	[GlobalClass, Icon("res://resources/FDGSpring.svg")]
-	[Tool]
-	public partial class OwnFdgSpring : Line2D
-	{
-		// Signal-Äquivalent in C#
-		[Signal]
-		public delegate void ConnectionChangedEventHandler();
+    [GlobalClass, Icon("res://resources/FDGSpring.svg")]
+    [Tool]
+    public partial class OwnFdgSpring : Line2D
+    {
+        [Signal]
+        public delegate void ConnectionChangedEventHandler();
 
-		private OwnFdgNode _NodeStart = null;
-		// Referenzen für die Knoten, die mit der Feder verbunden sind
-		[Export]
-		public OwnFdgNode NodeStart
-		{
-			get => _NodeStart;
-			set
-			{
-				_NodeStart = value;
-				ConnectNodeStart(value);
-			}
-		}
+        private OwnFdgNode _NodeStart = null;
+        // References for the nodes that are connected to the spring
+        [Export]
+        public OwnFdgNode NodeStart
+        {
+            get => _NodeStart;
+            set
+            {
+                _NodeStart = value;
+                ConnectNodeStart(value);
+            }
+        }
 
-		private OwnFdgNode _NodeEnd = null;
-		[Export]
-		public OwnFdgNode NodeEnd
-		{
-			get => _NodeEnd;
-			set
-			{
-				_NodeEnd = value;
-				ConnectNodeEnd(value);
+        private OwnFdgNode _NodeEnd = null;
+        [Export]
+        public OwnFdgNode NodeEnd
+        {
+            get => _NodeEnd;
+            set
+            {
+                _NodeEnd = value;
+                ConnectNodeEnd(value);
 
-			}
-		}
-
+            }
+        }
 
 
-		// Federlänge und Federkonstante
-		[Export]
-		public float length = 500.0f;
-		[Export] public float K = 0.005f;
 
-		// Sichtbarkeit der Linie
-		[Export] public bool draw_line = true;
+        // Spring length and spring constant
+        [Export]
+        public float length = 500.0f;
+        [Export] public float K = 0.005f;
 
-		// Linie zur Darstellung der Feder
-		public Line2D connection;
+        // Visibility of the line
+        [Export] public bool draw_line = true;
 
-		public override void _Ready()
-		{
-			base._Ready();
-			Width = 2.0f;
-			connection = new Line2D();  // Initialisiere Line2D für die Darstellung
-			AddChild(connection);        // Füge es als Kind hinzu
-		}
+        // Line to represent the spring
+        public Line2D connection;
 
-		// Verbindet die zwei Knoten mit der Feder
-		public void ConnectNodes(OwnFdgNode start, OwnFdgNode end)
-		{
-			NodeStart = start;
-			NodeEnd = end;
-			EmitSignal(nameof(ConnectionChanged));
-		}
+        public override void _Ready()
+        {
+            base._Ready();
+            Width = 2.0f;
+            connection = new Line2D();  // Initialize Line2D for the display
+            AddChild(connection);        // Add it as a child
+        }
 
-		// Fügt den verbundenen Knoten eine Kraft hinzu
-		public void MoveNodes()
-		{
-			if (NodeStart == null || NodeEnd == null)
-				return;
+        // Connects the two nodes with the spring
+        public void ConnectNodes(OwnFdgNode start, OwnFdgNode end)
+        {
+            NodeStart = start;
+            NodeEnd = end;
+            EmitSignal(nameof(ConnectionChanged));
+        }
 
-			Vector2 force = NodeEnd.Position - NodeStart.Position;
-			float magnitude = K * (force.Length() - length);
+        // Adds a force to the connected nodes
+        public void MoveNodes()
+        {
+            if (NodeStart == null || NodeEnd == null)
+                return;
 
-			force = force.Normalized() * magnitude;
+            Vector2 force = NodeEnd.Position - NodeStart.Position;
+            float magnitude = K * (force.Length() - length);
 
-			NodeStart.Accelerate(force);
-			NodeEnd.Accelerate(-force);
-		}
+            force = force.Normalized() * magnitude;
 
-		// Aktualisiert die Position der Federlinie
-		public void UpdateLine()
-		{
-			connection.ClearPoints();
+            NodeStart.Accelerate(force);
+            NodeEnd.Accelerate(-force);
+        }
 
-			if (!draw_line)
-				return;
+        // Updates the position of the spring line
+        public void UpdateLine()
+        {
+            connection.ClearPoints();
 
-			if (NodeStart == null || NodeEnd == null)
-				return;
+            if (!draw_line)
+                return;
 
-			connection.AddPoint(NodeStart.Position);
-			connection.AddPoint(NodeEnd.Position);
-		}
+            if (NodeStart == null || NodeEnd == null)
+                return;
 
-		// Warnungen zur Konfiguration der Feder
-		public string[] GetConfigurationWarnings()
-		{
-			var warnings = new System.Collections.Generic.List<string>();
+            connection.AddPoint(NodeStart.Position);
+            connection.AddPoint(NodeEnd.Position);
+        }
 
-			if (!(GetParent() is OwnFdgNode))
-				warnings.Add("The FDGSpring should be a child of a OwnFdgNode");
+        // Warnings on the configuration of the spring
+        public string[] GetConfigurationWarnings()
+        {
+            var warnings = new System.Collections.Generic.List<string>();
 
-			if (NodeStart == null || NodeEnd == null)
-				warnings.Add("The FDGSpring should have two nodes connected to it");
+            if (!(GetParent() is OwnFdgNode))
+                warnings.Add("The FDGSpring should be a child of a OwnFdgNode");
 
-			return warnings.ToArray();
-		}
+            if (NodeStart == null || NodeEnd == null)
+                warnings.Add("The FDGSpring should have two nodes connected to it");
 
-		// Getter und Setter für NodeStart und NodeEnd
-		public void ConnectNodeStart(OwnFdgNode node)
-		{
-		   //  NodeStart = node;
-			EmitSignal(nameof(ConnectionChanged));
-		}
+            return warnings.ToArray();
+        }
 
-		public void ConnectNodeEnd(OwnFdgNode node)
-		{
-		   //  NodeEnd = node;
-			EmitSignal(nameof(ConnectionChanged));
-		}
-	}
+        // Getter and setter for NodeStart and NodeEnd
+        public void ConnectNodeStart(OwnFdgNode node)
+        {
+            //  NodeStart = node;
+            EmitSignal(nameof(ConnectionChanged));
+        }
+
+        public void ConnectNodeEnd(OwnFdgNode node)
+        {
+            //  NodeEnd = node;
+            EmitSignal(nameof(ConnectionChanged));
+        }
+    }
 }

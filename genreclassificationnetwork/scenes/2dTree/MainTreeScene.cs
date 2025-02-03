@@ -191,7 +191,7 @@ namespace GenreClassificationNetwork
         private string FindClosestMatch(string input, HashSet<string> genres, int maxDistance = 2)
         {
             string bestMatch = null;
-            int bestDistance = maxDistance + 1; // Startwert etwas über der Grenze setzen
+            int bestDistance = maxDistance + 1; // Set starting value slightly above the limit
 
             foreach (var genre in genres)
             {
@@ -221,9 +221,9 @@ namespace GenreClassificationNetwork
                 {
                     int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
                     dp[i, j] = Math.Min(Math.Min(
-                        dp[i - 1, j] + 1,   // Einfügen
-                        dp[i, j - 1] + 1),  // Entfernen
-                        dp[i - 1, j - 1] + cost); // Ersetzen
+                        dp[i - 1, j] + 1,   // Insert
+                        dp[i, j - 1] + 1),  // Remove
+                        dp[i - 1, j - 1] + cost); // Replace
                 }
             }
 

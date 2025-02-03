@@ -15,17 +15,17 @@ public class LocalServer
 	public async Task<string> WaitForCodeAsync()
 	{
 		_listener.Start();
-		Console.WriteLine("Warte auf den Authentifizierungscode...");
+		Console.WriteLine("Wait for the authentication code...");
 
 		var context = await _listener.GetContextAsync();
 		var query = context.Request.QueryString["code"];
 
-		// Rückmeldung an den Benutzer im Browser
+		// Feedback to user in browser
 		var response = context.Response;
-		string responseString = "Authentication erfolgreich! Sie können dieses Fenster jetzt schließen.";
+		string responseString = "<h1>Authentication successful! You can now close this window.<h1>";
 		byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 		response.ContentLength64 = buffer.Length;
-		await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+		await response.OutputStream.WriteAsync(buffer);
 		response.Close();
 
 		_listener.Stop();
