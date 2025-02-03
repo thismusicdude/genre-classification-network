@@ -42,3 +42,4 @@ theme_override_font_sizes/font_size = 36
 text = "root"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
