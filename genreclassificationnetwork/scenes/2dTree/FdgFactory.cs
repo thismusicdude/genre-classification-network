@@ -11,6 +11,8 @@ namespace GenreClassificationNetwork
 		private GenreNode rootNode;
 		private int mainGenreCount = 0;
 
+		public bool isLoadingGenre = false;
+
 		public ImageTexture RootNodeTexture;
 
 		Marker2D pinchPanCamera;
@@ -35,7 +37,6 @@ namespace GenreClassificationNetwork
 			{
 				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
 				TouchZoomCamera.Zoom = new Vector2(0.8f, 0.8f);
-				//AdjustCameraZoom();
 			}
 			else
 			{
@@ -93,7 +94,7 @@ namespace GenreClassificationNetwork
 		{
 			base._Process(delta); // Andere Nodes können sich weiterhin bewegen
 
-			if (pinchPanCamera != null)
+			if (pinchPanCamera != null && isLoadingGenre)
 			{
 				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
 			}
@@ -105,18 +106,12 @@ namespace GenreClassificationNetwork
 			UpdateGraphSimulation(delta);
 
 			ApplyRepulsionForces(delta);
-
-
-			// Kamera-Zoom dynamisch anpassen
-			//AdjustCameraZoom();
 		}
 
 		private void ApplyRepulsionForces(double delta)
 		{
 			const double repulsionStrength = 20000f;
 			const double attractionStrength = 0.1f;
-
-			//var genreNodes = GetChildren().OfType<Node>().Where(n => n is GenreNode).Cast<GenreNode>().ToList();
 
 			foreach (var nodeA in genreMap.Values)
 			{

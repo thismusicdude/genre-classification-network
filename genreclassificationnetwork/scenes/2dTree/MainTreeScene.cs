@@ -90,6 +90,9 @@ namespace GenreClassificationNetwork
         {
             FdgFactory fdgFac = GetNode<FdgFactory>("FdgFactory");
 
+            fdgFac.isLoadingGenre = true;
+
+
             if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
             {
                 GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
@@ -115,8 +118,7 @@ namespace GenreClassificationNetwork
                 var genreCorrectionMap = new Dictionary<string, string>
                 {
                     { "hop", "hip hop" },
-					//{ "house music", "house" }
-				};
+                };
 
                 if (genreCorrectionMap.ContainsKey(normalizedMainGenre))
                 {
@@ -151,6 +153,9 @@ namespace GenreClassificationNetwork
                 }
 
             }
+
+            fdgFac.isLoadingGenre = false;
+
         }
 
         private string FindClosestMatch(string input, HashSet<string> genres, int maxDistance = 2)
