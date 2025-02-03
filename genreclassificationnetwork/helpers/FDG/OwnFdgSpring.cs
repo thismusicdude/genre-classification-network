@@ -56,6 +56,41 @@ namespace GenreClassificationNetwork
 			Width = 2.0f;
 			connection = new Line2D();  // Initialisiere Line2D für die Darstellung
 			AddChild(connection);        // Füge es als Kind hinzu
+			
+			Line2D line = GetNodeOrNull<Line2D>("Line2D");
+
+			if (line == null)
+			{
+				GD.PrintErr("🚨 Line2D wurde nicht gefunden! Wird nun erstellt...");
+				
+				line = new Line2D();
+				line.Name = "Line2D";
+				line.Width = 3;
+				line.DefaultColor = new Color(1, 1, 1, 1); // Standard: Weiß
+				AddChild(line);
+			}
+			else
+			{
+				GD.Print("✅ Line2D gefunden in OwnFdgSpring.");
+			}
+		}
+		
+		public void SetLineColor(Color color)
+		{
+			//GD.Print($"🎨 Setze Farbe auf {color}");
+			
+			Line2D line = GetNodeOrNull<Line2D>("Line2D");
+
+			if (line != null)
+			{
+				line.DefaultColor = color;
+				line.QueueRedraw();
+				GD.Print($"✔ Verbindungslinie auf {color} gesetzt");
+			}
+			else
+			{
+				GD.PrintErr("⚠ Fehler: Line2D wurde nicht gefunden! Stelle sicher, dass sie existiert.");
+			}
 		}
 
 		// Verbindet die zwei Knoten mit der Feder

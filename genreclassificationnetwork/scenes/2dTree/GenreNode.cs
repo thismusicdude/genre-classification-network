@@ -14,7 +14,7 @@ namespace GenreClassificationNetwork
 			ColorEnd = end;
 		}
 	}
-
+	
 	public partial class GenreNode : OwnFdgNode
 	{
 		private bool _isDragging = false;
@@ -29,9 +29,12 @@ namespace GenreClassificationNetwork
 			ShaderMaterial shaderMaterial = (ShaderMaterial)GetNode<Sprite2D>("Sprite2D").Material;
 			ShaderMaterial uniqueMaterial = (ShaderMaterial)shaderMaterial.Duplicate();
 			GetNode<Sprite2D>("Sprite2D").Material = uniqueMaterial;
-
 		}
-
+		
+		public string getGenreTitle()
+		{
+			return GetNode<Label>("Sprite2D/Label").Text;
+		}
 
 		public override void _Input(InputEvent @event)
 		{
@@ -88,6 +91,8 @@ namespace GenreClassificationNetwork
 			genreTitle.HorizontalAlignment = HorizontalAlignment.Center;
 			genreTitle.VerticalAlignment = VerticalAlignment.Center;
 		}
+		
+		
 
 		// Methode, um die Größe des Knotens zu ändern
 		public void SetNodeSize(float scale)
