@@ -17,7 +17,8 @@ namespace GenreClassificationNetwork
 		private List<GenreNode> mainGenres = new(); 
 		
 		private const float TargetConnectionLength = 400f; // Einheitliche Länge
-		private const float AdjustmentSpeed = 2.5f; // Geschwindigkeit der Anpassung
+		private const float AdjustmentSpeed = 0.0025f; // Geschwindigkeit der Anpassung
+		//private const float AdjustmentSpeed = 2.5f; // Geschwindigkeit der Anpassung
 		private float elapsedTime = 0f;
 		private const float TimeBeforeEqualizing = 5f; // Wartezeit in Sekunden
 
@@ -73,7 +74,6 @@ private void EqualizeConnectionLengths(double delta)
 				Vector2 direction = connectedNode.Position - node.Position;
 				float currentLength = direction.Length();
 
-				// **Sanft zur Ziel-Länge angleichen**
 				float adjustment = (TargetConnectionLength - currentLength) * (float)delta * AdjustmentSpeed;
 				connectedNode.Position += direction.Normalized() * adjustment;
 			}
@@ -81,56 +81,87 @@ private void EqualizeConnectionLengths(double delta)
 	}
 }
 
-
-private void ApplyRepulsionForces(double delta)
-{
-	const float RepulsionStrength = 50000f; // Höhere Abstoßung für gleichmäßige Verteilung
-	const float AttractionStrength = 0.3f; // Stärkere Anziehungskraft
-	const float MaxRepulsionDistance = 800f; // Keine extreme Abstoßung über große Distanzen hinaus
-	const float MovementLimit = 50f; // Begrenze Bewegung pro Frame
-
-	foreach (var nodeA in genreMap.Values)
-	{
-		Vector2 totalForce = Vector2.Zero;
-
-		// Abstoßungskraft berechnen
-		foreach (var nodeB in genreMap.Values.Where(nodeB => nodeA != nodeB))
+		private void ApplyRepulsionForces(double delta)
 		{
-			Vector2 direction = nodeA.Position - nodeB.Position;
-			float distanceSquared = direction.LengthSquared();
-			
-			if (distanceSquared > 0 && distanceSquared < MaxRepulsionDistance * MaxRepulsionDistance) // Begrenzte Abstoßung
+			const float RepulsionStrength = 80000f; // Höhere Abstoßung für gleichmäßige Verteilung
+			const float MainGenreRepulsion = 120000f; // Hauptgenres stoßen sich noch stärker ab
+			const float AttractionStrength = 0.3f; // Stärkere Anziehungskraft
+			const float MaxRepulsionDistance = 1200f; // Keine extreme Abstoßung über große Distanzen hinaus
+			const float MovementLimit = 70f; // Begrenze Bewegung pro Frame
+			const float MinDistanceFromRoot = 800f; // Mindestabstand zur Root Node
+
+			foreach (var nodeA in genreMap.Values)
 			{
-				float forceFactor = RepulsionStrength / Mathf.Pow(Mathf.Sqrt(distanceSquared), 1.5f); // Sanftere Abstoßung
-				Vector2 repulsionForce = direction.Normalized() * forceFactor;
-				totalForce += repulsionForce;
+				Vector2 totalForce = Vector2.Zero;
+
+				// Abstoßungskraft berechnen
+				foreach (var nodeB in genreMap.Values.Where(nodeB => nodeA != nodeB))
+				{
+					Vector2 direction = nodeA.Position - nodeB.Position;
+					float distanceSquared = direction.LengthSquared();
+					
+					if (distanceSquared > 0 && distanceSquared < MaxRepulsionDistance * MaxRepulsionDistance) // Begrenzte Abstoßung
+					{
+						float forceFactor = RepulsionStrength / Mathf.Pow(Mathf.Sqrt(distanceSquared), 1.5f); // Sanftere Abstoßung
+						//Vector2 repulsionForce = direction.Normalized() * forceFactor;
+						//totalForce += repulsionForce;
+						totalForce += direction.Normalized() * forceFactor;
+					}
+				}
+
+				//// Anziehungskraft berechnen
+				//foreach (var child in nodeA.GetChildren().OfType<OwnFdgSpring>())
+				//{
+					//if (child.NodeEnd is GenreNode connectedNode)
+					//{
+						//Vector2 direction = connectedNode.Position - nodeA.Position;
+						//float distance = direction.Length();
+						//Vector2 attractionForce = direction.Normalized() * ((distance - child.length) * AttractionStrength);
+						//totalForce += attractionForce;
+					//}
+				//}
+//
+				//if (totalForce.Length() > MovementLimit)
+					//totalForce = totalForce.Normalized() * MovementLimit;
+//
+				//nodeA.Position += totalForce * (float)delta;
+				
+				if (mainGenres.Contains(nodeA))
+				{
+					foreach (var otherMainGenre in mainGenres.Where(g => g != nodeA))
+					{
+						Vector2 direction = nodeA.Position - otherMainGenre.Position;
+						float distanceSquared = direction.LengthSquared();
+
+						if (distanceSquared > 0 && distanceSquared < MaxRepulsionDistance * MaxRepulsionDistance)
+						{
+							float extraRepulsion = MainGenreRepulsion / Mathf.Pow(Mathf.Sqrt(distanceSquared), 1.5f);
+							totalForce += direction.Normalized() * extraRepulsion;
+						}
+					}
+				}
+
+				if (mainGenres.Contains(nodeA))
+				{
+					Vector2 rootDirection = rootNode.Position - nodeA.Position;
+					float rootDistance = rootDirection.Length();
+
+					if (rootDistance < MinDistanceFromRoot)
+					{
+						Vector2 pushAway = -rootDirection.Normalized() * (MinDistanceFromRoot - rootDistance) * 0.2f;
+						totalForce += pushAway;
+					}
+				}
+
+				// **4️⃣ Bewegung begrenzen**
+				if (totalForce.Length() > MovementLimit)
+				{
+					totalForce = totalForce.Normalized() * MovementLimit;
+				}
+
+				nodeA.Position += totalForce * (float)delta;
 			}
 		}
-
-		// Anziehungskraft berechnen
-		foreach (var child in nodeA.GetChildren().OfType<OwnFdgSpring>())
-		{
-			if (child.NodeEnd is GenreNode connectedNode)
-			{
-				Vector2 direction = connectedNode.Position - nodeA.Position;
-				float distance = direction.Length();
-				Vector2 attractionForce = direction.Normalized() * ((distance - child.length) * AttractionStrength);
-				totalForce += attractionForce;
-			}
-		}
-
-		// **Begrenzung der Bewegung**
-		if (totalForce.Length() > MovementLimit)
-		{
-			totalForce = totalForce.Normalized() * MovementLimit;
-		}
-
-		// Bewegung anwenden
-		nodeA.Position += totalForce * (float)delta;
-	}
-}
-
-
 
 		private static Color GetRandomColor()
 		{
