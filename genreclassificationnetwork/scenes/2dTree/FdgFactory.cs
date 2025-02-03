@@ -22,6 +22,8 @@ namespace GenreClassificationNetwork
 		private const float TargetConnectionLength = 400f; // Einheitliche Länge
 		private const float AdjustmentSpeed = 0.0025f; // Geschwindigkeit der Anpassung
 		//private const float AdjustmentSpeed = 2.5f; // Geschwindigkeit der Anpassung
+		private const float AdjustmentSpeed = 0.0025f; // Geschwindigkeit der Anpassung
+		//private const float AdjustmentSpeed = 2.5f; // Geschwindigkeit der Anpassung
 		private float elapsedTime = 0f;
 		private const float TimeBeforeEqualizing = 5f; // Wartezeit in Sekunden
 		
