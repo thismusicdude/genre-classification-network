@@ -30,8 +30,8 @@ namespace GenreClassificationNetwork
 
 			AddChild(rootNode);
 
-			pinchPanCamera = GetNodeOrNull<Marker2D>("/root/Main/PinchPanCamera");
-			TouchZoomCamera = GetNodeOrNull<Camera2D>("/root/Main/PinchPanCamera/TouchZoomCamera2D");
+			pinchPanCamera = GetNodeOrNull<Marker2D>("../PinchPanCamera");
+			TouchZoomCamera = GetNodeOrNull<Camera2D>("../PinchPanCamera/TouchZoomCamera2D");
 
 			if (pinchPanCamera != null && TouchZoomCamera != null)
 			{
@@ -40,7 +40,7 @@ namespace GenreClassificationNetwork
 			}
 			else
 			{
-				GD.PrintErr("Keine PinchPanCamera gefunden!");
+				GD.PrintErr("Couldnt Load Pinch Pan Camera!");
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace GenreClassificationNetwork
 
 			if (err != Error.Ok)
 			{
-				GD.PrintErr("Fehler beim Laden des JPG: ", err);
+				GD.PrintErr("Error while loading JPG: ", err);
 				return null;
 			}
 
@@ -68,7 +68,7 @@ namespace GenreClassificationNetwork
 				var sprite = this.GetNode<Sprite2D>("GenreNode/Sprite2D");
 				if (sprite == null)
 				{
-					GD.PrintErr("Np Sprite called `GenreNode/Sprite2D` found");
+					GD.PrintErr("No Sprite called `GenreNode/Sprite2D` found");
 				}
 				Shader shader = GD.Load<Shader>("res://shader/round.gdshader");
 
@@ -84,10 +84,6 @@ namespace GenreClassificationNetwork
 				label.Text = "";
 
 			}
-			else
-			{
-				GD.Print("noooOOOO");
-			}
 		}
 
 		public override void _Process(double delta)
@@ -97,10 +93,6 @@ namespace GenreClassificationNetwork
 			if (pinchPanCamera != null && isLoadingGenre)
 			{
 				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
-			}
-			else
-			{
-				GD.PrintErr("Keine PinchPanCamera gefunden!");
 			}
 
 			UpdateGraphSimulation(delta);

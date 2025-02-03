@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/2dTree/MainTreeScene.cs" id="1_qgovr"]
 [ext_resource type="Script" path="res://scenes/2dTree/FdgFactory.cs" id="2_rxtl8"]
 [ext_resource type="Script" path="res://addons/ppc/ppcamera.gd" id="3_4cprc"]
-[ext_resource type="PackedScene" uid="uid://b48olrcr17xkb" path="res://scenes/2dTree/ProfileImageContainer.tscn" id="4_p283l"]
+[ext_resource type="PackedScene" uid="uid://kgqcw2gjn3gn" path="res://scenes/2dTree/ProfileImageContainer.tscn" id="4_p283l"]
 [ext_resource type="Texture2D" uid="uid://cf72t0fnmi1qr" path="res://resources/playlist-minimalistic-3-svgrepo-com (1).svg" id="4_so2sf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yokag"]
