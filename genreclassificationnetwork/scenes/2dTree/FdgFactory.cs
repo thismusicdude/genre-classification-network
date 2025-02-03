@@ -401,6 +401,9 @@ namespace GenreClassificationNetwork
 			
 			GD.Print($"Adding genre {name}. Current count before: {mainGenres.Count}/{MaxMainGenres}");
 
+			
+			GD.Print($"Adding genre {name}. Current count before: {mainGenres.Count}/{MaxMainGenres}");
+
 			//var position = CalculateMainGenrePosition(700f + mainGenreCount++ * 50f);
 			var position = CalculateMainGenrePosition(700f + mainGenres.Count * 50f);
 			var nodeToAdd = CreateGenreNode(position, 0.75f);
@@ -465,6 +468,8 @@ namespace GenreClassificationNetwork
 
 		private Vector2 CalculateMainGenrePosition(float radius)
 		{
+			float angle = mainGenreCount * (2 * Mathf.Pi / MaxMainGenres);
+			mainGenreCount++;
 			//const int MaxMainGenres = 24;
 			//float angle = mainGenreCount++ * (2 * Mathf.Pi / MaxMainGenres); 
 			

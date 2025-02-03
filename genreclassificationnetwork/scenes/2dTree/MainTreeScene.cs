@@ -126,8 +126,15 @@ namespace GenreClassificationNetwork
 
 				// Genre normalisieren (Leerzeichen entfernen, Kleinbuchstaben)
 				string normalizedMainGenre = mainGenre.Trim().ToLowerInvariant();
+				
+				var genreCorrectionMap = new Dictionary<string, string>
+				{
+					{ "hop", "hip hop" },
+					{ "roll", "rock and roll" },
+					{ "drill", "drill" },
+					{ "urbaine", "urban" }
+				};
 
-				// Falls nötig, in genreCorrectionMap nachschlagen
 				if (genreCorrectionMap.ContainsKey(normalizedMainGenre))
 				{
 					GD.Print($"🔄 Korrigiere {normalizedMainGenre} → {genreCorrectionMap[normalizedMainGenre]}");
