@@ -170,7 +170,24 @@
                         "space ambient",
                         "drone",
                         "chillwave",
-                        "new age"
+                        "new age",
+                        "witch house"
+                    ]
+                },
+                {
+                    "Name": "Nightcore",
+                    "Subsubgenres": [
+                        "speedcore",
+                        "Eurobeat nightcore",
+                        "trancecore"
+                    ]
+                },
+                {
+                    "Name": "HandsUp",
+                    "Subsubgenres": [
+                        "happy hardcore",
+                        "Eurodance",
+                        "hardstyle handsup"
                     ]
                 },
                 {
@@ -180,7 +197,8 @@
                         "synthwave",
                         "darkwave",
                         "retro electro",
-                        "italo disco"
+                        "italo disco",
+                        "vaporwave"
                     ]
                 },
                 {
@@ -190,7 +208,34 @@
                         "breakcore",
                         "braindance",
                         "experimental electronic",
-                        "ambient techno"
+                        "ambient techno",
+                        "cold wave",
+                        "sovietwave"
+                    ]
+                },
+                {
+                    "Name": "Hardstyle",
+                    "Subsubgenres": [
+                        "hardstyle",
+                        "rawstyle",
+                        "hardcore techno"
+                    ]
+                },
+                {
+                    "Name": "Alternative Dance",
+                    "Subsubgenres": [
+                        "indie dance",
+                        "post-punk dance",
+                        "electropop",
+                        "new rave",
+                        "indietronica"
+                    ]
+                },
+                {
+                    "Name": "Industrial",
+                    "Subsubgenres": [
+                        "EBM",
+                        "dark industrial"
                     ]
                 }
             ]
@@ -299,7 +344,8 @@
                     "Subsubgenres": [
                         "heavy metal",
                         "power metal",
-                        "speed metal"
+                        "speed metal",
+                        "glam metal"
                     ]
                 },
                 {
@@ -347,7 +393,8 @@
                     "Subsubgenres": [
                         "nu-metal",
                         "industrial metal",
-                        "grunge metal"
+                        "grunge metal",
+                        "rap metal"
                     ]
                 },
                 {
@@ -355,7 +402,8 @@
                     "Subsubgenres": [
                         "pagan metal",
                         "viking metal",
-                        "celtic metal"
+                        "celtic metal",
+                        "medieval metal"
                     ]
                 },
                 {
@@ -408,8 +456,7 @@
                     "Subsubgenres": [
                         "disco",
                         "bubblegum pop",
-                        "synthpop",
-                        "soft rock"
+                        "synthpop"
                     ]
                 },
                 {
@@ -452,8 +499,7 @@
                     "Subsubgenres": [
                         "K-pop ballad",
                         "K-pop dance",
-                        "K-pop hip-hop",
-                        "K-pop rock"
+                        "K-pop hip-hop"
                     ]
                 },
                 {
@@ -539,6 +585,16 @@
                         "DIY pop",
                         "chill pop"
                     ]
+                },
+                {
+                    "Name": "Hyperpop",
+                    "Subsubgenres": [
+                        "avant-pop",
+                        "glitch pop",
+                        "bubblegum bass",
+                        "deconstructed club",
+                        "experimental pop"
+                    ]
                 }
             ]
         },
@@ -569,6 +625,13 @@
                         "pop punk",
                         "ska punk",
                         "punk revival"
+                    ]
+                },
+                {
+                    "Name": "Gothic Rock",
+                    "Subsubgenres": [
+                        "deathrock",
+                        "batcave"
                     ]
                 },
                 {
@@ -740,7 +803,7 @@
                 {
                     "Name": "Swing Jazz",
                     "Subsubgenres": [
-                        "big band",
+                        "swing music",
                         "count basie style",
                         "benny goodman style"
                     ]
@@ -748,9 +811,51 @@
                 {
                     "Name": "Big Band",
                     "Subsubgenres": [
-                        "swing era",
                         "jazz orchestra",
                         "modern big band"
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "Folk",
+            "SubgenreList": [
+                {
+                    "Name": "Traditional Folk",
+                    "Subsubgenres": [
+                        "irish folk",
+                        "english folk",
+                        "scottish folk",
+                        "bluegrass",
+                        "americana"
+                    ]
+                },
+                {
+                    "Name": "Neofolk",
+                    "Subsubgenres": [
+                        "pagan folk",
+                        "dark folk",
+                        "apocalyptic folk",
+                        "medieval",
+                        "industrial folk"
+                    ]
+                },
+                {
+                    "Name": "Medieval",
+                    "Subsubgenres": [
+                        "medieval folk",
+                        "early music",
+                        "renaissance music",
+                        "medieval ambient"
+                    ]
+                },
+                {
+                    "Name": "Folk Metal",
+                    "Subsubgenres": [
+                        "folk doom",
+                        "viking metal",
+                        "pagan metal",
+                        "celtic metal"
                     ]
                 }
             ]
