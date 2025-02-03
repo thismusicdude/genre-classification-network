@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://b48olrcr17xkb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8q1be"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[node name="ProfileImageContainer" type="PanelContainer"]
+clip_children = 2
+clip_contents = true
+custom_minimum_size = Vector2(70, 70)
+anchors_preset = -1
+anchor_right = 0.036
+anchor_bottom = 0.065
+offset_right = -69.12
+offset_bottom = -70.2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8q1be")
+
+[node name="ProfileImage" type="TextureRect" parent="."]
+clip_contents = true
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+expand_mode = 2

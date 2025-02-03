@@ -19,9 +19,9 @@ void fragment() {
 
     vec2 uv = UV -0.5;
 
-    // Circle UV 
+    // Circle UV
 	vec2 center = vec2(0.5);
-    float radius = 0.5; 
+    float radius = 0.5;
     float dist = distance(UV, center);
     if (dist > radius) {
         discard;
@@ -44,5 +44,5 @@ void fragment() {
 	wave *= hard_limit;
 	vec3 color = /*vec3(0.1)*/  mix(color_start, color_end, wave); //  * wave;
 	color.gb += brightness * vec2(uv.x + 0.5, uv.y + 0.5) * soft_limit;
-	COLOR = vec4(color, 1.0);   
+	COLOR = vec4(color, 1.0);
 }
