@@ -72,7 +72,7 @@ namespace GenreClassificationNetwork
                 }
                 Shader shader = GD.Load<Shader>("res://shader/round.gdshader");
 
-                // ShaderMaterial erstellen
+                // create ShaderMaterial
                 ShaderMaterial shaderMaterial = new()
                 {
                     Shader = shader
@@ -88,7 +88,7 @@ namespace GenreClassificationNetwork
 
         public override void _Process(double delta)
         {
-            base._Process(delta); // Andere Nodes können sich weiterhin bewegen
+            base._Process(delta); // Other nodes can continue to move
 
             if (pinchPanCamera != null && isLoadingGenre)
             {
@@ -144,11 +144,11 @@ namespace GenreClassificationNetwork
         private static Color GetRandomColor()
         {
             Random random = new();
-            float r = (float)random.NextDouble(); // Zufallszahl zwischen 0.0 und 1.0
+            float r = (float)random.NextDouble(); // Random number between 0.0 and 1.0
             float g = (float)random.NextDouble();
             float b = (float)random.NextDouble();
 
-            return new Color(r, g, b, 1.0f); // RGBA: Alpha hier 1.0 (voll sichtbar)
+            return new Color(r, g, b, 1.0f); // RGBA: Alpha here 1.0 (fully visible)
         }
 
         private Rect2 GetNodesBoundingBox()
@@ -166,7 +166,7 @@ namespace GenreClassificationNetwork
                 max = new Vector2(Mathf.Max(max.X, pos.X), Mathf.Max(max.Y, pos.Y));
             }
 
-            return new Rect2(min, max - min); // Bounding Box als Rechteck
+            return new Rect2(min, max - min); // Bounding box as rectangle
         }
 
         private void AdjustCameraZoom()
@@ -174,41 +174,41 @@ namespace GenreClassificationNetwork
             if (TouchZoomCamera == null)
                 return;
 
-            // Bounding Box der Nodes berechnen
+            // Calculate the bounding box of the nodes
             Rect2 boundingBox = GetNodesBoundingBox();
 
-            // Viewport-Größe ermitteln
+            // Determine viewport size
             Vector2 viewportSize = GetViewportRect().Size;
 
-            // Berechne den erforderlichen Zoom
+            // Calculate the required zoom
             float zoomX = boundingBox.Size.X / viewportSize.X;
             float zoomY = boundingBox.Size.Y / viewportSize.Y;
 
-            // Wähle den größeren Zoom, um sicherzustellen, dass alles sichtbar ist
+            // Select the larger zoom to ensure that everything is visible
             float zoomFactor = Mathf.Max(zoomX, zoomY);
 
-            // Begrenze den Zoom auf einen vernünftigen Bereich
-            zoomFactor = Mathf.Clamp(zoomFactor, 0.5f, 2f); // Beispielbereich
+            // Limit the zoom to a reasonable range
+            zoomFactor = Mathf.Clamp(zoomFactor, 0.5f, 2f); // Example area
 
-            // Setze den Zoom der Kamera
+            // Set the zoom of the camera
             TouchZoomCamera.Zoom = new Vector2(zoomFactor, zoomFactor);
         }
 
 
         private void UpdateGraphSimulation(double delta)
         {
-            // TODO: Verbindung zwischen Genres für Abstoßung
-            const float repulsionStrength = 20000f; // Stärke der abstoßenden Kraft
-            const float attractionStrength = 0.1f; // Stärke der anziehenden Kraft
+            // TODO: Connection between genres for repulsion
+            const float repulsionStrength = 20000f; // Strength of the repulsive force
+            const float attractionStrength = 0.1f; // Strength of the attractive force
 
             foreach (var nodeA in genreMap.Values)
             {
                 Vector2 totalForce = Vector2.Zero;
 
-                // Abstoßende Kräfte zwischen allen Nodes berechnen
+                // Calculate repulsive forces between all nodes
                 foreach (var nodeB in genreMap.Values)
                 {
-                    if (nodeA == nodeB) continue; // Keine Kraft auf sich selbst
+                    if (nodeA == nodeB) continue; // No power to yourself
 
                     Vector2 direction = nodeA.Position - nodeB.Position;
                     float distance = direction.Length();
@@ -220,7 +220,7 @@ namespace GenreClassificationNetwork
                     }
                 }
 
-                // Anziehende Kräfte entlang der Verbindungen berechnen
+                // Calculate attractive forces along the connections
                 foreach (Node connection in nodeA.GetChildren())
                 {
                     if (connection is OwnFdgSpring spring && spring.NodeEnd is GenreNode connectedNode)
@@ -232,7 +232,7 @@ namespace GenreClassificationNetwork
                     }
                 }
 
-                // Position des Nodes aktualisieren
+                // Update the position of the node
                 Vector2 newPosition = nodeA.Position + totalForce * (float)delta;
                 nodeA.Position = newPosition;
             }
@@ -242,7 +242,7 @@ namespace GenreClassificationNetwork
         {
             GenreNode node = genreNode.Instantiate<GenreNode>();
             node.Position = position;
-            node.SetNodeSize(scale); // Größe setzen
+            node.SetNodeSize(scale); // Set size
             return node;
         }
 
@@ -251,11 +251,11 @@ namespace GenreClassificationNetwork
             if (genreMap.ContainsKey(name))
                 return;
 
-            // Berechne dynamischen Abstand basierend auf der Anzahl der Hauptgenres
-            float radius = 700f + mainGenreCount * 50f; // Dynamischer Abstand vom Root-Node
+            // Calculate dynamic distance based on the number of main genres
+            float radius = 700f + mainGenreCount * 50f; // Dynamic distance from the root node
             Vector2 position = CalculateMainGenrePosition(radius);
 
-            GenreNode nodeToAdd = CreateGenreNode(position, 0.75f); // Hauptgenre mit Skalierung 1.5
+            GenreNode nodeToAdd = CreateGenreNode(position, 0.75f); // Main genre with scaling 1.5
             nodeToAdd.setGenreTitle(name);
             AddChild(nodeToAdd);
             genreMap.Add(name, nodeToAdd);
@@ -272,11 +272,11 @@ namespace GenreClassificationNetwork
 
             GenreNode parentNode = genreMap[parent];
 
-            // Berechne Subgenre-Position mit gleichmäßiger Verteilung um das Hauptgenre
+            // Calculate subgenre position with even distribution around the main genre
             int subGenreCount = CountSubGenres(parent);
             Vector2 position = CalculateSubGenrePosition(parentNode, subGenreCount);
 
-            GenreNode nodeToAdd = CreateGenreNode(position, 0.55f); // Subgenre mit Skalierung 1.0
+            GenreNode nodeToAdd = CreateGenreNode(position, 0.55f); // Subgenre with scaling 1.0
             nodeToAdd.setGenreTitle(name);
             nodeToAdd.SetNodeStyle(parentNode.ColorStyle);
 
@@ -295,16 +295,16 @@ namespace GenreClassificationNetwork
                 NodeEnd = endNode
             };
 
-            // Verbindungseinstellungen
-            if (startNode == rootNode) // Root → Hauptgenre
+            // Connection settings
+            if (startNode == rootNode) // Root → Main genre
             {
-                connection.K = 0.002f;      // Schwächere Federkraft
-                connection.length = 450f; // Dynamischer Zielabstand
+                connection.K = 0.002f;      // Weaker spring force
+                connection.length = 450f; // Dynamic target distance
             }
-            else // Hauptgenre → Subgenre
+            else // Main genre → Subgenre
             {
-                connection.K = 0.01f;      // Stärkere Federkraft
-                connection.length = 400f; // Größerer Zielabstand
+                connection.K = 0.01f;      // Stronger spring force
+                connection.length = 400f; // Larger target distance
             }
 
             startNode.AddChild(connection);
@@ -313,11 +313,11 @@ namespace GenreClassificationNetwork
 
         private Vector2 CalculateMainGenrePosition(float radius)
         {
-            const int maxMainGenres = 12; // Maximale Hauptgenres für gleichmäßige Verteilung
-            float angleStep = 2 * Mathf.Pi / maxMainGenres; // Gleichmäßiger Winkel
+            const int maxMainGenres = 12; // Maximum main genres for even distribution
+            float angleStep = 2 * Mathf.Pi / maxMainGenres; // Uniform angle
 
             float angle = mainGenreCount * angleStep;
-            mainGenreCount++; // Für das nächste Hauptgenre
+            mainGenreCount++; // For the next main genre
 
             return rootNode.Position + new Vector2(
                 Mathf.Cos(angle) * radius,
@@ -327,15 +327,15 @@ namespace GenreClassificationNetwork
 
         private Vector2 CalculateSubGenrePosition(GenreNode parent, int subGenreCount)
         {
-            const float baseDistance = 150; // Mindestabstand zum Hauptgenre
-            float radius = baseDistance + subGenreCount * 100f; // Dynamische Entfernung
+            const float baseDistance = 150; // Minimum distance to the main genre
+            float radius = baseDistance + subGenreCount * 100f; // Dynamic removal
 
-            float angleStep = Mathf.Pi / 6; // Gleichmäßiger Winkel für Subgenres
-            float angle = subGenreCount * angleStep; // Winkel basierend auf der Anzahl der Subgenres
+            float angleStep = Mathf.Pi / 6; // Uniform angle for subgenres
+            float angle = subGenreCount * angleStep; // Angle based on the number of subgenres
 
             Vector2 direction = (parent.Position - rootNode.Position).Normalized();
 
-            // Position weiter außen entlang des Vektors vom Hauptgenre
+            // Position further out along the vector from the main genre
             return parent.Position + direction.Rotated(angle) * radius;
         }
 

@@ -43,7 +43,7 @@ namespace GenreClassificationNetwork
                 {
                     if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
                     {
-                        // Prüfen, ob die Maus auf das Node zeigt
+                        // Check whether the mouse is pointing at the node
                         if (GetGlobalRect().HasPoint(GetGlobalMousePosition()))
                         {
                             _isDragging = true;
@@ -54,7 +54,7 @@ namespace GenreClassificationNetwork
                 }
                 else
                 {
-                    // Maustaste loslassen beendet Drag
+                    // Release mouse button ends drag
                     if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
                     {
                         _isDragging = false;
@@ -74,25 +74,25 @@ namespace GenreClassificationNetwork
             }
         }
 
-        // Methode, um den Titel des Genres zu setzen
+        // Method to set the title of the genre
         public void setGenreTitle(String title)
         {
             Label genreTitle = GetNode<Label>("Sprite2D/Label");
             genreTitle.Text = title;
 
-            // Text zentrieren
+            // Center text
             genreTitle.HorizontalAlignment = HorizontalAlignment.Center;
             genreTitle.VerticalAlignment = VerticalAlignment.Center;
         }
 
-        // Methode, um die Größe des Knotens zu ändern
+        // Method to change the size of the node
         public void SetNodeSize(float scale)
         {
             Sprite2D sprite = GetNode<Sprite2D>("Sprite2D");
             sprite.Scale = new Vector2(scale, scale);
 
             Label genreTitle = GetNode<Label>("Sprite2D/Label");
-            genreTitle.Scale = Vector2.One; // Skalierung des Textes bleibt konstant
+            genreTitle.Scale = Vector2.One; // Scaling of the text remains constant
         }
 
 
@@ -109,7 +109,7 @@ namespace GenreClassificationNetwork
         public void SetNodeStyle(Color color_start, Color color_end)
         {
             ColorStyle = new(color_start, color_end);
-            Random random = new(42); // Verwende hier eine feste Zahl als Seed
+            Random random = new(42); // Use a fixed number as the seed here
             int randomInt = random.Next(1, 1000);
 
             ShaderMaterial shaderMaterial = (ShaderMaterial)GetNode<Sprite2D>("Sprite2D").Material;
@@ -122,7 +122,7 @@ namespace GenreClassificationNetwork
         {
             ColorStyle = style;
 
-            Random random = new Random(42); // Verwende hier eine feste Zahl als Seed
+            Random random = new Random(42); // Use a fixed number as the seed here
             int randomInt = random.Next(1, 666);
 
             ShaderMaterial shaderMaterial = (ShaderMaterial)GetNode<Sprite2D>("Sprite2D").Material;
