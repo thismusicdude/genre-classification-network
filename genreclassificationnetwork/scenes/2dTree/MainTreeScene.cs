@@ -31,11 +31,9 @@ namespace GenreClassificationNetwork
 
 
                 var usernameLabel = GetNode<Label>("CanvasLayer/HBoxContainer/UserName");
-                GD.Print(profileData.Display_Name);
                 usernameLabel.Text = profileData.Display_Name;
-                GD.Print("Name erfolgreich geladen!");
 
-                // Bild Laden
+                // Image Loading
                 HttpRequest _httpRequest;
                 _httpRequest = new HttpRequest();
                 AddChild(_httpRequest);
@@ -43,18 +41,16 @@ namespace GenreClassificationNetwork
                 _httpRequest.RequestCompleted += OnRequestCompleted;
 
                 string imageUrl = profileData.Images[0].Url;
-                GD.Print(imageUrl);
-
                 var result = _httpRequest.Request(imageUrl);
 
                 if (result != Error.Ok)
                 {
-                    GD.PrintErr($"Fehler beim Starten der HTTP-Anfrage: {result}");
+                    GD.PrintErr($"Error while retrieving Http Request: {result}");
                 }
             }
             catch (Exception e)
             {
-                GD.PrintErr($"Fehler beim Abrufen der Spotify-Daten: {e.Message}");
+                GD.PrintErr($"Error while retrieving Spotify Data: {e.Message}");
             }
         }
 
@@ -66,7 +62,7 @@ namespace GenreClassificationNetwork
                 var error = image.LoadJpgFromBuffer(body);
                 if (error != Error.Ok)
                 {
-                    GD.PrintErr("Fehler beim Laden des Bildes.");
+                    GD.PrintErr("Error while loading image.");
                     return;
                 }
 
@@ -81,79 +77,113 @@ namespace GenreClassificationNetwork
             }
             else
             {
-                GD.PrintErr($"Fehler beim Laden des Bildes. HTTP-Statuscode: {responseCode}");
+                GD.PrintErr($"Error while retrieving HTTP Request for Profileimage. HTTP-Statuscode: {responseCode}");
             }
         }
 
 
-        private async void DisplayGenreHierarchy()
+        private string normalizeGenre(string genre)
         {
-            FdgFactory fdgFac = GetNode<FdgFactory>("FdgFactory");
+            return genre.ToLowerInvariant().Replace("-", "").Replace(" ", "");
+        }
 
-            fdgFac.isLoadingGenre = true;
 
-
-            if (SpotifyDataManager.Instance == null || string.IsNullOrEmpty(SpotifyDataManager.Instance.AccessToken))
+        private async Task<bool> DetectAndLoadGenre(string genreStr, Genre parentGenre, SubGenre subgenre, FdgFactory fdgFac)
+        {
+            foreach (string subsubgenre in subgenre.Subsubgenres)
             {
-                GD.PrintErr("SpotifyDataManager ist nicht initialisiert oder kein AccessToken vorhanden.");
-                return;
-            }
+                string subsubgenreName = normalizeGenre(subsubgenre);
+                string genreStrName = normalizeGenre(genreStr);
 
-            var genreHierarchy = await SpotifyDataManager.Instance.GetGenresWithSubgenres(SpotifyDataManager.Instance.AccessToken);
-            var jsonGenres = LoadJsonGenres("spotify-genres.json");
-
-            if (jsonGenres == null || jsonGenres.Count == 0)
-            {
-                GD.PrintErr("JSON-Genres konnten nicht geladen werden oder sind leer.");
-                return;
-            }
-
-
-            foreach (var (mainGenre, subgenres) in genreHierarchy)
-            {
-
-                // Normalisierung: Entferne Leerzeichen, konvertiere zu Kleinbuchstaben
-                string normalizedMainGenre = mainGenre.Trim().ToLowerInvariant();
-
-                var genreCorrectionMap = new Dictionary<string, string>
+                if (subsubgenreName == genreStrName)
                 {
-                    { "hop", "hip hop" },
-                };
-
-                if (genreCorrectionMap.ContainsKey(normalizedMainGenre))
-                {
-                    normalizedMainGenre = genreCorrectionMap[normalizedMainGenre];
+                    fdgFac.AddGenre(parentGenre.Name, 500);
+                    fdgFac.AddSubGenre(parentGenre.Name, subgenre.Name, 500);
+                    fdgFac.AddSubGenre(subgenre.Name, subsubgenre, 500);
+                    await Task.Delay(100);
+                    return true;
                 }
+            }
+            return false;
+        }
 
+        private async Task<bool> DetectAndLoadGenre(string genreStr, Genre genre, FdgFactory fdgFac)
+        {
+            foreach (SubGenre subGenre in genre.SubgenreList)
+            {
+                string subgenreName = normalizeGenre(subGenre.Name);
+                string genreStrName = normalizeGenre(genreStr);
 
-                string closestMatch = FindClosestMatch(normalizedMainGenre, jsonGenres);
-                if (closestMatch == null)
+                if (subgenreName == genreStrName)
                 {
-                    GD.PrintErr($"Genre \"{mainGenre}\" ({normalizedMainGenre}) nicht in JSON-Liste gefunden. Überspringe...");
-                    continue;
+                    fdgFac.AddGenre(genre.Name, 500);
+                    fdgFac.AddSubGenre(genre.Name, subGenre.Name, 500);
+                    await Task.Delay(100);
+                    return true;
                 }
                 else
                 {
-                    GD.PrintErr($"Genre \"{mainGenre}\" ({normalizedMainGenre}) nicht gefunden. Verwende stattdessen \"{closestMatch}\".");
-                    normalizedMainGenre = closestMatch; // Verwende das ähnlichste gefundene Genre
-                }
-
-                GD.Print($"Hauptgenre: {mainGenre}");
-                fdgFac.AddGenre(mainGenre, 100);
-                await Task.Delay(10);
-
-                foreach (var subgenre in subgenres.Distinct())
-                {
-                    if (!string.IsNullOrEmpty(subgenre))
+                    bool wasAdded = await DetectAndLoadGenre(genreStr, genre, subGenre, fdgFac);
+                    if (wasAdded)
                     {
-                        fdgFac.AddSubGenre(mainGenre, subgenre, 100);
-                        GD.Print($"  - {subgenre}");
-                        await Task.Delay(100);
-                    }
+                        return true;
+                    };
                 }
+            }
+            return false;
+        }
 
+        private async Task DetectAndLoadGenre(string genreStr, GenreFile genreFile, FdgFactory fdgFac)
+        {
+            foreach (Genre genre in genreFile.Genrelist)
+            {
+                string genreName = normalizeGenre(genre.Name);
+                string genreStrName = normalizeGenre(genreStr);
+
+
+                if (genreName == genreStrName)
+                {
+                    fdgFac.AddGenre(genre.Name, 500);
+                    await Task.Delay(100);
+                    return;
+                }
+                else
+                {
+                    bool wasAdded = await DetectAndLoadGenre(genreStr, genre, fdgFac);
+                    if (wasAdded)
+                    {
+                        return;
+                    };
+                }
             }
 
+            fdgFac.AddGenre(genreStr, 500);
+            await Task.Delay(100);
+
+        }
+
+        private async void DisplayGenreHierarchy()
+        {
+            FdgFactory fdgFac = GetNode<FdgFactory>("FdgFactory");
+            // deactivate pinchpan camera
+            fdgFac.isLoadingGenre = true;
+
+            if (!SpotifyDataManager.Instance.isInitialized())
+            {
+                return;
+            }
+
+            List<(string Genre, int Count)> topGenres = await SpotifyDataManager.Instance.GetTopGenres(SpotifyDataManager.Instance.AccessToken);
+
+            // load genre hirarchy
+            GenreFile genreFile = LoadJsonGenres("data/main.json");
+            // error handling already happens in LoadJsonGenres
+
+            foreach ((string Genre, int Count) topGenre in topGenres)
+            {
+                await DetectAndLoadGenre(topGenre.Genre, genreFile, fdgFac);
+            }
+            // activate pinchpan camera
             fdgFac.isLoadingGenre = false;
 
         }
@@ -161,7 +191,7 @@ namespace GenreClassificationNetwork
         private string FindClosestMatch(string input, HashSet<string> genres, int maxDistance = 2)
         {
             string bestMatch = null;
-            int bestDistance = maxDistance + 1; // Startwert etwas über der Grenze setzen
+            int bestDistance = maxDistance + 1; // Set starting value slightly above the limit
 
             foreach (var genre in genres)
             {
@@ -191,9 +221,9 @@ namespace GenreClassificationNetwork
                 {
                     int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
                     dp[i, j] = Math.Min(Math.Min(
-                        dp[i - 1, j] + 1,   // Einfügen
-                        dp[i, j - 1] + 1),  // Entfernen
-                        dp[i - 1, j - 1] + cost); // Ersetzen
+                        dp[i - 1, j] + 1,   // Insert
+                        dp[i, j - 1] + 1),  // Remove
+                        dp[i - 1, j - 1] + cost); // Replace
                 }
             }
 
@@ -202,53 +232,53 @@ namespace GenreClassificationNetwork
 
 
 
-        private HashSet<string> LoadJsonGenres(string jsonFilePath)
+        private static GenreFile LoadJsonGenres(string jsonFilePath)
         {
             try
             {
                 if (!System.IO.File.Exists(jsonFilePath))
                 {
-                    GD.PrintErr("JSON-Datei existiert nicht: " + jsonFilePath);
-                    return new HashSet<string>();
+                    GD.PrintErr("JSON-File is not avaiable: " + jsonFilePath);
+                    throw new Exception($"JSON-File is not avaiable: {jsonFilePath}");
                 }
 
                 string jsonString = System.IO.File.ReadAllText(jsonFilePath);
-                var genres = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Genre>>(jsonString);
+                var genrefile = JsonConvert.DeserializeObject<GenreFile>(jsonString);
 
-                if (genres == null || genres.Count == 0)
+                if (genrefile == null || genrefile.Genrelist.Count == 0)
                 {
-                    GD.PrintErr("JSON-Datei ist leer oder konnte nicht geladen werden.");
-                    return new HashSet<string>();
+                    GD.PrintErr("JSON-File is empty or couldn't be loaded");
+                    throw new Exception($"JSON-File is empty or couldn't be loaded {jsonFilePath}");
                 }
 
-                var normalizedGenres = genres
-                    .Select(g => g.Name.Trim().ToLowerInvariant())  // In Kleinbuchstaben umwandeln
-                    .Where(name => !string.IsNullOrEmpty(name))
-                    .ToHashSet();
-
-                GD.Print("🔍 Geladene JSON-Genres (nach Normalisierung):");
-                foreach (var genre in normalizedGenres.Take(10)) // Zeige die ersten 10 Genres zur Überprüfung
-                {
-                    GD.Print(genre);
-                }
-
-                return normalizedGenres;
+                return genrefile;
             }
             catch (Exception ex)
             {
-                GD.PrintErr($"Fehler beim Laden der JSON-Datei: {ex.Message}");
-                return new HashSet<string>();
+                GD.PrintErr($"Error while loading JSON File: {ex.Message}");
+                throw new Exception($"Error while loading JSON File: {ex.Message}");
+
             }
+
         }
 
     }
 
+    public class GenreFile
+    {
+        public List<Genre> Genrelist { get; set; }
+    }
 
     public class Genre
     {
-        public int Id { get; set; }
         public string Name { get; set; }
+        public List<SubGenre> SubgenreList { get; set; }
     }
 
+    public class SubGenre
+    {
+        public string Name { get; set; }
+        public List<string> Subsubgenres { get; set; }
+    }
 
 }
