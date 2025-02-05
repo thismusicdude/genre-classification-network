@@ -21,6 +21,16 @@ namespace GenreClassificationNetwork
 			base._Ready();
 			_imageDisplay = GetNode<TextureRect>("CanvasLayer/HBoxContainer/ProfileImageContainer/ProfileImage");
 			FetchSpotifyProfileAsync();
+			MoveBackgroundToBack();
+		}
+		
+		private void MoveBackgroundToBack()
+		{
+			CanvasLayer canvasLayer = GetNode<CanvasLayer>("CanvasLayer");
+			ColorRect background = canvasLayer.GetNode<ColorRect>("ColorRect");
+
+			// Sicherstellen, dass der Hintergrund das erste Child ist
+			canvasLayer.MoveChild(background, 0);
 		}
 
 		private async void FetchSpotifyProfileAsync()
