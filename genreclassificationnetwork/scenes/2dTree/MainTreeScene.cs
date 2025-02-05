@@ -116,8 +116,22 @@ namespace GenreClassificationNetwork
 				{ "urbaine", "urban" }
 			};
 
+			var genreCorrectionMap = new Dictionary<string, string>
+			{
+				{ "hop", "hip hop" },
+				{ "roll", "rock and roll" },
+				{ "drill", "drill" },
+				{ "urbaine", "urban" }
+			};
+
 			//foreach (var (mainGenre, subgenres) in genreHierarchy)
 			//{
+				//string normalizedMainGenre = mainGenre.Trim().ToLowerInvariant();
+//
+				//if (genreCorrectionMap.ContainsKey(normalizedMainGenre))
+				//{
+					//normalizedMainGenre = genreCorrectionMap[normalizedMainGenre];
+				//}
 				//string normalizedMainGenre = mainGenre.Trim().ToLowerInvariant();
 //
 				//if (genreCorrectionMap.ContainsKey(normalizedMainGenre))
@@ -128,7 +142,12 @@ namespace GenreClassificationNetwork
 				//
 				//string closestMatch = FindClosestMatch(normalizedMainGenre, jsonGenres);
 				//if (closestMatch == null)
+				//
+				//string closestMatch = FindClosestMatch(normalizedMainGenre, jsonGenres);
+				//if (closestMatch == null)
 				//{
+					//GD.PrintErr($"Genre \"{mainGenre}\" ({normalizedMainGenre}) nicht in JSON-Liste gefunden. Überspringe...");
+					//continue;
 					//GD.PrintErr($"Genre \"{mainGenre}\" ({normalizedMainGenre}) nicht in JSON-Liste gefunden. Überspringe...");
 					//continue;
 				//}
@@ -145,14 +164,30 @@ namespace GenreClassificationNetwork
 				//foreach (var subgenre in subgenres.Distinct())
 				//{
 					//if (!string.IsNullOrEmpty(subgenre))
+					//GD.PrintErr($"Genre \"{mainGenre}\" ({normalizedMainGenre}) nicht gefunden. Verwende stattdessen \"{closestMatch}\".");
+					//normalizedMainGenre = closestMatch; // Verwende das ähnlichste gefundene Genre
+				//}
+//
+				//GD.Print($"Hauptgenre: {mainGenre}");
+				//fdgFac.AddGenre(mainGenre, 100);
+				//await Task.Delay(10);
+				//
+				//foreach (var subgenre in subgenres.Distinct())
+				//{
+					//if (!string.IsNullOrEmpty(subgenre))
 					//{
+						//fdgFac.AddSubGenre(mainGenre, subgenre, 100);
 						//fdgFac.AddSubGenre(mainGenre, subgenre, 100);
 						//GD.Print($"  - {subgenre}");
 						//await Task.Delay(100);
 					//}
 				//}
+						//await Task.Delay(100);
+					//}
+				//}
 //
 			//}
+			
 			
 			foreach (var (mainGenre, subgenres) in genreHierarchy)
 			{
@@ -163,7 +198,16 @@ namespace GenreClassificationNetwork
 				}
 
 				// 1️⃣ **Genre normalisieren (Leerzeichen entfernen, Kleinbuchstaben)**
+				if (string.IsNullOrEmpty(mainGenre))
+				{
+					GD.PrintErr("Leeres oder null-Hauptgenre gefunden. Überspringe...");
+					continue;
+				}
+
+				// 1️⃣ **Genre normalisieren (Leerzeichen entfernen, Kleinbuchstaben)**
 				string normalizedMainGenre = mainGenre.Trim().ToLowerInvariant();
+
+				// 2️⃣ **Falls nötig, in genreCorrectionMap nachschlagen**
 
 				// 2️⃣ **Falls nötig, in genreCorrectionMap nachschlagen**
 				if (genreCorrectionMap.ContainsKey(normalizedMainGenre))
@@ -173,6 +217,7 @@ namespace GenreClassificationNetwork
 					normalizedMainGenre = genreCorrectionMap[normalizedMainGenre];
 				}
 
+				// 3️⃣ **Finde das nächste passende Genre in der JSON-Datei**
 				// 3️⃣ **Finde das nächste passende Genre in der JSON-Datei**
 				string closestMatch = FindClosestMatch(normalizedMainGenre, jsonGenres);
 				if (closestMatch == null)
@@ -185,11 +230,17 @@ namespace GenreClassificationNetwork
 				{
 					GD.Print($"✅ Verwende \"{closestMatch}\" für {mainGenre}");
 					//normalizedMainGenre = closestMatch;
+					GD.Print($"✅ Verwende \"{closestMatch}\" für {mainGenre}");
+					//normalizedMainGenre = closestMatch;
 				}
 
 				// **Hauptgenre zum Graphen hinzufügen**
 				fdgFac.AddGenre(normalizedMainGenre, 100);
+				// **Hauptgenre zum Graphen hinzufügen**
+				fdgFac.AddGenre(normalizedMainGenre, 100);
 				await Task.Delay(10);
+
+				// **Subgenres hinzufügen**
 
 				// **Subgenres hinzufügen**
 				foreach (var subgenre in subgenres.Distinct())
@@ -203,6 +254,7 @@ namespace GenreClassificationNetwork
 					}
 				}
 			}
+			
 			
 		}
 

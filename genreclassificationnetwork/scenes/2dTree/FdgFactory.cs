@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Linq;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace GenreClassificationNetwork
@@ -34,7 +35,13 @@ namespace GenreClassificationNetwork
 		public override void _Ready()
 		{
 			base._Ready();
+		public override void _Ready()
+		{
+			base._Ready();
 
+			rootNode = CreateGenreNode(GetViewportRect().Size / 2, 1f);
+			rootNode.setGenreTitle("Root");
+			AddChild(rootNode);
 			rootNode = CreateGenreNode(GetViewportRect().Size / 2, 1f);
 			rootNode.setGenreTitle("Root");
 			AddChild(rootNode);
@@ -69,6 +76,11 @@ namespace GenreClassificationNetwork
 				EqualizeConnectionLengths(delta);
 			//
 
+			if (pinchPanCamera != null)
+				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
+				
+			else
+				GD.PrintErr("Keine PinchPanCamera gefunden!");
 			if (pinchPanCamera != null)
 				pinchPanCamera.GlobalPosition = rootNode.GlobalPosition;
 				
@@ -147,6 +159,9 @@ namespace GenreClassificationNetwork
 			const float SubgenrePushFactor = 0.5f; // Extra-Push nach außen für Subgenres
 			const float SubgenrePushFactor = 0.5f; // Extra-Push nach außen für Subgenres
 
+			foreach (var nodeA in genreMap.Values)
+			{
+				Vector2 totalForce = Vector2.Zero;
 			foreach (var nodeA in genreMap.Values)
 			{
 				Vector2 totalForce = Vector2.Zero;
@@ -257,6 +272,9 @@ namespace GenreClassificationNetwork
 				nodeA.Position += totalForce * (float)delta;
 			}
 		}
+				nodeA.Position += totalForce * (float)delta;
+			}
+		}
 
 		private static Color GetRandomColor()
 		{
@@ -271,7 +289,12 @@ namespace GenreClassificationNetwork
 		private Rect2 GetNodesBoundingBox()
 		{
 			if (!genreMap.Any()) return new Rect2(rootNode.Position, Vector2.Zero);
+		private Rect2 GetNodesBoundingBox()
+		{
+			if (!genreMap.Any()) return new Rect2(rootNode.Position, Vector2.Zero);
 
+			Vector2 min = rootNode.Position;
+			Vector2 max = rootNode.Position;
 			Vector2 min = rootNode.Position;
 			Vector2 max = rootNode.Position;
 
@@ -280,17 +303,37 @@ namespace GenreClassificationNetwork
 				min = new Vector2(Mathf.Min(min.X, pos.X), Mathf.Min(min.Y, pos.Y));
 				max = new Vector2(Mathf.Max(max.X, pos.X), Mathf.Max(max.Y, pos.Y));
 			}
+			foreach (var pos in genreMap.Values.Select(node => node.Position))
+			{
+				min = new Vector2(Mathf.Min(min.X, pos.X), Mathf.Min(min.Y, pos.Y));
+				max = new Vector2(Mathf.Max(max.X, pos.X), Mathf.Max(max.Y, pos.Y));
+			}
 
+			return new Rect2(min, max - min);
+		}
 			return new Rect2(min, max - min);
 		}
 
 		private void AdjustCameraZoom()
 		{
 			if (touchZoomCamera == null) return;
+		private void AdjustCameraZoom()
+		{
+			if (touchZoomCamera == null) return;
 
 			Rect2 boundingBox = GetNodesBoundingBox();
 			Vector2 viewportSize = GetViewportRect().Size;
+			Rect2 boundingBox = GetNodesBoundingBox();
+			Vector2 viewportSize = GetViewportRect().Size;
 
+			// Berechnung des Zoom-Faktors unter Berücksichtigung beider Achsen
+			float zoomFactor = Mathf.Clamp(
+				Mathf.Max(boundingBox.Size.X / viewportSize.X, boundingBox.Size.Y / viewportSize.Y),
+				0.5f, 2f
+			);
+
+			touchZoomCamera.Zoom = new Vector2(zoomFactor, zoomFactor);
+		}
 			// Berechnung des Zoom-Faktors unter Berücksichtigung beider Achsen
 			float zoomFactor = Mathf.Clamp(
 				Mathf.Max(boundingBox.Size.X / viewportSize.X, boundingBox.Size.Y / viewportSize.Y),
@@ -304,11 +347,22 @@ namespace GenreClassificationNetwork
 		{
 			const float repulsionStrength = 20000f; 
 			const float attractionStrength = 0.1f;
+		private void UpdateGraphSimulation(double delta)
+		{
+			const float repulsionStrength = 20000f; 
+			const float attractionStrength = 0.1f;
 
 			foreach (var nodeA in genreMap.Values)
 			{
 				Vector2 totalForce = Vector2.Zero;
+			foreach (var nodeA in genreMap.Values)
+			{
+				Vector2 totalForce = Vector2.Zero;
 
+				// Abstoßende Kräfte zwischen allen Nodes berechnen
+				foreach (var nodeB in genreMap.Values)
+				{
+					if (nodeA == nodeB) continue;
 				// Abstoßende Kräfte zwischen allen Nodes berechnen
 				foreach (var nodeB in genreMap.Values)
 				{
@@ -323,7 +377,27 @@ namespace GenreClassificationNetwork
 						totalForce += repulsionForce;
 					}
 				}
+					Vector2 direction = nodeA.Position - nodeB.Position;
+					float distance = direction.Length();
+					if (distance > 0)
+					{
+						// Abstoßungskraft proportional zur Entfernung
+						Vector2 repulsionForce = direction.Normalized() * (repulsionStrength / (distance * distance));
+						totalForce += repulsionForce;
+					}
+				}
 
+				// Anziehende Kräfte entlang der Verbindungen berechnen
+				foreach (Node connection in nodeA.GetChildren())
+				{
+					if (connection is OwnFdgSpring spring && spring.NodeEnd is GenreNode connectedNode)
+					{
+						Vector2 direction = connectedNode.Position - nodeA.Position;
+						float distance = direction.Length();
+						Vector2 attractionForce = direction.Normalized() * (distance - spring.length) * attractionStrength;
+						totalForce += attractionForce;
+					}
+				}
 				// Anziehende Kräfte entlang der Verbindungen berechnen
 				foreach (Node connection in nodeA.GetChildren())
 				{
@@ -413,12 +487,56 @@ namespace GenreClassificationNetwork
 				GenreNode nodeToAdd = CreateGenreNode(CalculateSubGenrePosition(parentNode, CountSubGenres(parent)), 0.55f);
 				nodeToAdd.setGenreTitle(name);
 				nodeToAdd.SetNodeStyle(parentNode.ColorStyle);
+		public void AddSubGenre(string parent, string name, double weight)
+		{
+			//if (!genreMap.TryGetValue(parent, out GenreNode parentNode))
+			//{
+				//GD.PrintErr($"❌ FEHLER: Parent-Genre {parent} nicht gefunden.");
+				//return;
+			//}
+			//
+			//if (genreMap.ContainsKey(name))
+			//{
+				//GD.PrintErr($"⚠ WARNUNG: Subgenre {name} existiert bereits.");
+				//return;
+			//}
+			//
+			//// Parent-Node muss ein GenreNode sein**
+			//if (parentNode == null)
+			//{
+				//GD.PrintErr($"❌ FEHLER: {name} kann nicht hinzugefügt werden, weil {parent} null ist.");
+				//return;
+			//}
+			
+			if (genreMap.TryGetValue(parent, out GenreNode parentNode) && !genreMap.ContainsKey(name))
+			{				
+				//if (parentNode.GetParent() is not GenreNode)
+				//{
+					//GD.PrintErr($"❌ FEHLER: {name} hat einen falschen Parent-Typ: {parentNode.GetParent().GetType()}");
+					//return;
+				//}
+				
+				GenreNode nodeToAdd = CreateGenreNode(CalculateSubGenrePosition(parentNode, CountSubGenres(parent)), 0.55f);
+				nodeToAdd.setGenreTitle(name);
+				nodeToAdd.SetNodeStyle(parentNode.ColorStyle);
 
 				AddChild(nodeToAdd);
 				//parentNode.AddChild(nodeToAdd);  
 				
 				genreMap[name] = nodeToAdd;
+				AddChild(nodeToAdd);
+				//parentNode.AddChild(nodeToAdd);  
+				
+				genreMap[name] = nodeToAdd;
 
+				CreateConnection(parentNode, nodeToAdd);
+				//GD.Print($"✅ Subgenre {name} wurde zu {parent} hinzugefügt. Parent: {nodeToAdd.GetParent()}");
+			}
+			//else
+			//{
+				//GD.PrintErr($"❌ FEHLER: Parent-Genre {parent} nicht gefunden oder Subgenre {name} existiert bereits.");
+			//}
+		}
 				CreateConnection(parentNode, nodeToAdd);
 				//GD.Print($"✅ Subgenre {name} wurde zu {parent} hinzugefügt. Parent: {nodeToAdd.GetParent()}");
 			}
@@ -473,6 +591,11 @@ namespace GenreClassificationNetwork
 				//line.DefaultColor = connectionColor;
 			//}
 
+			startNode.AddChild(connection);
+			UpdateGraphSimulation();
+		}
+		
+		
 			startNode.AddChild(connection);
 			UpdateGraphSimulation();
 		}
@@ -534,6 +657,11 @@ namespace GenreClassificationNetwork
 			return parent.Position + (directionToRoot.Rotated(Mathf.Pi) + perpendicular.Rotated(angle)) * radius;
 		}
 
+		private int CountSubGenres(string parent)
+		{
+			return genreMap.Count(connection => connection.Value != null && connection.Key.StartsWith(parent));
+		}
+	}
 		private int CountSubGenres(string parent)
 		{
 			return genreMap.Count(connection => connection.Value != null && connection.Key.StartsWith(parent));
