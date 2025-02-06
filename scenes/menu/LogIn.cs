@@ -6,17 +6,22 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Linq;
 
+using DotNetEnv;
 
 namespace GenreClassificationNetwork
 {
     public partial class LogIn : Control
     {
-        private string clientId = "e966134530674e7bac88f61cf3857a54";
-        private string clientSecret = "c64692ea60064fb390696997f8850aa7";
+        private string clientId;
+        private string clientSecret;
         private string redirectUri = "http://localhost:5000/callback";
 
         public override void _Ready()
         {
+            Env.Load();
+            clientId = DotNetEnv.Env.GetString("CLIENT_ID");
+            clientSecret = DotNetEnv.Env.GetString("CLIENT_SECRET");
+
             var logInButton = GetNode<Button>("LogInButton");
             if (logInButton == null)
             {
@@ -121,7 +126,7 @@ namespace GenreClassificationNetwork
             return await response.Content.ReadAsStringAsync();
         }
 
-		/// DEMO PRINTS
+        /// DEMO PRINTS
 
         private static async Task DemoPrintTopGenres()
         {
