@@ -11,6 +11,7 @@ namespace GenreClassificationNetwork
         private GenreNode rootNode;
         private int mainGenreCount = 0;
 
+        public int maxMainGenres = 12;
         public bool isLoadingGenre = false;
 
         public ImageTexture RootNodeTexture;
@@ -287,12 +288,22 @@ namespace GenreClassificationNetwork
         }
 
 
-        private void CreateConnection(GenreNode startNode, GenreNode endNode)
+        public void CreateConnection(string start, string end, bool isVisible = false)
+        {
+            GenreNode parentNode = genreMap[start];
+            GenreNode childNode = genreMap[end];
+            CreateConnection(parentNode, childNode, isVisible);
+
+        }
+
+        private void CreateConnection(GenreNode startNode, GenreNode endNode, bool isVisible = true)
         {
             OwnFdgSpring connection = new()
             {
                 NodeStart = startNode,
-                NodeEnd = endNode
+                NodeEnd = endNode,
+                draw_line = isVisible,
+                
             };
 
             // Connection settings
@@ -313,7 +324,7 @@ namespace GenreClassificationNetwork
 
         private Vector2 CalculateMainGenrePosition(float radius)
         {
-            const int maxMainGenres = 12; // Maximum main genres for even distribution
+            // Maximum main genres for even distribution
             float angleStep = 2 * Mathf.Pi / maxMainGenres; // Uniform angle
 
             float angle = mainGenreCount * angleStep;
