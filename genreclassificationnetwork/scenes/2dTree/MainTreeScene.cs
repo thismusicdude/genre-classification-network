@@ -231,7 +231,7 @@ namespace GenreClassificationNetwork
 
             foreach (string genre in distinctGenre)
             {
-                fdgFac.AddGenre(genre, 500);
+                fdgFac.AddGenre(genre, 0.01f, 1000);
 
                 await Task.Delay(100);
             }
@@ -241,11 +241,8 @@ namespace GenreClassificationNetwork
             string first_genre = distinctGenre[0];
             string last_genre = distinctGenre.Last();
 
-            foreach (string g in distinctGenre)
-            {
-                GD.Print(g);
-            }
-
+            const float length = 1000;
+            const float k = 0.0f;
             foreach (string genre in distinctGenre)
             {
                 if (counter == 0)
@@ -255,30 +252,29 @@ namespace GenreClassificationNetwork
                 }
                 else
                 {
-                    fdgFac.CreateConnection(genre, distinctGenre[counter - 1], false);
+                    fdgFac.CreateConnection(genre, distinctGenre[counter - 1], false, k, length);
                 }
                 counter += 1;
             }
-            fdgFac.CreateConnection(first_genre, last_genre, false);
-
-
-
+            fdgFac.CreateConnection(first_genre, last_genre, false, k, length);
             await Task.Delay(1000);
 
 
             foreach (SubGenreStructure subgenre in m_subgenrelist)
             {
                 // fdgFac.AddGenre(subgenre.Parent, 500);
-                fdgFac.AddSubGenre(subgenre.Parent, subgenre.Name, 500);
+                fdgFac.AddSubGenre(subgenre.Parent, subgenre.Name, 0.002f, 450);
                 await Task.Delay(100);
 
             }
+            await Task.Delay(1000);
+
 
             foreach (SubGenreStructure subsubgenre in m_subsubgenrelist)
             {
                 // fdgFac.AddGenre(subsubgenre.ParentParent, 500);
                 // fdgFac.AddSubGenre(subsubgenre.ParentParent, subsubgenre.Parent, 500);
-                fdgFac.AddSubGenre(subsubgenre.Parent, subsubgenre.Name, 500);
+                fdgFac.AddSubGenre(subsubgenre.Parent, subsubgenre.Name, 0.002f, 300);
                 await Task.Delay(100);
             }
 

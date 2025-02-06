@@ -247,7 +247,7 @@ namespace GenreClassificationNetwork
             return node;
         }
 
-        public void AddGenre(string name, double weight)
+        public void AddGenre(string name, float k = 0.01f, float len = 500)
         {
             if (genreMap.ContainsKey(name))
                 return;
@@ -262,11 +262,11 @@ namespace GenreClassificationNetwork
             genreMap.Add(name, nodeToAdd);
             nodeToAdd.SetNodeStyle(GetRandomColor(), GetRandomColor());
 
-            CreateConnection(rootNode, nodeToAdd);
+            CreateConnection(rootNode, nodeToAdd, true, k, len);
         }
 
 
-        public void AddSubGenre(string parent, string name, double weight)
+        public void AddSubGenre(string parent, string name, float k = 0.002f, float len = 450f)
         {
             if (!genreMap.ContainsKey(parent) || genreMap.ContainsKey(name))
                 return;
@@ -284,39 +284,28 @@ namespace GenreClassificationNetwork
             AddChild(nodeToAdd);
             genreMap.Add(name, nodeToAdd);
 
-            CreateConnection(parentNode, nodeToAdd);
+            CreateConnection(parentNode, nodeToAdd, true, k, len);
         }
 
 
-        public void CreateConnection(string start, string end, bool isVisible = false)
+        public void CreateConnection(string start, string end,  bool isVisible = false, float k = 0.002f, float len = 450f)
         {
             GenreNode parentNode = genreMap[start];
             GenreNode childNode = genreMap[end];
-            CreateConnection(parentNode, childNode, isVisible);
+            CreateConnection(parentNode, childNode, isVisible, k, len);
 
         }
 
-        private void CreateConnection(GenreNode startNode, GenreNode endNode, bool isVisible = true)
+        private void CreateConnection(GenreNode startNode, GenreNode endNode, bool isVisible = true, float k = 0.002f, float len = 450f)
         {
             OwnFdgSpring connection = new()
             {
                 NodeStart = startNode,
                 NodeEnd = endNode,
                 draw_line = isVisible,
-                
+                K = k,
+                length = len
             };
-
-            // Connection settings
-            if (startNode == rootNode) // Root → Main genre
-            {
-                connection.K = 0.002f;      // Weaker spring force
-                connection.length = 450f; // Dynamic target distance
-            }
-            else // Main genre → Subgenre
-            {
-                connection.K = 0.01f;      // Stronger spring force
-                connection.length = 400f; // Larger target distance
-            }
 
             startNode.AddChild(connection);
             UpdateGraphSimulation();
