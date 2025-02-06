@@ -7,11 +7,42 @@ using System.Collections.Generic;
 
 namespace GenreClassificationNetwork
 {
+    public class SubGenreStructure
+    {
+        public string Name;
+        public string Parent;
+        public SubGenreStructure(string parent, string name)
+        {
+            this.Name = name;
+            this.Parent = parent;
+        }
+
+    }
+
+    public class SubSubGenreStructure
+    {
+        public string Name;
+        public string Parent;
+        public string ParentParent;
+        public SubSubGenreStructure(string parent, string parentparent, string name)
+
+        {
+            this.Name = name;
+            this.Parent = parent;
+            this.ParentParent = parentparent;
+        }
+
+    }
     public partial class MainTreeScene : Node2D
     {
         TextureRect _imageDisplay;
 
         SpotifyUserProfileResponse profileData;
+
+        private List<string> m_genrelist = new();
+        private List<SubGenreStructure> m_subgenrelist = new();
+        private List<SubGenreStructure> m_subsubgenrelist = new();
+
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
@@ -88,7 +119,7 @@ namespace GenreClassificationNetwork
         }
 
 
-        private async Task<bool> DetectAndLoadGenre(string genreStr, Genre parentGenre, SubGenre subgenre, FdgFactory fdgFac)
+        private bool DetectAndLoadGenre(string genreStr, Genre parentGenre, SubGenre subgenre, FdgFactory fdgFac)
         {
             foreach (string subsubgenre in subgenre.Subsubgenres)
             {
@@ -97,17 +128,21 @@ namespace GenreClassificationNetwork
 
                 if (subsubgenreName == genreStrName)
                 {
-                    fdgFac.AddGenre(parentGenre.Name, 500);
-                    fdgFac.AddSubGenre(parentGenre.Name, subgenre.Name, 500);
-                    fdgFac.AddSubGenre(subgenre.Name, subsubgenre, 500);
-                    await Task.Delay(100);
+                    // fdgFac.AddGenre(parentGenre.Name, 500);
+                    // fdgFac.AddSubGenre(parentGenre.Name, subgenre.Name, 500);
+                    // fdgFac.AddSubGenre(subgenre.Name, subsubgenre, 500);
+                    // await Task.Delay(100);
+
+                    m_genrelist.Add(parentGenre.Name);
+                    m_subgenrelist.Add(new(parentGenre.Name, subgenre.Name));
+                    m_subsubgenrelist.Add(new(subgenre.Name, subsubgenre));
                     return true;
                 }
             }
             return false;
         }
 
-        private async Task<bool> DetectAndLoadGenre(string genreStr, Genre genre, FdgFactory fdgFac)
+        private bool DetectAndLoadGenre(string genreStr, Genre genre, FdgFactory fdgFac)
         {
             foreach (SubGenre subGenre in genre.SubgenreList)
             {
@@ -116,14 +151,16 @@ namespace GenreClassificationNetwork
 
                 if (subgenreName == genreStrName)
                 {
-                    fdgFac.AddGenre(genre.Name, 500);
-                    fdgFac.AddSubGenre(genre.Name, subGenre.Name, 500);
-                    await Task.Delay(100);
+                    // fdgFac.AddGenre(genre.Name, 500);
+                    // fdgFac.AddSubGenre(genre.Name, subGenre.Name, 500);
+                    // await Task.Delay(100);
+                    m_genrelist.Add(genre.Name);
+                    m_subgenrelist.Add(new(genre.Name, subGenre.Name));
                     return true;
                 }
                 else
                 {
-                    bool wasAdded = await DetectAndLoadGenre(genreStr, genre, subGenre, fdgFac);
+                    bool wasAdded = DetectAndLoadGenre(genreStr, genre, subGenre, fdgFac);
                     if (wasAdded)
                     {
                         return true;
@@ -133,23 +170,23 @@ namespace GenreClassificationNetwork
             return false;
         }
 
-        private async Task DetectAndLoadGenre(string genreStr, GenreFile genreFile, FdgFactory fdgFac)
+        private void DetectAndLoadGenre(string genreStr, GenreFile genreFile, FdgFactory fdgFac)
         {
             foreach (Genre genre in genreFile.Genrelist)
             {
                 string genreName = normalizeGenre(genre.Name);
                 string genreStrName = normalizeGenre(genreStr);
 
-
                 if (genreName == genreStrName)
                 {
-                    fdgFac.AddGenre(genre.Name, 500);
-                    await Task.Delay(100);
+                    // fdgFac.AddGenre(genre.Name, 500);
+                    // await Task.Delay(100);
+                    m_genrelist.Add(genre.Name);
                     return;
                 }
                 else
                 {
-                    bool wasAdded = await DetectAndLoadGenre(genreStr, genre, fdgFac);
+                    bool wasAdded = DetectAndLoadGenre(genreStr, genre, fdgFac);
                     if (wasAdded)
                     {
                         return;
@@ -157,8 +194,9 @@ namespace GenreClassificationNetwork
                 }
             }
 
-            fdgFac.AddGenre(genreStr, 500);
-            await Task.Delay(100);
+            // fdgFac.AddGenre(genreStr, 500);
+            m_genrelist.Add(genreStr);
+            // await Task.Delay(100);
 
         }
 
@@ -181,8 +219,69 @@ namespace GenreClassificationNetwork
 
             foreach ((string Genre, int Count) topGenre in topGenres)
             {
-                await DetectAndLoadGenre(topGenre.Genre, genreFile, fdgFac);
+                DetectAndLoadGenre(topGenre.Genre, genreFile, fdgFac);
             }
+
+            GD.Print("TEST");
+
+            int counter = 0;
+
+            var distinctGenre = m_genrelist.Distinct().ToList();
+            fdgFac.maxMainGenres = distinctGenre.Count;
+
+            foreach (string genre in distinctGenre)
+            {
+                fdgFac.AddGenre(genre, 500);
+
+                await Task.Delay(100);
+            }
+            await Task.Delay(1000);
+
+
+            string first_genre = distinctGenre[0];
+            string last_genre = distinctGenre.Last();
+
+            foreach (string g in distinctGenre)
+            {
+                GD.Print(g);
+            }
+
+            foreach (string genre in distinctGenre)
+            {
+                if (counter == 0)
+                {
+                    counter += 1;
+                    continue;
+                }
+                else
+                {
+                    fdgFac.CreateConnection(genre, distinctGenre[counter - 1], false);
+                }
+                counter += 1;
+            }
+            fdgFac.CreateConnection(first_genre, last_genre, false);
+
+
+
+            await Task.Delay(1000);
+
+
+            foreach (SubGenreStructure subgenre in m_subgenrelist)
+            {
+                // fdgFac.AddGenre(subgenre.Parent, 500);
+                fdgFac.AddSubGenre(subgenre.Parent, subgenre.Name, 500);
+                await Task.Delay(100);
+
+            }
+
+            foreach (SubGenreStructure subsubgenre in m_subsubgenrelist)
+            {
+                // fdgFac.AddGenre(subsubgenre.ParentParent, 500);
+                // fdgFac.AddSubGenre(subsubgenre.ParentParent, subsubgenre.Parent, 500);
+                fdgFac.AddSubGenre(subsubgenre.Parent, subsubgenre.Name, 500);
+                await Task.Delay(100);
+            }
+
             // activate pinchpan camera
             fdgFac.isLoadingGenre = false;
 
